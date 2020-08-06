@@ -72,11 +72,7 @@ public class ReservationData {
 	public ArrayList<User> getClients(String date, String startHour) throws SQLException{
 		
 		Connection  conn = dataSource.getConnection();
-		
 		String query = "select id_user from reservation where date_shift = '"+date+"' and start_hour_shift = '"+startHour+"';";
-
-		User client;
-		
 		ArrayList<User> listUsers = new ArrayList<>();
 		
 		try {
@@ -84,28 +80,9 @@ public class ReservationData {
 			ResultSet rs = stmt.executeQuery(query);
 			
 			while(rs.next()) {
-				//TODO
-				/*String date = rs.getString("date");
-				String startHour = rs.getString("start_hour");
-				String endHour = rs.getString("end_hour");
-				int maxSpace = rs.getInt("max_space");
-				int reservedSpace = rs.getInt("reserved_space");
-				int availableSpace = rs.getInt("available_space");	
-				ArrayList<User> clients = getClients(date, startHour);
-
-				
-				client = new Shift();
-				
-				client.setDate(date);
-				client.setStartHour(startHour);
-				client.setEndHour(endHour);
-				client.setMaxSpace(maxSpace);
-				client.setReservedSpace(reservedSpace);
-				client.setClients(clients);
-				
-				
-				listUsers.add(shift);*/
-
+				int id = rs.getInt("id_user");
+				User user = userData.findById(id);
+				listUsers.add(user);
 			}
 			
 			rs.close();

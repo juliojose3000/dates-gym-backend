@@ -97,7 +97,7 @@ public class ShiftData {
 			
 			while(rs.next()) {
 				
-				String date = rs.getString("date");
+				String date = rs.getString("shift_date");
 				String startHour = rs.getString("start_hour");
 				String endHour = rs.getString("end_hour");
 				int maxSpace = rs.getInt("max_space");
