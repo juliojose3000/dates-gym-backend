@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
+import com.simple.rest.service.util.Dates;
 
 @Repository
 public class UserData {
@@ -70,5 +71,43 @@ public class UserData {
 		
 	}
 
+	public boolean create(User user) throws SQLException {
+		
+		Connection  conn = dataSource.getConnection();
+		
+		boolean wasSuccessfulProcess = false;
+	
+		int id = user.getId();
+		String name = user.getName();
+		String lastname = user.getLastName();
+		String phone = user.getPhoneNumber();
+		String email = user.getEmail();
 
+		String query = "insert into "+tableName+"(\r\n" + 
+				"name, lastname, phone, email) \r\n" + 
+				"values ("
+				+ "'"+name+"',"
+				+ "'"+lastname+"',"
+				+ "'"+phone+"',"
+				+ "'"+email+"');";
+
+		try {
+			
+			Statement stmt = conn.createStatement();
+			
+			int rs = stmt.executeUpdate(query);
+			
+			if(rs != 0) {wasSuccessfulProcess = true;}
+			
+			stmt.close();
+			
+			conn.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return wasSuccessfulProcess;
+		
+	}
 }

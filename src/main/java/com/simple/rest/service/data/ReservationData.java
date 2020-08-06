@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
+import com.simple.rest.service.util.Dates;
 
 @Repository
 public class ReservationData {
@@ -31,7 +32,7 @@ public class ReservationData {
 		this.dataSource = dataSource;
 	}
 	
-	public boolean create(Reservation reservation) throws SQLException {
+	public boolean make(Reservation reservation) throws SQLException {
 		
 		Connection  conn = dataSource.getConnection();
 		
@@ -45,20 +46,16 @@ public class ReservationData {
 				"id_user, date_shift, start_hour_shift) \r\n" + 
 				"values ("
 				+ "'"+user.getId()+"',"
-				+ "'"+shiftDate+"',"
-				+ ""+shiftStartHour+");";
+				+ "'"+Dates.utilDateToString(shiftDate)+"',"
+				+ "'"+shiftStartHour+"');";
 
 		try {
 			
 			Statement stmt = conn.createStatement();
-			
+			System.out.println(query);
 			int rs = stmt.executeUpdate(query);
 			
-			if(rs != 0) {
-
-				wasSuccessfulProcess = true;
-				
-			}
+			if(rs != 0) {wasSuccessfulProcess = true;}
 			
 			stmt.close();
 			
@@ -121,5 +118,6 @@ public class ReservationData {
 		return listUsers;
 		
 	}
+	
 
 }

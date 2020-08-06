@@ -1,5 +1,6 @@
 package com.simple.rest.service.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -353,6 +354,22 @@ public class Dates {
     public static java.sql.Date utilDateToSQLDate(java.util.Date date){
     	return new java.sql.Date(date.getTime());
     }
-
+    
+    public static String utilDateToString(java.util.Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
+        String strDate = dateFormat.format(date);  
+    	return strDate;
+    }
+    
+    public static java.util.Date stringToUtilDate(String date){
+    	java.util.Date dateUtil = null;
+    	try {
+    		dateUtil =  new SimpleDateFormat("yyyy-MM-dd").parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	return dateUtil;
+    	
+    }
 
 }
