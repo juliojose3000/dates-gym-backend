@@ -126,37 +126,25 @@ public class ScheduleData {
 			
 			if(rs.next()) {
 				
-				/*int code = rs.getInt("code");
-				String title = rs.getString("title");
-				String description = rs.getString("description");
+				int id = rs.getInt("id");
 				String startDate = rs.getString("start_date");
 				String endDate = rs.getString("end_date");
-				int branchId = rs.getInt("branch_id");
-				String publicationStastus = rs.getString("publication_status");
-				boolean active = rs.getBoolean("active");
-				boolean visible = rs.getBoolean("visible");
-				ArrayList<InternalSocialActionCollaborator> internalCollaborators = socialActionCollaboratorData.findInternalCollaborators(code);
-				ArrayList<ExternalSocialActionCollaborator> externalCollaborators = socialActionCollaboratorData.findExternalCollaborators(code);
-				UniversityBranch universityBranch = universityBranchData.findById(branchId);
-				ArrayList<SocialActionReviewComment> listComments = socialActionReviewCommentData.getAllReviewCommentByCodeProject(code);
+				ArrayList<Shift[]> listShifts = shiftData.get(id);
 				
 				schedule = new Schedule();
 				
-				socialActionProject.setCode(code);
-				socialActionProject.setTitle(title);
-				socialActionProject.setDescription(description);
-
-				
-				listProjects.add(socialActionProject);*/
+				schedule.setId(id);
+				schedule.setStartDate(Dates.stringToUtilDate(startDate));
+				schedule.setEndDate(Dates.stringToUtilDate(endDate));
+				schedule.setWeekNumber(weekNumber);
+				schedule.setShifts(listShifts);
 
 			}
-			
 			rs.close();
 			stmt.close();
 			conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			
+		} catch (SQLException e) {e.printStackTrace();}
 		
 		return schedule;
 		

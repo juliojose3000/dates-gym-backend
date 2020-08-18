@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Schedule {
 	
+	private int id;
 	private ArrayList<Shift[]> shifts;
 	private int weekNumber;
 	private Date startDate;
@@ -14,13 +15,22 @@ public class Schedule {
 		this.shifts = new ArrayList<Shift[]>();
 	}
 	
-	public Schedule(ArrayList<Shift[]> shifts, int weekNumber, Date startDate, Date endDate) {
+	public Schedule(int id, ArrayList<Shift[]> shifts, int weekNumber, Date startDate, Date endDate) {
+		this.id = id;
 		this.shifts = shifts;
 		this.weekNumber = weekNumber;
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
+	
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	public ArrayList<Shift[]> getShifts() {
 		return shifts;
 	}

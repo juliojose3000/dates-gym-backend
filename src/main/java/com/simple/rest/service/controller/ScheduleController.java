@@ -28,7 +28,7 @@ public class ScheduleController {
 	
 	@RequestMapping(method = RequestMethod.GET, value="/create")
 	@ResponseBody
-	public ResponseEntity<Boolean> createSchedule() throws SQLException, ParseException {
+	public ResponseEntity<Boolean> create() throws SQLException, ParseException {
 		
 		boolean isSuccessful = scheduleBussiness.create();
 
@@ -36,15 +36,15 @@ public class ScheduleController {
 		
 	}
 	
-	/*@RequestMapping(method = RequestMethod.GET, value="/get")
+	@RequestMapping(method = RequestMethod.GET, value="/get")
 	@ResponseBody
-	public ResponseEntity<Schedule> getSchedule() throws SQLException, ParseException {
+	public ResponseEntity<Schedule> get() throws SQLException, ParseException {
 		
-		Schedule schedule = scheduleBussiness.create();
+		Schedule schedule = scheduleBussiness.get();
 
 		return new ResponseEntity<Schedule>(schedule, HttpStatus.OK);
 		
-	}*/
+	}
 	
 	/*@RequestMapping(method = RequestMethod.GET, value="/reserve/{id}")
 	@ResponseBody

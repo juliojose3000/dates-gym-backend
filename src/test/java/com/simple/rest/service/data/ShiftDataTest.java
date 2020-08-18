@@ -23,7 +23,9 @@ public class ShiftDataTest {
 	@Test
 	public void getShift() throws SQLException {
 		
-		ArrayList<Shift> listShift = shiftData.get(10);	
+		int idSchedule = 6;
+		
+		ArrayList<Shift[]> listShift = shiftData.get(idSchedule);	
 		
 		System.out.println(listShift.toString());
 		

@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.simple.rest.service.bussiness.ScheduleBussiness;
+import com.simple.rest.service.bussiness.ShiftBussiness;
 import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
@@ -81,19 +83,20 @@ public class ShiftData {
 	}//method
 	
 	
-	public ArrayList<Shift> get(int scheduleId) throws SQLException{
+	public ArrayList<Shift[]> get(int idSchedule) throws SQLException{
 		
 		Connection  conn = dataSource.getConnection();
-		
-		String query = "SELECT * FROM "+tableName;
-
+		String query = "select * from "+tableName+" where id_schedule = "+idSchedule+";";
 		Shift shift;
-		
-		ArrayList<Shift> listShifts = new ArrayList<>();
+		ArrayList<Shift[]> listShifts = new ArrayList<>();
 		
 		try {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
+			
+			int totalShifts = ShiftBussiness.STARTS_HOURS.length;
+			int i = 0;
+			Shift[] shifts = new Shift[totalShifts];
 			
 			while(rs.next()) {
 				
@@ -105,7 +108,6 @@ public class ShiftData {
 				int availableSpace = rs.getInt("available_space");	
 				ArrayList<User> clients = reservationData.getClients(date, startHour);
 
-				
 				shift = new Shift();
 				
 				shift.setDate(date);
@@ -115,11 +117,15 @@ public class ShiftData {
 				shift.setReservedSpace(reservedSpace);
 				shift.setClients(clients);
 				
+				shifts[i++] = shift;
 				
-				listShifts.add(shift);
-
+				if(totalShifts == i) {
+					listShifts.add(shifts);
+					shifts = new Shift[totalShifts];
+					i = 0;
+				}
+				
 			}
-			
 			rs.close();
 			stmt.close();
 			conn.close();

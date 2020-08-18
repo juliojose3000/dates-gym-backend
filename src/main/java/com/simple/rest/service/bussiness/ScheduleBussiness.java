@@ -24,7 +24,7 @@ public class ScheduleBussiness {
 	@Autowired
 	ScheduleData scheduleData;
 	
-	private String[] DAYS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
+	public static String[] DAYS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
 	
 	public boolean create() throws SQLException, ParseException{
 		
@@ -73,11 +73,16 @@ public class ScheduleBussiness {
 	
 	
 
-	public void getSchedule() {
+	public Schedule get() {
 		
 		int weekNumber = Dates.getWeekNumberInYear();
+
+		Schedule schedule = null;
 		
-		//Schedule schedule = scheduleData.getSchedule();
+		try {schedule = scheduleData.getSchedule(weekNumber);} 
+		catch (SQLException e) {e.printStackTrace();}
+		
+		return schedule;
 		
 	}
 	

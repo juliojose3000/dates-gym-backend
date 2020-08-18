@@ -51,7 +51,7 @@ public class Dates {
 
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
 
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        //calendar.add(Calendar.DAY_OF_YEAR, 1);
 
         int year = calendar.get(Calendar.YEAR);
 

@@ -10,10 +10,10 @@ import com.simple.rest.service.domain.Shift;
 public class ShiftBussiness {
 	
 	public static String[] STARTS_HOURS = 
-		{"7:00 am","9:00 am","11:00 am","3:00 pm","5:00 pm","7:00 pm"};
+		{"7:00:00","9:00:00","11:00:00","15:00:00","17:00:00","19:00:00"};
 	
 	public static String[] ENDS_HOURS = 
-		{"8:30 am","10:30 am","12:30 md","4:30 pm","6:30 pm","8:30 pm"};
+		{"8:30:00","10:30:00","12:30:00","16:30:00","18:30:00","20:30:00"};
 	
 	public Shift createShift(Date date, int i) {
 		

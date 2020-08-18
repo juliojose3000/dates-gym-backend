@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import com.simple.rest.service.domain.Schedule;
+
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -28,13 +30,21 @@ class ScheduleControllerTest {
 	public void create() {
 		
 		ResponseEntity<Boolean> response = restTemplate.exchange(this.url+"/create", HttpMethod.GET, request, Boolean.class);
-
 		assertTrue(response.getStatusCode() == HttpStatus.OK);
-		
 		boolean wasSuccessful = response.getBody();
-		
 		assertTrue(wasSuccessful);
 		
 	}
+	
+	//@Test
+	public void get() {
+		
+		ResponseEntity<Schedule> response = restTemplate.exchange(this.url+"/get", HttpMethod.GET, request, Schedule.class);
+		assertTrue(response.getStatusCode() == HttpStatus.OK);
+		Schedule schedule = response.getBody();
+		assertTrue(schedule.getShifts().size()>0);
+		
+	}
+	
 
 }
