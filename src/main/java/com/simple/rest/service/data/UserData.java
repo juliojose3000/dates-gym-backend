@@ -119,32 +119,28 @@ public class UserData {
 
 		boolean wasSuccessfulProcess = false;
 
-		int id = user.getId();
 		String name = user.getName();
-		String lastname = user.getLastName();
+		String lastname = user.getLastname();
 		String phone = user.getPhoneNumber();
 		String email = user.getEmail();
+		String username = user.getUsername();
+		String password = user.getPassword();
 
-		String query = "insert into " + tableName + "(\r\n" + "name, lastname, phone, email) \r\n" + "values (" + "'"
-				+ name + "'," + "'" + lastname + "'," + "'" + phone + "'," + "'" + email + "');";
+		String query = "insert into " + tableName + "(\r\n" + "name, lastname, phone, email, username, password) \r\n" + "values (" 
+		+ "'" + name + "'," 
+		+ "'" + lastname + "'," 
+		+ "'" + phone + "'," 
+		+ "'" + email + "'," 
+		+ "'" + username + "'," 
+		+ "'" + password + "');";
 
 		try {
-
 			Statement stmt = conn.createStatement();
-
 			int rs = stmt.executeUpdate(query);
-
-			if (rs != 0) {
-				wasSuccessfulProcess = true;
-			}
-
+			if (rs != 0) wasSuccessfulProcess = true;
 			stmt.close();
-
 			conn.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		} catch (SQLException e) {e.printStackTrace();}
 
 		return wasSuccessfulProcess;
 

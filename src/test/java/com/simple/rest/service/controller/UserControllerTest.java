@@ -33,7 +33,7 @@ class UserControllerTest {
 	
 	public User getUser() {
 		
-		return new User(2, "Julio","Segura","8734-9630","juliojose3000@gmail.com", false);
+		return new User(2, "Julio","Segura","8734-9630","juliojose3000@gmail.com","","", false);
 		
 	}
 	

@@ -40,7 +40,7 @@ class ReservationControllerTest {
 		
 		Reservation reservation = new Reservation();
 		
-		User user = new User(2, "Julio","Segura","8734-9630","juliojose3000@gmail.com", false);
+		User user = new User(2, "Julio","Segura","8734-9630","juliojose3000@gmail.com","","", false);
 		String date = "2020-08-17";
 		String startHour = "9:00:00";
 		

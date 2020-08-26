@@ -27,7 +27,7 @@ public class UserController {
 	
 	@RequestMapping(method = RequestMethod.POST, value="/create")
 	@ResponseBody
-	public ResponseEntity<Boolean> createSchedule(@RequestBody User user) throws SQLException, ParseException {
+	public ResponseEntity<Boolean> create(@RequestBody User user) throws SQLException, ParseException {
 		
 		boolean isSuccessful = userBussiness.create(user);
 
