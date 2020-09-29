@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+/* This class avoid the error 'AngularJS : Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource' */
 public class SimpleCorsFilter implements Filter {
 
 public SimpleCorsFilter() {
