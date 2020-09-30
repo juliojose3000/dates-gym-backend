@@ -29,7 +29,7 @@ class UserControllerTest {
 	
 	private static RestTemplate restTemplate = new RestTemplate();
 	
-	private static String username = "juliojose3000";
+	private static String email = "juliojose3000@gmail.com";
 	
 	private static String password = "123";
 	
@@ -52,7 +52,7 @@ class UserControllerTest {
 	
 	public static String getToken() {
 		
-		Authentication auth = new Authentication(username, password);
+		Authentication auth = new Authentication(email, password);
 		
 		Token token = 
 				
@@ -77,7 +77,7 @@ class UserControllerTest {
 	
 	public User getUser() {
 		
-		return new User(2, "Carlor=s","Alvarado","87310475","charlie98@gmail.com","","", false);
+		return new User(1, "Julio Segura","87310475","juliojose3000@gmail.com","123");
 		
 	}
 	

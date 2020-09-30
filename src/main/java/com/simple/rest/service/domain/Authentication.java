@@ -2,18 +2,18 @@ package com.simple.rest.service.domain;
 
 public class Authentication {
 	
-	private String username;
+	private String email;
 	private String password;
 	
-	public Authentication(String username, String password) {
-		this.username = username;
+	public Authentication(String email, String password) {
+		this.email = email;
 		this.password = password;
 	}
-	public String getUsername() {
-		return username;
+	public String getEmail() {
+		return email;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getPassword() {
 		return password;
@@ -23,7 +23,7 @@ public class Authentication {
 	}
 	@Override
 	public String toString() {
-		return "Authentication [username=" + username + ", password=" + password + "]";
+		return "Authentication [email=" + email + ", password=" + password + "]";
 	}
 
 }

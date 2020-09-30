@@ -21,16 +21,16 @@ public class JwtUserDetailsService implements UserDetailsService {
 	UserData userData;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
 		
 		com.simple.rest.service.domain.User user = null;
-		try {user = userData.findByUsername(username);} 
+		try {user = userData.findByEmail(userEmail);} 
 		catch (SQLException e) {e.printStackTrace();}
 		
-		if (user.getUsername().equals(username)) {
-			return new User(username, bCryptEncodePassword(user.getPassword()), new ArrayList<>());
+		if (user.getEmail().equals(userEmail)) {
+			return new User(userEmail, bCryptEncodePassword(user.getPassword()), new ArrayList<>());
 		} else {
-			throw new UsernameNotFoundException("User not found with username: " + username);
+			throw new UsernameNotFoundException("User not found with username: " + userEmail);
 		}
 	}
 	
