@@ -66,18 +66,15 @@ class UserControllerTest {
 	
 	@Test
 	void register() {
+		Boolean isSuccessful = 
+				restTemplate.postForObject(this.url+"/create", getUser(), Boolean.class);
 		
-		HttpEntity<User> request = new HttpEntity<User>(getUser(), headers);
-		ResponseEntity<Boolean> response = restTemplate.exchange(this.url+"/create", HttpMethod.POST, request, Boolean.class);
-		assertTrue(response.getStatusCode() == HttpStatus.OK);
-		boolean wasSuccessful = response.getBody();
-		assertTrue(wasSuccessful);
-		
+		assertTrue(isSuccessful);
 	}
 	
 	public User getUser() {
 		
-		return new User(1, "Julio Segura","87310475","juliojose3000@gmail.com","123");
+		return new User(1, "Charlie Alvarado","87310475","charlie97@gmail.com","123");
 		
 	}
 	

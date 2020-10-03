@@ -123,7 +123,7 @@ public class UserData {
 		String email = user.getEmail();
 		String password = user.getPassword();
 
-		String query = "insert into " + tableName + "(\r\n" + "name, lastname, phone, email, username, password) \r\n" + "values (" 
+		String query = "insert into " + tableName + "(\r\n" + "name, phone, email, password) \r\n" + "values (" 
 		+ "'" + name + "'," 
 		+ "'" + phone + "'," 
 		+ "'" + email + "'," 

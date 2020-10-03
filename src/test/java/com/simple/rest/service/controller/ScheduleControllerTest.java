@@ -31,7 +31,7 @@ public class ScheduleControllerTest {
 	
 	private static RestTemplate restTemplate = new RestTemplate();
 	
-	private static String username = "juliojose3000";
+	private static String username = "juliojose3000@gmail.com";
 	
 	private static String password = "123";
 	
