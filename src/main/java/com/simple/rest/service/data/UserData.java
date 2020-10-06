@@ -54,7 +54,6 @@ public class UserData {
 				user = new User();
 				user.setId(id);
 				user.setName(name);
-				user.setLastName(lastName);
 				user.setPhoneNumber(phone);
 				user.setEmail(email);
 
@@ -89,16 +88,16 @@ public class UserData {
 
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
-				String lastName = rs.getString("lastname");
 				String phone = rs.getString("phone");
 				String email = rs.getString("email");
-
+				String password = rs.getString("password");
+				
 				user = new User();
 				user.setId(id);
 				user.setName(name);
-				user.setLastName(lastName);
 				user.setPhoneNumber(phone);
 				user.setEmail(email);
+				user.setPassword(password);
 
 				LIST_USERS.add(user);
 
@@ -120,18 +119,14 @@ public class UserData {
 		boolean wasSuccessfulProcess = false;
 
 		String name = user.getName();
-		String lastname = user.getLastname();
 		String phone = user.getPhoneNumber();
 		String email = user.getEmail();
-		String username = user.getUsername();
 		String password = user.getPassword();
 
-		String query = "insert into " + tableName + "(\r\n" + "name, lastname, phone, email, username, password) \r\n" + "values (" 
+		String query = "insert into " + tableName + "(\r\n" + "name, phone, email, password) \r\n" + "values (" 
 		+ "'" + name + "'," 
-		+ "'" + lastname + "'," 
 		+ "'" + phone + "'," 
 		+ "'" + email + "'," 
-		+ "'" + username + "'," 
 		+ "'" + password + "');";
 
 		try {
@@ -161,4 +156,19 @@ public class UserData {
 		return user;
 	}
 
+	public User findByEmail(String email) throws SQLException {
+		User user = null;
+		if(LIST_USERS.size()==0) {
+			load();//I load de users from db
+			System.out.println("Lista de usuarios vacía");
+		}
+		for (User userItem : LIST_USERS) {
+			if (userItem.getEmail().equals(email)) {
+				user = userItem;
+				break;
+			}
+		}
+		return user;
+	}
+	
 }

@@ -27,7 +27,7 @@ public class ReservationController {
 	
 	@RequestMapping(method = RequestMethod.POST, value="/make")
 	@ResponseBody
-	public ResponseEntity<Boolean> createSchedule(@RequestBody Reservation reservation) throws SQLException, ParseException {
+	public ResponseEntity<Boolean> make(@RequestBody Reservation reservation) throws SQLException, ParseException {
 		
 		boolean isSuccessful = reservationBussiness.make(reservation);
 
