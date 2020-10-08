@@ -38,7 +38,7 @@ public class ReservationData {
 		
 		boolean wasSuccessfulProcess = false;
 	
-		User user = reservation.getUser();
+		User user = userData.findByEmail(reservation.getUser().getEmail());
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
 

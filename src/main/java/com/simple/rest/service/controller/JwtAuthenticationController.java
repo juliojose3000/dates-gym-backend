@@ -3,6 +3,7 @@ package com.simple.rest.service.controller;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,18 +35,30 @@ public class JwtAuthenticationController {
 
 	@Autowired
 	private UserDetailsService jwtInMemoryUserDetailsService;
+	
+	@Autowired
+	private Environment env;
 
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
 			throws Exception {
+		
+		String token = "";
+		
+		try {
+			authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+			
+			final UserDetails userDetails = jwtInMemoryUserDetailsService
+					.loadUserByUsername(authenticationRequest.getEmail());
 
-		authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
-
-		final UserDetails userDetails = jwtInMemoryUserDetailsService
-				.loadUserByUsername(authenticationRequest.getEmail());
-
-		final String token = jwtTokenUtil.generateToken(userDetails);
-
+			token = jwtTokenUtil.generateToken(userDetails);
+			
+		}catch(Exception e) {
+			if(e.getMessage().equals(env.getProperty("authentication.badCredentials")))
+				token = "INVALID_CREDENTIALS";
+			else 
+				token = e.getMessage();
+		}
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 
