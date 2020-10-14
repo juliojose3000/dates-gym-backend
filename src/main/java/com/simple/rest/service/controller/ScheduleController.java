@@ -46,20 +46,5 @@ public class ScheduleController {
 		
 	}
 	
-	/*@RequestMapping(method = RequestMethod.GET, value="/reserve/{id}")
-	@ResponseBody
-	public ResponseEntity<Schedule> reserveDate(@RequestParam Date date, @RequestParam String startHour) {
-		
-		Schedule schedule = null;
-		
-		try {
-			schedule = scheduleBussiness.create();
-		} catch (SQLException | ParseException e) {
-			e.printStackTrace();
-		}
-		
-		return new ResponseEntity<Schedule>(schedule, HttpStatus.OK);
-		
-	}*/
 
 }

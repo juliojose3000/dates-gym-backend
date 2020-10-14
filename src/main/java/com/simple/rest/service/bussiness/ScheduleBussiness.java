@@ -79,8 +79,15 @@ public class ScheduleBussiness {
 
 		Schedule schedule = null;
 		
-		try {schedule = scheduleData.getSchedule(weekNumber);} 
-		catch (SQLException e) {e.printStackTrace();}
+		try {
+			schedule = scheduleData.getSchedule(weekNumber);
+			if(schedule==null) {
+				create();//if is null, means week's schedule doesn't no exits, so will be created
+				schedule = scheduleData.getSchedule(weekNumber);
+			}
+			
+		} 
+		catch (SQLException | ParseException e) {e.printStackTrace();}
 		
 		return schedule;
 		
