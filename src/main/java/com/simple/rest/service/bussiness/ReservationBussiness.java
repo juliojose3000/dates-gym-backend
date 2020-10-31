@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.data.ReservationData;
+import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 
 @Service
@@ -14,17 +15,17 @@ public class ReservationBussiness {
 	@Autowired
 	ReservationData reservationData;
 	
-	public boolean make(Reservation reservation) {
+	public MyResponse make(Reservation reservation) {
 		
-		boolean isSuccesful = false;
+		MyResponse mResponse = null;
 		
 		try {
-			isSuccesful = reservationData.make(reservation);
+			mResponse = reservationData.make(reservation);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return isSuccesful;
+		return mResponse;
 		
 	}
 	

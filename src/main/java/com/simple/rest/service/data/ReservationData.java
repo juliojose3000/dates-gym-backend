@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
@@ -24,6 +25,9 @@ public class ReservationData {
 	
 	private String tableName = "reservation";
 	
+	private final int DUPLICATE_ENTRY_ERROR = 1062;
+	private final int NO_AVAILABLE_SPACE = 4025;
+	
 	@Autowired
 	UserData userData;
 	
@@ -32,11 +36,11 @@ public class ReservationData {
 		this.dataSource = dataSource;
 	}
 	
-	public boolean make(Reservation reservation) throws SQLException {
+	public MyResponse make(Reservation reservation) throws SQLException {
 		
 		Connection  conn = dataSource.getConnection();
 		
-		boolean wasSuccessfulProcess = false;
+		MyResponse mResponse = new MyResponse();
 	
 		User user = userData.findByEmail(reservation.getUser().getEmail());
 		Date shiftDate = reservation.getShiftDate();
@@ -55,17 +59,33 @@ public class ReservationData {
 			System.out.println(query);
 			int rs = stmt.executeUpdate(query);
 			
-			if(rs != 0) {wasSuccessfulProcess = true;}
+			if(rs != 0) {mResponse.setSuccessful(true);}
 			
 			stmt.close();
 			
 			conn.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			
+			mResponse.setSuccessful(false);
+			mResponse.setCode(e.getErrorCode());
+			
+			switch(e.getErrorCode()) {
+				case DUPLICATE_ENTRY_ERROR:
+					mResponse.setMessage("No puede reservar más de un espacio el mismo día.");
+					break;
+				case NO_AVAILABLE_SPACE:
+					mResponse.setMessage("No quedan espacios disponibles.");
+					break;
+				default:
+					System.err.print(e.getMessage());
+					System.err.print("Error code: "+e.getErrorCode());
+					break;
+			}
+
 		}
 		
-		return wasSuccessfulProcess;
+		return mResponse;
 		
 	}
 	

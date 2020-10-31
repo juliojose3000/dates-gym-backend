@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simple.rest.service.bussiness.ReservationBussiness;
 import com.simple.rest.service.bussiness.ScheduleBussiness;
+import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 
 @RestController
@@ -27,11 +28,11 @@ public class ReservationController {
 	
 	@RequestMapping(method = RequestMethod.POST, value="/make")
 	@ResponseBody
-	public ResponseEntity<Boolean> make(@RequestBody Reservation reservation) throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> make(@RequestBody Reservation reservation) throws SQLException, ParseException {
 		
-		boolean isSuccessful = reservationBussiness.make(reservation);
+		MyResponse mResponse = reservationBussiness.make(reservation);
 
-		return new ResponseEntity<Boolean>(isSuccessful, HttpStatus.OK);
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}
 	
