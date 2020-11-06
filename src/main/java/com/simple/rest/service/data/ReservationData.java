@@ -1,5 +1,6 @@
 package com.simple.rest.service.data;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,7 +60,12 @@ public class ReservationData {
 			System.out.println(query);
 			int rs = stmt.executeUpdate(query);
 			
-			if(rs != 0) {mResponse.setSuccessful(true);}
+			if(rs != 0) {
+				mResponse.setSuccessful(true);
+				String callSP = "{call update_available_space('"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 
+				CallableStatement statement = conn.prepareCall(callSP);  
+				statement.execute(); 
+			}
 			
 			stmt.close();
 			
