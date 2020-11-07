@@ -14,6 +14,7 @@ public class Shift {
 	private int reservedSpace;
 	private int availableSpace;
 	private ArrayList<User> clients;
+	private String cssClass = "cell";
 	
 	public Shift() {
 		this.clients = new ArrayList<User>();
@@ -89,6 +90,11 @@ public class Shift {
 	public void setClients(ArrayList<User> clients) {
 		this.clients = clients;
 	}
+	
+	public String getCssClass() {
+		return cssClass;
+	}
+
 
 	@Override
 	public String toString() {

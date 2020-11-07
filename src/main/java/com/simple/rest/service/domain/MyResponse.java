@@ -1,7 +1,10 @@
 package com.simple.rest.service.domain;
 
-public class MyResponse {
+import java.io.Serializable;
+
+public class MyResponse implements Serializable {
 	
+	private static final long serialVersionUID = -8091879091924046844L;
 	private boolean isSuccessful;
 	private String message;
 	private int code;
