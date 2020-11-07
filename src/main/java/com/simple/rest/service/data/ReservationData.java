@@ -95,6 +95,60 @@ public class ReservationData {
 		
 	}
 	
+	public MyResponse cancel(Reservation reservation) throws SQLException {
+		
+		Connection  conn = dataSource.getConnection();
+		
+		MyResponse mResponse = new MyResponse();
+	
+		User user = userData.findByEmail(reservation.getUser().getEmail());
+		Date shiftDate = reservation.getShiftDate();
+		String shiftStartHour = reservation.getShiftStartHour();
+
+		String query = "delete from reservation where id_user = "+user.getId()+
+				" AND date_shift = '"+Dates.utilDateToString(shiftDate)+"';";
+
+		try {
+			
+			Statement stmt = conn.createStatement();
+			System.out.println(query);
+			int rs = stmt.executeUpdate(query);
+			
+			if(rs != 0) {
+				mResponse.setSuccessful(true);
+				String callSP = "{call cancel_reservation("+user.getId()+", '"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 
+				CallableStatement statement = conn.prepareCall(callSP);  
+				statement.execute(); 
+			}
+			
+			stmt.close();
+			
+			conn.close();
+			
+		} catch (SQLException e) {
+			
+			mResponse.setSuccessful(false);
+			mResponse.setCode(e.getErrorCode());
+			
+			switch(e.getErrorCode()) {
+				case DUPLICATE_ENTRY_ERROR:
+					mResponse.setMessage("No puede reservar más de un espacio el mismo día.");
+					break;
+				case NO_AVAILABLE_SPACE:
+					mResponse.setMessage("No quedan espacios disponibles.");
+					break;
+				default:
+					System.err.print(e.getMessage());
+					System.err.print("Error code: "+e.getErrorCode());
+					break;
+			}
+
+		}
+		
+		return mResponse;
+		
+	}
+	
 	public ArrayList<User> getClients(String date, String startHour) throws SQLException{
 		
 		Connection  conn = dataSource.getConnection();

@@ -16,17 +16,17 @@ public class ReservationBussiness {
 	ReservationData reservationData;
 	
 	public MyResponse make(Reservation reservation) {
-		
 		MyResponse mResponse = null;
-		
-		try {
-			mResponse = reservationData.make(reservation);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
+		try {mResponse = reservationData.make(reservation);} 
+		catch (SQLException e) {e.printStackTrace();}
 		return mResponse;
-		
+	}
+	
+	public MyResponse cancel(Reservation reservation) {
+		MyResponse mResponse = null;
+		try {mResponse = reservationData.cancel(reservation);} 
+		catch (SQLException e) {e.printStackTrace();}
+		return mResponse;
 	}
 	
 

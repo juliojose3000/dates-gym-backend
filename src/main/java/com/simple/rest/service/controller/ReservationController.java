@@ -36,4 +36,14 @@ public class ReservationController {
 		
 	}
 	
+	@RequestMapping(method = RequestMethod.POST, value="/cancel")
+	@ResponseBody
+	public ResponseEntity<MyResponse> cancel(@RequestBody Reservation reservation) throws SQLException, ParseException {
+		
+		MyResponse mResponse = reservationBussiness.cancel(reservation);
+
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
 }

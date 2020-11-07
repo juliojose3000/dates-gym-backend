@@ -60,7 +60,7 @@ public class MyResponse implements Serializable {
 
 
 	public String getToken() {
-		return "Bearer "+ token;
+		return token;
 	}
 
 
