@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.util.Dates;
@@ -73,6 +74,8 @@ public class UserData {
 	}
 
 	public void load() throws SQLException {
+		
+		if(LIST_USERS.size()!=0) LIST_USERS = new ArrayList<>();
 
 		Connection conn = dataSource.getConnection();
 
@@ -112,11 +115,11 @@ public class UserData {
 
 	}
 
-	public boolean create(User user) throws SQLException {
+	public MyResponse create(User user) throws SQLException {
 
 		Connection conn = dataSource.getConnection();
-
-		boolean wasSuccessfulProcess = false;
+		
+		MyResponse mResponse = new MyResponse();
 
 		String name = user.getName();
 		String phone = user.getPhoneNumber();
@@ -132,12 +135,20 @@ public class UserData {
 		try {
 			Statement stmt = conn.createStatement();
 			int rs = stmt.executeUpdate(query);
-			if (rs != 0) wasSuccessfulProcess = true;
+			if (rs != 0) {
+				mResponse.setSuccessful(true);
+				mResponse.setMessage("Usuario creado satisfactoriamente");
+				load();
+			}
 			stmt.close();
 			conn.close();
-		} catch (SQLException e) {e.printStackTrace();}
+		} catch (SQLException e) {
+			mResponse.setSuccessful(false);
+			mResponse.setCode(e.getErrorCode());
+			mResponse.setMessage("Ocurrió un error no esperado. Intente de nuevo");
+		}
 
-		return wasSuccessfulProcess;
+		return mResponse;
 
 	}
 

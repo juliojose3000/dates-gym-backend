@@ -23,7 +23,7 @@ import com.simple.rest.service.domain.User;
 @RunWith(SpringRunner.class)
 class UserControllerTest {
 	
-	private String url = "http://localhost:8086/gymcachi/user";
+	private String url = "http://localhost:8080/gymcachi/user";
 	
 	private static HttpEntity<String> request;
 	

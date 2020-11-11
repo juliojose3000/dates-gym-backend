@@ -86,6 +86,7 @@ public class ReservationData {
 				default:
 					System.err.print(e.getMessage());
 					System.err.print("Error code: "+e.getErrorCode());
+					mResponse.setMessage("Ha ocurrido un error no esperado.");
 					break;
 			}
 
@@ -129,20 +130,8 @@ public class ReservationData {
 			
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
+			mResponse.setMessage("Ha ocurrido un error no esperado.");
 			
-			switch(e.getErrorCode()) {
-				case DUPLICATE_ENTRY_ERROR:
-					mResponse.setMessage("No puede reservar más de un espacio el mismo día.");
-					break;
-				case NO_AVAILABLE_SPACE:
-					mResponse.setMessage("No quedan espacios disponibles.");
-					break;
-				default:
-					System.err.print(e.getMessage());
-					System.err.print("Error code: "+e.getErrorCode());
-					break;
-			}
-
 		}
 		
 		return mResponse;
