@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
 
 @Repository
@@ -137,7 +139,8 @@ public class UserData {
 			int rs = stmt.executeUpdate(query);
 			if (rs != 0) {
 				mResponse.setSuccessful(true);
-				mResponse.setMessage("Usuario creado satisfactoriamente");
+				mResponse.setCode(Codes.USER_CREATED_SUCCESSFUL);
+				mResponse.setMessage(Strings.USER_CREATED_SUCCESSFUL);
 				load();
 			}
 			stmt.close();
@@ -145,7 +148,7 @@ public class UserData {
 		} catch (SQLException e) {
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
-			mResponse.setMessage("Ocurrió un error no esperado. Intente de nuevo");
+			mResponse.setMessage(Strings.UNEXPECTED_ERROR);
 		}
 
 		return mResponse;

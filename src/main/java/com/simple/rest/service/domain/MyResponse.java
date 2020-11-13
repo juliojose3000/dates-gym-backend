@@ -15,7 +15,6 @@ public class MyResponse implements Serializable {
 	
 	public MyResponse() {
 		super();
-		this.isSuccessful = false;
 	}
 
 

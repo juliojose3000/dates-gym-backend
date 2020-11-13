@@ -12,19 +12,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.simple.rest.service.authentication.JwtRequest;
-import com.simple.rest.service.authentication.JwtResponse;
 import com.simple.rest.service.authentication.JwtTokenUtil;
 import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.User;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.ErrorMessages;
+import com.simple.rest.service.resources.Strings;
 
 
 @Controller
@@ -38,9 +37,6 @@ public class JwtAuthenticationController {
 
 	@Autowired
 	private UserDetailsService jwtInMemoryUserDetailsService;
-	
-	@Autowired
-	private Environment env;
 	
 	@Autowired
 	private UserData userData;
@@ -63,19 +59,22 @@ public class JwtAuthenticationController {
 			
 			mResponse.setToken(token);
 			mResponse.setSuccessful(true);
-			mResponse.setMessage("Login Successful");
+			mResponse.setMessage(Strings.LOGIN_SUCCESSFUL);
+			mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
 			mResponse.setData(user);
 			
 			
 		}catch(Exception e) {
-			String message;
-			if(e.getMessage().equals(env.getProperty("authentication.badCredentials")))
-				message = "INVALID_CREDENTIALS";
-			else 
-				message = e.getMessage();
+			
+			if(e.getMessage().equals(ErrorMessages.INVALID_CREDENTIALS)) {
+				mResponse.setMessage(Strings.INVALID_CREDENTIALS);
+				mResponse.setCode(Codes.INVALID_CREDENTIALS);
+			}else {
+				mResponse.setMessage(Strings.UNEXPECTED_ERROR);
+				mResponse.setCode(Codes.UNEXPECTED_ERROR);
+			}	
 			mResponse.setToken(null);
 			mResponse.setSuccessful(false);
-			mResponse.setMessage(message);
 			mResponse.setData(null);
 		}
 		return ResponseEntity.ok(mResponse);

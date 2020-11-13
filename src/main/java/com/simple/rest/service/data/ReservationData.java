@@ -17,6 +17,8 @@ import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
 
 @Repository
@@ -25,9 +27,6 @@ public class ReservationData {
 	private static DataSource dataSource;
 	
 	private String tableName = "reservation";
-	
-	private final int DUPLICATE_ENTRY_ERROR = 1062;
-	private final int NO_AVAILABLE_SPACE = 4025;
 	
 	@Autowired
 	UserData userData;
@@ -77,16 +76,16 @@ public class ReservationData {
 			mResponse.setCode(e.getErrorCode());
 			
 			switch(e.getErrorCode()) {
-				case DUPLICATE_ENTRY_ERROR:
-					mResponse.setMessage("No puede reservar más de un espacio el mismo día.");
+				case Codes.DUPLICATE_ENTRY_ERROR:
+					mResponse.setMessage(Strings.DUPLICATE_ENTRY_ERROR);
 					break;
-				case NO_AVAILABLE_SPACE:
-					mResponse.setMessage("No quedan espacios disponibles.");
+				case Codes.NO_AVAILABLE_SPACE:
+					mResponse.setMessage(Strings.NO_AVAILABLE_SPACE);
 					break;
 				default:
 					System.err.print(e.getMessage());
 					System.err.print("Error code: "+e.getErrorCode());
-					mResponse.setMessage("Ha ocurrido un error no esperado.");
+					mResponse.setMessage(Strings.UNEXPECTED_ERROR);
 					break;
 			}
 

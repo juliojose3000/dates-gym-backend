@@ -20,32 +20,32 @@ import org.springframework.stereotype.Component;
 /* This class avoid the error 'AngularJS : Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource' */
 public class SimpleCorsFilter implements Filter {
 
-public SimpleCorsFilter() {
-}
-
-@Override
-public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-    HttpServletResponse response = (HttpServletResponse) res;
-    HttpServletRequest request = (HttpServletRequest) req;
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-    response.setHeader("Access-Control-Max-Age", "3600");
-    response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, content-type");
-
-    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-        response.setStatus(HttpServletResponse.SC_OK);
-    } else {
-        chain.doFilter(req, res);
-    }
-}
-
-@Override
-public void init(FilterConfig filterConfig) {
-}
-
-@Override
-public void destroy() {
-}
+	public SimpleCorsFilter() {
+	}
+	
+	@Override
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+	    HttpServletResponse response = (HttpServletResponse) res;
+	    HttpServletRequest request = (HttpServletRequest) req;
+	    response.setHeader("Access-Control-Allow-Origin", "*");
+	    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+	    response.setHeader("Access-Control-Max-Age", "3600");
+	    response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, content-type");
+	
+	    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+	        response.setStatus(HttpServletResponse.SC_OK);
+	    } else {
+	        chain.doFilter(req, res);
+	    }
+	}
+	
+	@Override
+	public void init(FilterConfig filterConfig) {
+	}
+	
+	@Override
+	public void destroy() {
+	}
 
 
 }

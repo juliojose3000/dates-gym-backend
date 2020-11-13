@@ -8,12 +8,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import com.simple.rest.service.domain.MyResponse;
+import com.simple.rest.service.domain.Schedule;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Strings;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -31,7 +42,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		final String requestTokenHeader = request.getHeader("Authorization");
-
+		//FilterResponse filterResponse = (FilterResponse) response;
+		MyResponse mResponse = new MyResponse();
+		mResponse.setSuccessful(true);
+		
 		String username = null;
 		String jwtToken = null;
 		// JWT Token is in the form "Bearer token". Remove Bearer word and get only the Token
@@ -39,10 +53,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			jwtToken = requestTokenHeader.substring(7);
 			try {
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+				
 			} catch (IllegalArgumentException e) {
 				System.out.println("Unable to get JWT Token");
+				mResponse.setCode(Codes.UNEXPECTED_ERROR);
+				mResponse.setSuccessful(false);
+				mResponse.setMessage(Strings.UNEXPECTED_ERROR);
+	            response.getWriter().write(convertObjectToJson(mResponse));
+	            
 			} catch (ExpiredJwtException e) {
-				System.out.println("JWT Token has expired");
+				mResponse.setCode(Codes.TOKEN_EXPIRED);
+				mResponse.setSuccessful(false);
+				mResponse.setMessage(Strings.TOKEN_EXPIRED);
+	            response.getWriter().write(convertObjectToJson(mResponse));
+	           
 			}
 		} else {
 			logger.warn("JWT Token does not begin with Bearer String");
@@ -65,7 +89,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
 		}
-		chain.doFilter(request, response);
+		
+		if(mResponse.isSuccessful() == true)
+			chain.doFilter(request, response);
 	}
+	
+
+    public String convertObjectToJson(Object object) throws JsonProcessingException {
+        if (object == null) {
+            return null;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(object);
+    }
+   
 
 }

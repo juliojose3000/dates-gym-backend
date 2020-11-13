@@ -17,6 +17,8 @@ import com.simple.rest.service.authentication.JwtRequest;
 import com.simple.rest.service.bussiness.UserBussiness;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.User;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Strings;
 
 @RestController
 @RequestMapping(value="/user")
@@ -28,8 +30,6 @@ public class UserController {
 	
 	@Autowired
 	JwtAuthenticationController jwtAuth;
-	
-	public static int USER_CREATED_BUT_LOGIN_FAILED = 25;
 	
 	@RequestMapping(method = RequestMethod.POST, value="/create")
 	@ResponseBody
@@ -46,8 +46,8 @@ public class UserController {
 				mResponse.setData(mResponseLogin.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
-				mResponse.setMessage("El registro se ha hecho con éxito, pero ocurrió un error a la hora de iniciar la sesión. Ingrese nuevamente con los credenciales que usó para el registro");
-				mResponse.setCode(USER_CREATED_BUT_LOGIN_FAILED);
+				mResponse.setMessage(Strings.USER_CREATED_BUT_LOGIN_FAILED);
+				mResponse.setCode(Codes.USER_CREATED_BUT_LOGIN_FAILED);
 			}
 		}
 
