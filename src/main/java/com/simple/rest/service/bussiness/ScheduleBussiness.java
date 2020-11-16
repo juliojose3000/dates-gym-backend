@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.data.ScheduleData;
 import com.simple.rest.service.data.ShiftData;
+import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.util.Dates;
@@ -73,23 +74,23 @@ public class ScheduleBussiness {
 	
 	
 
-	public Schedule get() {
+	public MyResponse get() {
 		
 		int weekNumber = Dates.getWeekNumberInYear();
 
-		Schedule schedule = null;
+		MyResponse mResponse = null;
 		
 		try {
-			schedule = scheduleData.getSchedule(weekNumber);
-			if(schedule==null) {
+			mResponse = scheduleData.getSchedule(weekNumber);
+			if(mResponse==null) {
 				create();//if is null, means week's schedule doesn't no exits, so will be created
-				schedule = scheduleData.getSchedule(weekNumber);
+				mResponse = scheduleData.getSchedule(weekNumber);
 			}
 			
 		} 
 		catch (SQLException | ParseException e) {e.printStackTrace();}
 		
-		return schedule;
+		return mResponse;
 		
 	}
 	

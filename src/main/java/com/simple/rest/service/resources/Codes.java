@@ -2,6 +2,7 @@ package com.simple.rest.service.resources;
 
 public class Codes {
 	
+	public static final int SUCCESSFUL = 981000;
 	public static final int UNEXPECTED_ERROR = 981005;
 	public static final int TOKEN_EXPIRED = 981015;
 	public static final int USER_CREATED_BUT_LOGIN_FAILED = 981025;

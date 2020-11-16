@@ -14,8 +14,11 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
 
 @Repository
@@ -112,13 +115,13 @@ public class ScheduleData {
 		
 	}//method
 
-	public Schedule getSchedule(int weekNumber) throws SQLException {
+	public MyResponse getSchedule(int weekNumber) throws SQLException {
 
 		Connection  conn = dataSource.getConnection();
 		
 		String query = "select * from schedule where week_number = "+weekNumber+";";
 
-		Schedule schedule = null;
+		MyResponse mResponse = new MyResponse();
 		
 		try {
 			Statement stmt = conn.createStatement();
@@ -131,22 +134,33 @@ public class ScheduleData {
 				String endDate = rs.getString("end_date");
 				ArrayList<Shift[]> listShifts = shiftData.get(id);
 				
-				schedule = new Schedule();
+				Schedule schedule = new Schedule();
 				
 				schedule.setId(id);
 				schedule.setStartDate(Dates.stringToUtilDate(startDate));
 				schedule.setEndDate(Dates.stringToUtilDate(endDate));
 				schedule.setWeekNumber(weekNumber);
 				schedule.setShifts(listShifts);
+				
+				mResponse.setSuccessful(true);
+				mResponse.setData(schedule);
+				mResponse.setMessage(Strings.SUCCESSFUL);
+				mResponse.setCode(Codes.SUCCESSFUL);
 
 			}
 			rs.close();
 			stmt.close();
 			conn.close();
 			
-		} catch (SQLException e) {e.printStackTrace();}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.setSuccessful(false);
+			mResponse.setData(null);
+			mResponse.setMessage(Strings.UNEXPECTED_ERROR);
+			mResponse.setCode(Codes.UNEXPECTED_ERROR);
+		}
 		
-		return schedule;
+		return mResponse;
 		
 	}
 	

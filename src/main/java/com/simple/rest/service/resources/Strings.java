@@ -2,6 +2,7 @@ package com.simple.rest.service.resources;
 
 public class Strings {
 	
+	public static final String SUCCESSFUL = "Operación exitosa";
 	public static final String UNEXPECTED_ERROR = "Ha ocurrido un error inésperado, por favor intente de nuevo";
 	public static final String TOKEN_EXPIRED = "Su sesión ha finalizado, por favor ingrese de nuevo";
 	public static final String USER_CREATED_BUT_LOGIN_FAILED = "El registro se ha hecho con éxito, pero ocurrió un error a la hora de iniciar la sesión. Ingrese nuevamente con los credenciales que usó para el registro";

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simple.rest.service.bussiness.ScheduleBussiness;
 import com.simple.rest.service.data.ScheduleData;
+import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Schedule;
 
 @RestController
@@ -38,11 +39,11 @@ public class ScheduleController {
 	
 	@RequestMapping(method = RequestMethod.GET, value="/get")
 	@ResponseBody
-	public ResponseEntity<Schedule> get() throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> get() throws SQLException, ParseException {
 		
-		Schedule schedule = scheduleBussiness.get();
+		MyResponse mResponse = scheduleBussiness.get();
 
-		return new ResponseEntity<Schedule>(schedule, HttpStatus.OK);
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}
 	
