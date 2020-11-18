@@ -61,7 +61,7 @@ public class ReservationData {
 			if(rs != 0) {
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.RESERVATION_SUCCESSFUL);
-				mResponse.setMessage(Strings.RESERVATION_SUCCESSFUL);
+				mResponse.setDescription(Strings.RESERVATION_SUCCESSFUL);
 				mResponse.setTitle(Strings.SUCCESSFUL);
 				
 				String callSP = "{call update_available_space('"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 
@@ -79,10 +79,10 @@ public class ReservationData {
 			
 			switch(e.getErrorCode()) {
 				case Codes.DUPLICATE_ENTRY_ERROR:
-					mResponse.setMessage(Strings.DUPLICATE_ENTRY_ERROR);
+					mResponse.setDescription(Strings.DUPLICATE_ENTRY_ERROR);
 					break;
 				case Codes.NO_AVAILABLE_SPACE:
-					mResponse.setMessage(Strings.NO_AVAILABLE_SPACE);
+					mResponse.setDescription(Strings.NO_AVAILABLE_SPACE);
 					break;
 				default:
 					e.printStackTrace();
@@ -118,7 +118,7 @@ public class ReservationData {
 			if(rs != 0) {
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.CANCEL_RESERVATION_SUCCESSFUL);
-				mResponse.setMessage(Strings.CANCEL_RESERVATION_SUCCESSFUL);
+				mResponse.setDescription(Strings.CANCEL_RESERVATION_SUCCESSFUL);
 				mResponse.setTitle(Strings.SUCCESSFUL);
 				
 				String callSP = "{call cancel_reservation("+user.getId()+", '"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 

@@ -145,7 +145,7 @@ public class ScheduleData {
 				mResponse.setSuccessful(true);
 				mResponse.setData(schedule);
 				mResponse.setTitle(Strings.SUCCESSFUL);
-				mResponse.setMessage(Strings.SUCCESSFUL);
+				mResponse.setDescription(Strings.SUCCESSFUL);
 				mResponse.setCode(Codes.SUCCESSFUL);
 
 			}

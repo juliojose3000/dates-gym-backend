@@ -139,7 +139,7 @@ public class UserData {
 			if (rs != 0) {
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.USER_CREATED_SUCCESSFUL);
-				mResponse.setMessage(Strings.USER_CREATED_SUCCESSFUL);
+				mResponse.setDescription(Strings.USER_CREATED_SUCCESSFUL);
 				load();
 			}
 			stmt.close();

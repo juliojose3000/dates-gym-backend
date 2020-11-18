@@ -2,6 +2,10 @@ package com.simple.rest.service.domain;
 
 import java.io.Serializable;
 
+import org.json.JSONObject;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
 
@@ -10,7 +14,7 @@ public class MyResponse implements Serializable {
 	private static final long serialVersionUID = -8091879091924046844L;
 	private boolean isSuccessful;
 	private String title;
-	private String message;
+	private String description;
 	private int code;
 	private String token;
 	private Object data;
@@ -26,13 +30,13 @@ public class MyResponse implements Serializable {
 		super();
 		this.isSuccessful = isSuccessful;
 		this.title = title;
-		this.message = message;
+		this.description = message;
 		this.code = code;
 		this.token = token;
 		this.data = data;
 	}
 
-
+	@JsonProperty("isSuccessful")
 	public boolean isSuccessful() {
 		return isSuccessful;
 	}
@@ -52,13 +56,13 @@ public class MyResponse implements Serializable {
 	}
 
 
-	public String getMessage() {
-		return message;
+	public String getDescription() {
+		return description;
 	}
 
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setDescription(String message) {
+		this.description = message;
 	}
 
 
@@ -94,13 +98,23 @@ public class MyResponse implements Serializable {
 	public void unexpectedErrorResponse() {
 		this.title = Strings.ERROR;
 		this.code = Codes.UNEXPECTED_ERROR;
-		this.message = Strings.UNEXPECTED_ERROR;
+		this.description = Strings.UNEXPECTED_ERROR;
 		this.isSuccessful = false;
 		this.data = null;
 		this.token = null;
 	}
 	
-	
+	public JSONObject toJson() {
+		JSONObject mResponseToJson = new JSONObject();
+		mResponseToJson.put("title", this.title);
+		mResponseToJson.put("code", this.code);
+		mResponseToJson.put("description", this.description);
+		mResponseToJson.put("isSuccessful", this.isSuccessful);
+		mResponseToJson.put("data", true);
+		mResponseToJson.put("token", this.token);
+		mResponseToJson.put("data", this.data);
+		return mResponseToJson;
+	}
 	
 
 }

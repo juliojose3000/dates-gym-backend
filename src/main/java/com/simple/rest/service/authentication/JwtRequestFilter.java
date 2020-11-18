@@ -8,23 +8,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import com.simple.rest.service.domain.MyResponse;
-import com.simple.rest.service.domain.Schedule;
-import com.simple.rest.service.resources.Codes;
-import com.simple.rest.service.resources.Strings;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.simple.rest.service.domain.MyResponse;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Strings;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -36,11 +32,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
-
+		
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);//Allow set text in UTF-8 to the json response
 		final String requestTokenHeader = request.getHeader("Authorization");
 		//FilterResponse filterResponse = (FilterResponse) response;
 		MyResponse mResponse = new MyResponse();
@@ -54,19 +51,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			try {
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 				
-			} catch (IllegalArgumentException e) {
-				System.out.println("Unable to get JWT Token");
-				mResponse.setCode(Codes.UNEXPECTED_ERROR);
-				mResponse.setSuccessful(false);
-				mResponse.setMessage(Strings.UNEXPECTED_ERROR);
-	            response.getWriter().write(convertObjectToJson(mResponse));
-	            
-			} catch (ExpiredJwtException e) {
-				mResponse.setCode(Codes.TOKEN_EXPIRED);
-				mResponse.setSuccessful(false);
-				mResponse.setMessage(Strings.TOKEN_EXPIRED);
-	            response.getWriter().write(convertObjectToJson(mResponse));
-	           
+			} catch (IllegalArgumentException | ExpiredJwtException e) {
+				
+				mResponse.unexpectedErrorResponse();
+				if(e instanceof IllegalArgumentException) {
+					e.printStackTrace();
+					System.out.println("Unable to get JWT Token");
+				}else if(e instanceof ExpiredJwtException) {
+					mResponse.setCode(Codes.TOKEN_EXPIRED);
+					mResponse.setDescription(Strings.TOKEN_EXPIRED);
+				}
+				response.getWriter().write(convertObjectToJson(mResponse));
 			}
 		} else {
 			logger.warn("JWT Token does not begin with Bearer String");

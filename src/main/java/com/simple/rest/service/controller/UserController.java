@@ -45,11 +45,11 @@ public class UserController {
 				mResponse.setToken(mResponseLogin.getToken());
 				mResponse.setData(mResponseLogin.getData());
 				mResponse.setTitle(Strings.SUCCESSFUL);
-				mResponse.setMessage(Strings.SIGNUP_SUCCESSFUL);
+				mResponse.setDescription(Strings.SIGNUP_SUCCESSFUL);
 			} catch (Exception e) {
 				e.printStackTrace();
 				mResponse.unexpectedErrorResponse();
-				mResponse.setMessage(Strings.USER_CREATED_BUT_LOGIN_FAILED);
+				mResponse.setDescription(Strings.USER_CREATED_BUT_LOGIN_FAILED);
 				mResponse.setCode(Codes.USER_CREATED_BUT_LOGIN_FAILED);
 			}
 		}

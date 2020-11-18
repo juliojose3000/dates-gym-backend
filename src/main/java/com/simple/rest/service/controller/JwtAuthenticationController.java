@@ -60,7 +60,7 @@ public class JwtAuthenticationController {
 			mResponse.setToken(token);
 			mResponse.setSuccessful(true);
 			mResponse.setTitle(Strings.SUCCESSFUL);
-			mResponse.setMessage(Strings.LOGIN_SUCCESSFUL);
+			mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
 			mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
 			mResponse.setData(user);
 			
@@ -69,7 +69,7 @@ public class JwtAuthenticationController {
 			
 			if(e.getMessage().equals(ErrorMessages.INVALID_CREDENTIALS)) {
 				mResponse.setTitle(Strings.ERROR);
-				mResponse.setMessage(Strings.INVALID_CREDENTIALS);
+				mResponse.setDescription(Strings.INVALID_CREDENTIALS);
 				mResponse.setCode(Codes.INVALID_CREDENTIALS);
 				mResponse.setToken(null);
 				mResponse.setSuccessful(false);
