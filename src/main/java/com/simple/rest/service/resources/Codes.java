@@ -12,5 +12,8 @@ public class Codes {
 	public static final int USER_CREATED_SUCCESSFUL = 981045;
 	public static final int INVALID_CREDENTIALS = 1447835183;
 	public static final int LOGIN_SUCCESSFUL = 981055;
+	public static final int SIGNUP_SUCCESSFUL = 981065;
+	public static final int RESERVATION_SUCCESSFUL = 981075;
+	public static final int CANCEL_RESERVATION_SUCCESSFUL = 981085;
 
 }

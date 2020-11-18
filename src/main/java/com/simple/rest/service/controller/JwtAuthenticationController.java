@@ -59,6 +59,7 @@ public class JwtAuthenticationController {
 			
 			mResponse.setToken(token);
 			mResponse.setSuccessful(true);
+			mResponse.setTitle(Strings.SUCCESSFUL);
 			mResponse.setMessage(Strings.LOGIN_SUCCESSFUL);
 			mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
 			mResponse.setData(user);
@@ -67,15 +68,17 @@ public class JwtAuthenticationController {
 		}catch(Exception e) {
 			
 			if(e.getMessage().equals(ErrorMessages.INVALID_CREDENTIALS)) {
+				mResponse.setTitle(Strings.ERROR);
 				mResponse.setMessage(Strings.INVALID_CREDENTIALS);
 				mResponse.setCode(Codes.INVALID_CREDENTIALS);
+				mResponse.setToken(null);
+				mResponse.setSuccessful(false);
+				mResponse.setData(null);
 			}else {
-				mResponse.setMessage(Strings.UNEXPECTED_ERROR);
-				mResponse.setCode(Codes.UNEXPECTED_ERROR);
+				e.printStackTrace();
+				mResponse.unexpectedErrorResponse();
 			}	
-			mResponse.setToken(null);
-			mResponse.setSuccessful(false);
-			mResponse.setData(null);
+			
 		}
 		return ResponseEntity.ok(mResponse);
 	}

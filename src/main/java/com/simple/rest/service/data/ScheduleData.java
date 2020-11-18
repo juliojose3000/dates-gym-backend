@@ -144,6 +144,7 @@ public class ScheduleData {
 				
 				mResponse.setSuccessful(true);
 				mResponse.setData(schedule);
+				mResponse.setTitle(Strings.SUCCESSFUL);
 				mResponse.setMessage(Strings.SUCCESSFUL);
 				mResponse.setCode(Codes.SUCCESSFUL);
 
@@ -154,10 +155,7 @@ public class ScheduleData {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			mResponse.setSuccessful(false);
-			mResponse.setData(null);
-			mResponse.setMessage(Strings.UNEXPECTED_ERROR);
-			mResponse.setCode(Codes.UNEXPECTED_ERROR);
+			mResponse.unexpectedErrorResponse();
 		}
 		
 		return mResponse;

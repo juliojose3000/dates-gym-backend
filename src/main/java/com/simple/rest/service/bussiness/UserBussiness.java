@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.User;
+import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Strings;
 
 @Service
 public class UserBussiness {
@@ -16,11 +18,12 @@ public class UserBussiness {
 	UserData userData;
 	
 	public MyResponse create(User user) {
-		MyResponse mResponse = null;
+		MyResponse mResponse = new MyResponse();
 		try {
 			mResponse = userData.create(user);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
 		

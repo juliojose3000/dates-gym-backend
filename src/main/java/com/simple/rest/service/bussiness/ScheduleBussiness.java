@@ -78,7 +78,7 @@ public class ScheduleBussiness {
 		
 		int weekNumber = Dates.getWeekNumberInYear();
 
-		MyResponse mResponse = null;
+		MyResponse mResponse = new MyResponse();
 		
 		try {
 			mResponse = scheduleData.getSchedule(weekNumber);
@@ -86,9 +86,11 @@ public class ScheduleBussiness {
 				create();//if is null, means week's schedule doesn't no exits, so will be created
 				mResponse = scheduleData.getSchedule(weekNumber);
 			}
-			
 		} 
-		catch (SQLException | ParseException e) {e.printStackTrace();}
+		catch (SQLException | ParseException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
 		
 		return mResponse;
 		

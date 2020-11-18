@@ -39,9 +39,8 @@ public class ReservationData {
 	public MyResponse make(Reservation reservation) throws SQLException {
 		
 		Connection  conn = dataSource.getConnection();
-		
 		MyResponse mResponse = new MyResponse();
-	
+		
 		User user = userData.findByEmail(reservation.getUser().getEmail());
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
@@ -61,19 +60,22 @@ public class ReservationData {
 			
 			if(rs != 0) {
 				mResponse.setSuccessful(true);
+				mResponse.setCode(Codes.RESERVATION_SUCCESSFUL);
+				mResponse.setMessage(Strings.RESERVATION_SUCCESSFUL);
+				mResponse.setTitle(Strings.SUCCESSFUL);
+				
 				String callSP = "{call update_available_space('"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
 			}
-			
 			stmt.close();
-			
 			conn.close();
 			
 		} catch (SQLException e) {
 			
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
+			mResponse.setTitle(Strings.ERROR);
 			
 			switch(e.getErrorCode()) {
 				case Codes.DUPLICATE_ENTRY_ERROR:
@@ -83,9 +85,8 @@ public class ReservationData {
 					mResponse.setMessage(Strings.NO_AVAILABLE_SPACE);
 					break;
 				default:
-					System.err.print(e.getMessage());
-					System.err.print("Error code: "+e.getErrorCode());
-					mResponse.setMessage(Strings.UNEXPECTED_ERROR);
+					e.printStackTrace();
+					mResponse.unexpectedErrorResponse();
 					break;
 			}
 
@@ -116,21 +117,19 @@ public class ReservationData {
 			
 			if(rs != 0) {
 				mResponse.setSuccessful(true);
+				mResponse.setCode(Codes.CANCEL_RESERVATION_SUCCESSFUL);
+				mResponse.setMessage(Strings.CANCEL_RESERVATION_SUCCESSFUL);
+				mResponse.setTitle(Strings.SUCCESSFUL);
+				
 				String callSP = "{call cancel_reservation("+user.getId()+", '"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
 			}
-			
 			stmt.close();
-			
 			conn.close();
-			
 		} catch (SQLException e) {
-			
-			mResponse.setSuccessful(false);
-			mResponse.setCode(e.getErrorCode());
-			mResponse.setMessage("Ha ocurrido un error no esperado.");
-			
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
 		}
 		
 		return mResponse;

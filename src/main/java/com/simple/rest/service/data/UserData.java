@@ -50,7 +50,6 @@ public class UserData {
 
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
-				String lastName = rs.getString("lastname");
 				String phone = rs.getString("phone");
 				String email = rs.getString("email");
 
@@ -146,9 +145,8 @@ public class UserData {
 			stmt.close();
 			conn.close();
 		} catch (SQLException e) {
-			mResponse.setSuccessful(false);
-			mResponse.setCode(e.getErrorCode());
-			mResponse.setMessage(Strings.UNEXPECTED_ERROR);
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
 		}
 
 		return mResponse;
