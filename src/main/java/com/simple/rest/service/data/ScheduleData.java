@@ -61,11 +61,11 @@ public class ScheduleData {
 		
 	}
 		
-	public boolean create(Schedule schedule) throws SQLException{
+	public MyResponse create(Schedule schedule) throws SQLException{
 		
 		Connection  conn = dataSource.getConnection();
-		
-		boolean isSuccessful = false;
+		boolean isSuccessful = true;
+		MyResponse mResponse = new MyResponse();
 		
 		ArrayList<Shift[]> shiftsList = schedule.getShifts();
 		int weekNumber = schedule.getWeekNumber();
@@ -92,26 +92,33 @@ public class ScheduleData {
 				for (Shift[] shifts : shiftsList) {
 					
 					for(int i = 0; i<shifts.length; i++) {
-						
 						isSuccessful = shiftData.create(shifts[i], recentScheduleId);
-						
-						if(isSuccessful==false) {return false;}
-						
+						if(isSuccessful==false) {
+							mResponse.unexpectedErrorResponse();
+							break;
+						}
 					}
 					
 				}
 				
 			}
 			
-			stmt.close();
+			if(isSuccessful) {
+				mResponse.setCode(Codes.SUCCESSFUL);
+				mResponse.setDescription(Strings.SUCCESSFUL);
+				mResponse.setData(schedule);
+				mResponse.setSuccessful(true);
+			}
 			
+			stmt.close();
 			conn.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
 		}
 		
-		return isSuccessful;
+		return mResponse;
 		
 	}//method
 

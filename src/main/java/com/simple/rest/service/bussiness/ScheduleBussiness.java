@@ -27,7 +27,7 @@ public class ScheduleBussiness {
 	
 	public static String[] DAYS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
 	
-	public boolean create() throws SQLException, ParseException{
+	public MyResponse create() throws SQLException, ParseException{
 		
 		String startDate = Dates.getDateOfFirstDayInTheWeek();
 		
@@ -66,9 +66,9 @@ public class ScheduleBussiness {
 		schedule.setEndDate(new SimpleDateFormat("yyyy-MM-dd").parse(Dates.getDateForDB(endDate)));
 		schedule.setShifts(listShifts);
 		
-		boolean isSuccessful = scheduleData.create(schedule);
+		MyResponse mResponse = scheduleData.create(schedule);
 		
-		return isSuccessful;
+		return mResponse;
 		
 	}
 	
@@ -82,8 +82,11 @@ public class ScheduleBussiness {
 		
 		try {
 			mResponse = scheduleData.getSchedule(weekNumber);
-			if(mResponse==null) {
-				create();//if is null, means week's schedule doesn't no exits, so will be created
+			if(mResponse.getData()==null) {
+				mResponse = create();//if is null, means week's schedule doesn't no exits, so will be created
+				if(mResponse.isSuccessful()==false) {
+					return mResponse;
+				}
 				mResponse = scheduleData.getSchedule(weekNumber);
 			}
 		} 

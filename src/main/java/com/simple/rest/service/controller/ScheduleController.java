@@ -29,11 +29,11 @@ public class ScheduleController {
 	
 	@RequestMapping(method = RequestMethod.GET, value="/create")
 	@ResponseBody
-	public ResponseEntity<Boolean> create() throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> create() throws SQLException, ParseException {
 		
-		boolean isSuccessful = scheduleBussiness.create();
+		MyResponse mResponse = scheduleBussiness.create();
 
-		return new ResponseEntity<Boolean>(isSuccessful, HttpStatus.OK);
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}
 	
