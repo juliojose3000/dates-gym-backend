@@ -39,6 +39,8 @@ public class ReservationData {
 	public MyResponse make(Reservation reservation) throws SQLException {
 		
 		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
+		
 		MyResponse mResponse = new MyResponse();
 		
 		User user = userData.findByEmail(reservation.getUser().getEmail());
@@ -53,8 +55,7 @@ public class ReservationData {
 				+ "'"+shiftStartHour+"');";
 
 		try {
-			
-			Statement stmt = conn.createStatement();
+			stmt = conn.createStatement();
 			System.out.println(query);
 			int rs = stmt.executeUpdate(query);
 			
@@ -68,8 +69,6 @@ public class ReservationData {
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
 			}
-			stmt.close();
-			conn.close();
 			
 		} catch (SQLException e) {
 			
@@ -79,7 +78,7 @@ public class ReservationData {
 			
 			switch(e.getErrorCode()) {
 				case Codes.DUPLICATE_ENTRY_ERROR:
-					mResponse.setDescription(Strings.DUPLICATE_ENTRY_ERROR);
+					mResponse.setDescription(Strings.DUPLICATE_ENTRY_RESERVATION_ERROR);
 					break;
 				case Codes.NO_AVAILABLE_SPACE:
 					mResponse.setDescription(Strings.NO_AVAILABLE_SPACE);
@@ -91,7 +90,8 @@ public class ReservationData {
 			}
 
 		}
-		
+		stmt.close();
+		conn.close();
 		return mResponse;
 		
 	}
@@ -99,6 +99,7 @@ public class ReservationData {
 	public MyResponse cancel(Reservation reservation) throws SQLException {
 		
 		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
 		
 		MyResponse mResponse = new MyResponse();
 	
@@ -110,8 +111,7 @@ public class ReservationData {
 				" AND date_shift = '"+Dates.utilDateToString(shiftDate)+"';";
 
 		try {
-			
-			Statement stmt = conn.createStatement();
+			stmt = conn.createStatement();
 			System.out.println(query);
 			int rs = stmt.executeUpdate(query);
 			
@@ -125,40 +125,38 @@ public class ReservationData {
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
 			}
-			stmt.close();
-			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
 		}
-		
+		stmt.close();
+		conn.close();
 		return mResponse;
 		
 	}
 	
 	public ArrayList<User> getClients(String date, String startHour) throws SQLException{
 		
-		Connection  conn = dataSource.getConnection();
 		String query = "select id_user from reservation where date_shift = '"+date+"' and start_hour_shift = '"+startHour+"';";
 		ArrayList<User> listUsers = new ArrayList<>();
 		
+		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-			
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
 			while(rs.next()) {
 				int id = rs.getInt("id_user");
 				User user = userData.findById(id);
 				listUsers.add(user);
 			}
-			
-			rs.close();
-			stmt.close();
-			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		rs.close();
+		stmt.close();
+		conn.close();
 		return listUsers;
 		
 	}
