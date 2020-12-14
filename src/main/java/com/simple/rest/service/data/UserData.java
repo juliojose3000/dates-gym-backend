@@ -17,6 +17,7 @@ import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
+import com.sun.tools.sjavac.Log;
 
 @Repository
 public class UserData {
@@ -34,20 +35,15 @@ public class UserData {
 
 	public ArrayList<User> getAll() throws SQLException {
 
-		Connection conn = dataSource.getConnection();
-
 		String query = "SELECT * FROM " + tableName;
-
 		User user;
-
 		ArrayList<User> listUsers = new ArrayList<>();
 
+		Connection conn = dataSource.getConnection();
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-
 			while (rs.next()) {
-
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
 				String phone = rs.getString("phone");
@@ -60,16 +56,15 @@ public class UserData {
 				user.setEmail(email);
 
 				listUsers.add(user);
-
 			}
 
-			rs.close();
-			stmt.close();
-			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
+		rs.close();
+		stmt.close();
+		conn.close();
 		return listUsers;
 
 	}
@@ -77,19 +72,15 @@ public class UserData {
 	public void load() throws SQLException {
 		
 		if(LIST_USERS.size()!=0) LIST_USERS = new ArrayList<>();
-
-		Connection conn = dataSource.getConnection();
-
 		String query = "SELECT * FROM " + tableName;
-
 		User user;
+		
+		Connection conn = dataSource.getConnection();
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
 
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-
 			while (rs.next()) {
-
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
 				String phone = rs.getString("phone");
@@ -104,21 +95,22 @@ public class UserData {
 				user.setPassword(password);
 
 				LIST_USERS.add(user);
-
 			}
 
-			rs.close();
-			stmt.close();
-			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		rs.close();
+		stmt.close();
+		conn.close();
 
 	}
 
 	public MyResponse create(User user) throws SQLException {
 
 		Connection conn = dataSource.getConnection();
+		Statement stmt = conn.createStatement();
 		
 		MyResponse mResponse = new MyResponse();
 
@@ -133,8 +125,7 @@ public class UserData {
 		+ "'" + email + "'," 
 		+ "'" + password + "');";
 
-		try {
-			Statement stmt = conn.createStatement();
+		try {	
 			int rs = stmt.executeUpdate(query);
 			if (rs != 0) {
 				mResponse.setSuccessful(true);
@@ -142,15 +133,26 @@ public class UserData {
 				mResponse.setDescription(Strings.USER_CREATED_SUCCESSFUL);
 				load();
 			}
-			stmt.close();
-			conn.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			mResponse.unexpectedErrorResponse();
+			
+			mResponse.setSuccessful(false);
+			mResponse.setCode(e.getErrorCode());
+			mResponse.setTitle(Strings.ERROR);
+			
+			switch(e.getErrorCode()) {
+				case Codes.DUPLICATE_ENTRY_ERROR:
+					mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
+					break;
+				default:
+					e.printStackTrace();
+					mResponse.unexpectedErrorResponse();
+					break;
+			}
+			
 		}
-
+		stmt.close();
+		conn.close();
 		return mResponse;
-
 	}
 
 	public User findById(int id) throws SQLException {

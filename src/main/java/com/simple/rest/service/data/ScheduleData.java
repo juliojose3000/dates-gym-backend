@@ -38,25 +38,23 @@ public class ScheduleData {
 	
 	public int getLastCode() throws SQLException{
 		
-		Connection  conn = dataSource.getConnection();
-		
 		int lastCode = -1;
-		
 		String query = "select max(id) as id from "+tableName+";";
 		
+		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-			
-			if(rs.next()) {lastCode = rs.getInt("id");}
-			
-			rs.close();
-			stmt.close();
-			conn.close();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()) 
+				lastCode = rs.getInt("id");	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		rs.close();
+		stmt.close();
+		conn.close();
 		return lastCode;
 		
 	}
@@ -64,6 +62,7 @@ public class ScheduleData {
 	public MyResponse create(Schedule schedule) throws SQLException{
 		
 		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
 		boolean isSuccessful = true;
 		MyResponse mResponse = new MyResponse();
 		
@@ -80,9 +79,7 @@ public class ScheduleData {
 				+ ""+weekNumber+");";
 
 		try {
-			
-			Statement stmt = conn.createStatement();
-			
+			stmt = conn.createStatement();
 			int rs = stmt.executeUpdate(query);
 			
 			if(rs != 0) {
@@ -98,44 +95,39 @@ public class ScheduleData {
 							break;
 						}
 					}
-					
 				}
-				
 			}
-			
 			if(isSuccessful) {
 				mResponse.setCode(Codes.SUCCESSFUL);
 				mResponse.setDescription(Strings.SUCCESSFUL);
 				mResponse.setData(schedule);
 				mResponse.setSuccessful(true);
 			}
-			
-			stmt.close();
-			conn.close();
-			
+				
 		} catch (SQLException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
 		}
-		
+		stmt.close();
+		conn.close();
 		return mResponse;
 		
 	}//method
 
 	public MyResponse getSchedule(int weekNumber) throws SQLException {
 
-		Connection  conn = dataSource.getConnection();
-		
 		String query = "select * from schedule where week_number = "+weekNumber+";";
-
 		MyResponse mResponse = new MyResponse();
 		
+		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
 			
 			if(rs.next()) {
-				
 				int id = rs.getInt("id");
 				String startDate = rs.getString("start_date");
 				String endDate = rs.getString("end_date");
@@ -156,15 +148,14 @@ public class ScheduleData {
 				mResponse.setCode(Codes.SUCCESSFUL);
 
 			}
-			rs.close();
-			stmt.close();
-			conn.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
 		}
-		
+		rs.close();
+		stmt.close();
+		conn.close();
 		return mResponse;
 		
 	}

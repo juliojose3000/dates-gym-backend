@@ -41,6 +41,7 @@ public class ShiftData {
 	public boolean create(Shift shift, int scheduleId) throws SQLException{
 		
 		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
 		
 		boolean wasSuccessfulProcess = false;
 	
@@ -62,22 +63,15 @@ public class ShiftData {
 				+ ""+availableSpace+","
 				+ ""+scheduleId+");";
 
-		try {
-			
-			Statement stmt = conn.createStatement();
-			
+		try {	
+			stmt = conn.createStatement();
 			int rs = stmt.executeUpdate(query);
-			
-			if(rs != 0) {wasSuccessfulProcess = true;}
-			
-			stmt.close();
-			
-			conn.close();
-			
+			if(rs != 0) {wasSuccessfulProcess = true;}		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		stmt.close();
+		conn.close();
 		return wasSuccessfulProcess;
 		
 	}//method
@@ -86,13 +80,16 @@ public class ShiftData {
 	public ArrayList<Shift[]> get(int idSchedule) throws SQLException{
 		
 		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		
 		String query = "select * from "+tableName+" where id_schedule = "+idSchedule+";";
 		Shift shift;
 		ArrayList<Shift[]> listShifts = new ArrayList<>();
 		
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
 			
 			int totalShifts = ShiftBussiness.STARTS_HOURS.length;
 			int i = 0;
@@ -126,13 +123,13 @@ public class ShiftData {
 				}
 				
 			}
-			rs.close();
-			stmt.close();
-			conn.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		rs.close();
+		stmt.close();
+		conn.close();
 		return listShifts;
 		
 	}
