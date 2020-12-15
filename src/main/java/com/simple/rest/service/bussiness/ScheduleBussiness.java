@@ -83,20 +83,18 @@ public class ScheduleBussiness {
 	
 
 	public MyResponse get() {
-		
-		int weekNumber = Dates.getWeekNumberInYear();
 
 		MyResponse mResponse = new MyResponse();
 		
 		try {
-			mResponse = scheduleData.getSchedule(weekNumber);
-			if(mResponse.getData()==null) {
-				mResponse = create();//if is null, means week's schedule doesn't no exits, so will be created
-				if(mResponse.isSuccessful()==false) {
-					return mResponse;
-				}
-				mResponse = scheduleData.getSchedule(weekNumber);
-			}
+			mResponse = scheduleData.getCurrentSchedule();
+			if(mResponse.getData()==null) //If is null, means week's schedule doesn't no exits, so will be created
+				mResponse = create();
+			else if (createNewSchedule()) //If today is Sunday at 5 pm in Costa Rica (11 pm where server is) a new schedule will be created
+				mResponse = create();
+			
+			if(mResponse.isSuccessful()==false) 
+				return mResponse;
 		} 
 		catch (SQLException | ParseException e) {
 			e.printStackTrace();
@@ -111,15 +109,33 @@ public class ScheduleBussiness {
 	
 		MyResponse mResponse = new MyResponse();
 		mResponse.successfulResponse();
+		boolean createNewSchedule = false;
 		
-		TimeZone tz = TimeZone.getTimeZone("GMT-6");
-		Calendar c = Calendar.getInstance(tz);
+		Calendar c = Calendar.getInstance();
+		//c.setTimeZone(TimeZone.getTimeZone("America/Costa_Rica"));
 
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		String formatted = format1.format(c.getTime());
-
-		mResponse.setData(c.getTime().toString());
+		SimpleDateFormat format = new SimpleDateFormat("E HH");
+		String[] dayNameAndTime = (format.format(c.getTime())).split(" ");
+		
+		if(dayNameAndTime[0].equals("Tue") && Integer.parseInt(dayNameAndTime[1])>=10) {
+			createNewSchedule = true;
+		}
+		
+		mResponse.setData(dayNameAndTime[0]+" "+dayNameAndTime[1]+" create new schedule = "+createNewSchedule);
 		return mResponse;
+	}
+	
+	public boolean createNewSchedule() {
+		boolean createNewSchedule = false;
+	
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("E HH");
+		String[] dayNameAndTime = (format.format(c.getTime())).split(" ");
+		
+		if(dayNameAndTime[0].equals("Sun") && Integer.parseInt(dayNameAndTime[1])>=23) 
+			createNewSchedule = true;
+		
+		return createNewSchedule;
 	}
 	
 }

@@ -160,5 +160,52 @@ public class ScheduleData {
 		
 	}
 	
+	public MyResponse getCurrentSchedule() throws SQLException {
+
+		String query = "SELECT * FROM schedule WHERE id=(SELECT max(id) FROM schedule);";
+		MyResponse mResponse = new MyResponse();
+		
+		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			
+			if(rs.next()) {
+				int id = rs.getInt("id");
+				String startDate = rs.getString("start_date");
+				String endDate = rs.getString("end_date");
+				int weekNumberYear = rs.getInt("week_number");
+				ArrayList<Shift[]> listShifts = shiftData.get(id);
+				
+				Schedule schedule = new Schedule();
+				
+				schedule.setId(id);
+				schedule.setStartDate(Dates.stringToUtilDate(startDate));
+				schedule.setEndDate(Dates.stringToUtilDate(endDate));
+				schedule.setWeekNumber(weekNumberYear);
+				schedule.setShifts(listShifts);
+				
+				mResponse.setSuccessful(true);
+				mResponse.setData(schedule);
+				mResponse.setTitle(Strings.SUCCESSFUL);
+				mResponse.setDescription(Strings.SUCCESSFUL);
+				mResponse.setCode(Codes.SUCCESSFUL);
+
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		rs.close();
+		stmt.close();
+		conn.close();
+		return mResponse;
+		
+	}
+	
 	
 }
