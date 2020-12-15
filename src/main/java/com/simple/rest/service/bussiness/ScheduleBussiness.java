@@ -1,6 +1,7 @@
 package com.simple.rest.service.bussiness;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -8,7 +9,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,15 +112,13 @@ public class ScheduleBussiness {
 		MyResponse mResponse = new MyResponse();
 		mResponse.successfulResponse();
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-		LocalDateTime now = LocalDateTime.now();  
-		
-		//zone from Costa Rica
-        ZoneId crTime = ZoneId.of("GMT-6");
-        ZonedDateTime crZonedDateTime = now.atZone(crTime);
-		
-		mResponse.setData(dtf.format(crZonedDateTime));
+		TimeZone tz = TimeZone.getTimeZone("GMT-6");
+		Calendar c = Calendar.getInstance(tz);
 
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		String formatted = format1.format(c.getTime());
+
+		mResponse.setData(c.getTime().toString());
 		return mResponse;
 	}
 	
