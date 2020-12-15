@@ -67,7 +67,6 @@ public class JwtAuthenticationController {
 			
 		}catch(Exception e) {
 			mResponse.unexpectedErrorResponse();
-			String x = e.getCause().getMessage();
 			if(e.getCause().getMessage().equals(ErrorMessages.BAD_CREDENTIALS) ||
 					e.getCause().getMessage().equals(ErrorMessages.INVALID_CREDENTIALS)) {
 				mResponse.setDescription(Strings.INVALID_CREDENTIALS);
