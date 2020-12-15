@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,7 +111,11 @@ public class ScheduleBussiness {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		LocalDateTime now = LocalDateTime.now();  
 		
-		mResponse.setData(dtf.format(now));
+		//zone from Costa Rica
+        ZoneId crTime = ZoneId.of("GMT-6");
+        ZonedDateTime crZonedDateTime = now.atZone(crTime);
+		
+		mResponse.setData(dtf.format(crZonedDateTime));
 
 		return mResponse;
 	}
