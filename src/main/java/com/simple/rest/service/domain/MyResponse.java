@@ -104,6 +104,15 @@ public class MyResponse implements Serializable {
 		this.token = null;
 	}
 	
+	public void successfulResponse() {
+		this.title = Strings.SUCCESSFUL;
+		this.code = Codes.SUCCESSFUL;
+		this.description = Strings.SUCCESSFUL;
+		this.isSuccessful = true;
+		this.data = null;
+		this.token = null;
+	}
+	
 	public JSONObject toJson() {
 		JSONObject mResponseToJson = new JSONObject();
 		mResponseToJson.put("title", this.title);

@@ -47,5 +47,12 @@ public class ScheduleController {
 		
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value="/time_to_create_a_new_schedule")
+	@ResponseBody
+	public ResponseEntity<MyResponse> timeToCreateANewSchedule() throws SQLException, ParseException {
+		MyResponse mResponse = scheduleBussiness.timeToCreateANewSchedule();
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+	}
+	
 
 }

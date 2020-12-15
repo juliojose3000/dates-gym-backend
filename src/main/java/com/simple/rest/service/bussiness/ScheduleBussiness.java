@@ -3,6 +3,8 @@ package com.simple.rest.service.bussiness;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -97,6 +99,19 @@ public class ScheduleBussiness {
 		
 		return mResponse;
 		
+	}
+	
+	public MyResponse timeToCreateANewSchedule() {
+	
+		MyResponse mResponse = new MyResponse();
+		mResponse.successfulResponse();
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();  
+		
+		mResponse.setData(dtf.format(now));
+
+		return mResponse;
 	}
 	
 }
