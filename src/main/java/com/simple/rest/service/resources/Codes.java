@@ -4,6 +4,7 @@ public class Codes {
 	
 	public static final int SUCCESSFUL = 981000;
 	public static final int UNEXPECTED_ERROR = 981005;
+	public static final int ERROR_RESPONSE = 981007;
 	public static final int TOKEN_EXPIRED = 981015;
 	public static final int USER_CREATED_BUT_LOGIN_FAILED = 981025;
 	public static final int UNABLE_TO_GET_JWT_TOKEN = 981035;

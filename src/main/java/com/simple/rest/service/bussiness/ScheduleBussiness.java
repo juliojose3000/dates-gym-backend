@@ -33,7 +33,7 @@ public class ScheduleBussiness {
 	@Autowired
 	ScheduleData scheduleData;
 	
-	public static String[] DAYS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
+	public static String[] DAYS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes","Sábado", "Domingo"};
 	
 	public MyResponse create() throws SQLException, ParseException{
 		
@@ -47,24 +47,38 @@ public class ScheduleBussiness {
 		
 		ArrayList<Shift[]> listShifts = new ArrayList<>();
 		
-		for(int i = 0; i<DAYS.length; i++) {
-			
+		//For normal days
+		for(int i = 0; i<DAYS.length-2; i++) {
 			Shift[] shifts = new Shift[datesAmountPerDay];
-			
+			for(int j = 0; j<datesAmountPerDay; j++) {
+				String date = Dates.addDaysToDate(Dates.getDateForDB(startDate), i);
+				Date dat = new SimpleDateFormat("yyyy-MM-dd").parse(date);  
+				Shift shift = shiftBussiness.createShift(dat, j);
+				shifts[j] = shift;
+			}
+			listShifts.add(shifts);
+		}//for
+		
+		//For weekend days
+		for(int i = DAYS.length-2; i<DAYS.length; i++) {
+			Shift[] shifts = new Shift[datesAmountPerDay];
 			for(int j = 0; j<datesAmountPerDay; j++) {
 				
-				String date = Dates.addDaysToDate(Dates.getDateForDB(startDate), i);
+				if(j<2) {
+					String date = Dates.addDaysToDate(Dates.getDateForDB(startDate), i);
+					Date dat = new SimpleDateFormat("yyyy-MM-dd").parse(date);  
+					Shift shift = shiftBussiness.createShift(dat, j);
+					shifts[j] = shift;
+				}else {
+					String date = Dates.addDaysToDate(Dates.getDateForDB(startDate), i);
+					Date dat = new SimpleDateFormat("yyyy-MM-dd").parse(date);  
+					Shift shift = shiftBussiness.createNullShift(dat, j);
+					shifts[j] = shift;
+				}
 				
-				Date dat = new SimpleDateFormat("yyyy-MM-dd").parse(date);  
-				
-				Shift shift = shiftBussiness.createShift(dat, j);
-				
-				shifts[j] = shift;
-				
+
 			}
-			
 			listShifts.add(shifts);
-			
 		}//for
 		
 		Schedule schedule = new Schedule();
