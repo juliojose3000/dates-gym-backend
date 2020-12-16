@@ -20,4 +20,5 @@ public class Strings {
 	public static final String RESERVATION_SUCCESSFUL = "Su cita se ha reservado con éxito";
 	public static final String CANCEL_RESERVATION_SUCCESSFUL = "Su cita se ha cancelado con éxito";
 	public static final String DUPLICATE_ENTRY_USER_ERROR = "Ya existe un usuario con el mismo correo electrónico.";
+	public static final String INVALID_RESERVATION = "El espacio que desea reservar o cancelar ya caducó. Por favor reserve uno que esté disponible.";
 }
