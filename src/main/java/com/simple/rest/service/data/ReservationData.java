@@ -46,7 +46,14 @@ public class ReservationData {
 		User user = userData.findByEmail(reservation.getUser().getEmail());
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
+		
 
+		if(!thereIsAvailableSpace(shiftDate, shiftStartHour)) {
+			mResponse.errorResponse();
+			mResponse.setDescription(Strings.NO_AVAILABLE_SPACE);
+			return mResponse;
+		}
+		
 		String query = "insert into reservation(\r\n" + 
 				"id_user, date_shift, start_hour_shift) \r\n" + 
 				"values ("
@@ -158,6 +165,32 @@ public class ReservationData {
 		stmt.close();
 		conn.close();
 		return listUsers;
+		
+	}
+	
+	public boolean thereIsAvailableSpace(Date shiftDate, String shiftStartHour) throws SQLException{
+		
+		String query = "SELECT available_space FROM shift WHERE shift_date="
+				+ "'"+Dates.utilDateToString(shiftDate)+"' AND start_hour='"+shiftStartHour+"';";
+		
+		Connection  conn = dataSource.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		int availableSpace = 0;
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()) {
+				availableSpace = rs.getInt("available_space");
+			}
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		rs.close();
+		stmt.close();
+		conn.close();
+		return availableSpace==0?false:true;
 		
 	}
 	

@@ -104,6 +104,14 @@ public class MyResponse implements Serializable {
 		this.token = null;
 	}
 	
+	public void errorResponse() {
+		this.title = Strings.ERROR;
+		this.code = Codes.ERROR_RESPONSE;
+		this.isSuccessful = false;
+		this.data = null;
+		this.token = null;
+	}
+	
 	public void successfulResponse() {
 		this.title = Strings.SUCCESSFUL;
 		this.code = Codes.SUCCESSFUL;
