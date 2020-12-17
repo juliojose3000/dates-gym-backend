@@ -26,11 +26,22 @@ public class ServerController {
 	
 	@RequestMapping(method = RequestMethod.GET, value="/get_time_zone")
 	@ResponseBody
-	public ResponseEntity<MyResponse> getTimeZone() throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> getServerTimeZone() throws SQLException, ParseException {
 		
 		MyResponse mResponse = new MyResponse();
 		mResponse.successfulResponse();
-		mResponse.setData(serverBussiness.getTimeZone());
+		mResponse.setData(serverBussiness.getServerTimeZone());
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/get_current_time")
+	@ResponseBody
+	public ResponseEntity<MyResponse> getCurrentTimeServer() throws SQLException, ParseException {
+		
+		MyResponse mResponse = new MyResponse();
+		mResponse.successfulResponse();
+		mResponse.setData(serverBussiness.getServerCurrentTime());
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}

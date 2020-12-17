@@ -11,6 +11,7 @@ import com.simple.rest.service.data.ReservationData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.resources.Strings;
+import com.simple.rest.service.resources.TimeZoneStrings;
 
 @Service
 public class ReservationBussiness {
@@ -67,8 +68,10 @@ public class ReservationBussiness {
 		Date date = reservation.getShiftDate();
 		String[] time = reservation.getShiftStartHour().split(":");
 		
-		if(myTimeZone.equals("GMT-06:00"))
+		if(myTimeZone.equals(TimeZoneStrings.COSTA_RICA))
 			date.setHours(Integer.parseInt(time[0]));
+		else if(myTimeZone.equals(TimeZoneStrings.AZURE_SERVER_WEST_US))
+			date.setHours(Integer.parseInt(time[0])+6);
 
 		Date thisMomentDate = new Date();
 		
