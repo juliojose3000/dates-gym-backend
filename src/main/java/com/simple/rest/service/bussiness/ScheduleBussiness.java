@@ -22,7 +22,9 @@ import com.simple.rest.service.data.ShiftData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
+import com.simple.rest.service.resources.TimeZoneStrings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.Utilities;
 
 @Service
 public class ScheduleBussiness {
@@ -145,8 +147,14 @@ public class ScheduleBussiness {
 		Calendar c = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("E HH");
 		String[] dayNameAndTime = (format.format(c.getTime())).split(" ");
+		int timeToCreate = 0;
+		if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.COSTA_RICA)){
+			timeToCreate = 17; // 5 pm
+		}else if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.COSTA_RICA)) {
+			timeToCreate = 23; // 11 pm
+		}
 		
-		if(dayNameAndTime[0].equals("Sun") && Integer.parseInt(dayNameAndTime[1])>=23) 
+		if(dayNameAndTime[0].equals("Sun") && Integer.parseInt(dayNameAndTime[1])>=timeToCreate) 
 			createNewSchedule = true;
 		
 		return createNewSchedule;

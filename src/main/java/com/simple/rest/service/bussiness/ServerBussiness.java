@@ -4,13 +4,17 @@ import java.time.ZoneId;
 
 import org.springframework.stereotype.Service;
 
+import com.simple.rest.service.util.Utilities;
+
 @Service
 public class ServerBussiness {
 	
-	public String getTimeZone() {
-		ZoneId z = ZoneId.systemDefault() ;
-		String myTimeZone = z.toString();
-		return myTimeZone;
+	public String getServerTimeZone() {
+		return Utilities.getTimeZoneServer();
+	}
+	
+	public String getServerCurrentTime() {
+		return Utilities.getCurrentTimeServer();
 	}
 	
 
