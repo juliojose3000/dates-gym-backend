@@ -34,8 +34,10 @@ public class ServerBussiness {
 		Date date = reservation.getShiftDate();
 		String[] time = reservation.getShiftStartHour().split(":");
 		
-		if(myTimeZone.equals(TimeZoneStrings.COSTA_RICA))
+		if(myTimeZone.equals(TimeZoneStrings.COSTA_RICA)) {
+			date.setDate(date.getDate()+1);//For a strange reason, the reservation date arrives with a day less, so it is added
 			date.setHours(Integer.parseInt(time[0]));
+		}
 		else if(myTimeZone.equals(TimeZoneStrings.AZURE_SERVER_WEST_US))
 			date.setHours(Integer.parseInt(time[0])+6);
 		
