@@ -150,7 +150,7 @@ public class ScheduleBussiness {
 		int timeToCreate = 0;
 		if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.COSTA_RICA)){
 			timeToCreate = 17; // 5 pm
-		}else if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.COSTA_RICA)) {
+		}else if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.AZURE_SERVER_WEST_US)) {
 			timeToCreate = 23; // 11 pm
 		}
 		
