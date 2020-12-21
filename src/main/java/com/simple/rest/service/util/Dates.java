@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import com.simple.rest.service.resources.TimeZoneStrings;
+
 public class Dates {
 
     private int year, month, dayOfMonth;
@@ -50,8 +52,11 @@ public class Dates {
         Calendar calendar = Calendar.getInstance();
 
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        
+        if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.COSTA_RICA))
+        	calendar.add(Calendar.DAY_OF_YEAR, 1);
+        else if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.AZURE_SERVER_WEST_US))
+        	calendar.add(Calendar.DAY_OF_YEAR, 2);
 
         int year = calendar.get(Calendar.YEAR);
 
@@ -75,7 +80,10 @@ public class Dates {
 
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
 
-        calendar.add(Calendar.DAY_OF_YEAR, 7);
+        if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.COSTA_RICA))
+        	calendar.add(Calendar.DAY_OF_YEAR, 7);
+        else if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.AZURE_SERVER_WEST_US))
+        	calendar.add(Calendar.DAY_OF_YEAR, 8);
 
         int year = calendar.get(Calendar.YEAR);
 
