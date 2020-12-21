@@ -13,7 +13,7 @@ public class Utilities {
 	}
 	
 	public static String getCurrentTimeServer() {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("E dd/MM/yyyy HH:mm:ss");
 		Calendar c = Calendar.getInstance();
 		return format.format(c.getTime());
 	}
