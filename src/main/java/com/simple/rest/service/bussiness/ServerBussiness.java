@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.resources.TimeZoneStrings;
+import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.Utilities;
 
 @Service
@@ -55,6 +56,10 @@ public class ServerBussiness {
 		
 		return mResponse;
 
+	}
+	
+	public int getCurrentWeekNumber() {
+		return Dates.getWeekNumberInYear();
 	}
 	
 
