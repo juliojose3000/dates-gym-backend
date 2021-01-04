@@ -276,20 +276,15 @@ public class Dates {
     public static String getDateOfTheLastDayInTheCurrentMonth(){
 
         Calendar calendar = Calendar.getInstance();
-
         //calendar.add(Calendar.DAY_OF_YEAR, noOfDays);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         int year = calendar.get(Calendar.YEAR);
-
         int month = calendar.get(Calendar.MONTH)+1;
-
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
         String date = year+"-"+month+"-"+dayOfMonth;
-
         String dayName = getDayName(date);
-
         String monthName = getMonthByNum(month-1);
 
         return dayName+", "+dayOfMonth+" "+monthName+" "+year;
@@ -299,20 +294,14 @@ public class Dates {
     public static String getDateOfTheFirstDayInTheCurrentMonth(){
 
         Calendar calendar = Calendar.getInstance();
-
         //calendar.add(Calendar.DAY_OF_YEAR, noOfDays);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-
         int year = calendar.get(Calendar.YEAR);
-
         int month = calendar.get(Calendar.MONTH)+1;
-
         int dayOfMonth = 1;
 
         String date = year+"-"+month+"-"+dayOfMonth;
-
         String dayName = getDayName(date);
-
         String monthName = getMonthByNum(month-1);
 
         return dayName+", "+dayOfMonth+" "+monthName+" "+year;
@@ -320,33 +309,23 @@ public class Dates {
     }
     
     public static int getWeekNumberInYear() {
-    	
-        Calendar cal = Calendar.getInstance();
-        
-        int weekNumber = cal.get(Calendar.WEEK_OF_YEAR);
-        
+        Calendar cal = Calendar.getInstance();    
+        int weekNumber = cal.get(Calendar.WEEK_OF_YEAR)-1;  
         return weekNumber;
-    	
     }
 
     public static String addDaysToDate(String date, int amountOfDaysToAdd) throws ParseException {
         
         Date dat = new SimpleDateFormat("yyyy-MM-dd").parse(date);  
-
         Calendar calendar = Calendar. getInstance();
-
         calendar. setTime(dat);
-
         calendar.add(Calendar.DAY_OF_YEAR, amountOfDaysToAdd);//Lunes
-
+        
         int year = calendar.get(Calendar.YEAR);
-
         int month = calendar.get(Calendar.MONTH)+1;
-
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-
         String newDate = year+"-"+month+"-"+dayOfMonth;
-
+        
         return newDate;
     	
     }

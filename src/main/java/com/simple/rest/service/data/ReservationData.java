@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.simple.rest.service.domain.Binnacle;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.domain.Shift;
@@ -30,6 +31,9 @@ public class ReservationData {
 	
 	@Autowired
 	UserData userData;
+	
+	@Autowired 
+	BinnacleData binnacleData;
 	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -75,6 +79,8 @@ public class ReservationData {
 				String callSP = "{call update_available_space('"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
+				
+				binnacleData.addRecord(new Binnacle("Make reservation by "+user.getId()+" on "+Dates.utilDateToString(shiftDate) + " at "+shiftStartHour));
 			}
 			
 		} catch (SQLException e) {
@@ -131,6 +137,8 @@ public class ReservationData {
 				String callSP = "{call cancel_reservation("+user.getId()+", '"+Dates.utilDateToString(shiftDate)+"', '"+shiftStartHour+"')}"; 
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
+				
+				binnacleData.addRecord(new Binnacle("Cancel reservation by "+user.getId()+" on "+Dates.utilDateToString(shiftDate) + " at "+shiftStartHour));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

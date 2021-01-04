@@ -56,5 +56,14 @@ public class ServerController {
 	private MyResponse reservationServerDetails(@RequestBody Reservation reservation) {
 		return serverBussiness.reservationServerDetails(reservation);
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/get_current_week_number")
+	@ResponseBody
+	private MyResponse getCurrentWeekNumber() {
+		MyResponse mResponse = new MyResponse();
+		mResponse.successfulResponse();
+		mResponse.setData("Week Number = "+serverBussiness.getCurrentWeekNumber());
+		return mResponse;
+	}
 
 }

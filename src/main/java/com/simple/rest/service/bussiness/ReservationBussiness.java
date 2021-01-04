@@ -77,9 +77,9 @@ public class ReservationBussiness {
 
 		Date thisMomentDate = new Date();
 		
-		if(thisMomentDate.after(date)) {
+		if(thisMomentDate.after(date)) 
 			return false;
-		}
+		
 		
 		return true;
 

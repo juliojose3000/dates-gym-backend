@@ -17,5 +17,12 @@ public class Utilities {
 		Calendar c = Calendar.getInstance();
 		return format.format(c.getTime());
 	}
+	
+	public static String getTimeWithFormat() {
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		return timeFormat.format(c.getTime());
+	}
+	
 
 }

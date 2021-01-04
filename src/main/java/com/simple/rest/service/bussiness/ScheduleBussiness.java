@@ -106,7 +106,7 @@ public class ScheduleBussiness {
 			mResponse = scheduleData.getCurrentSchedule();
 			if(mResponse.getData()==null) //If is null, means week's schedule doesn't no exits, so will be created
 				mResponse = create();
-			else if (createNewSchedule()) //If today is Sunday at 5 pm in Costa Rica (11 pm where server is) a new schedule will be created
+			else if (createNewSchedule() && Dates.getWeekNumberInYear()!=((Schedule)mResponse.getData()).getWeekNumber()) //If today is Sunday at 5 pm in Costa Rica (11 pm where server is) a new schedule will be created (only if it has not been created yet: second condition)
 				mResponse = create();
 			
 			if(mResponse.isSuccessful()==false) 
