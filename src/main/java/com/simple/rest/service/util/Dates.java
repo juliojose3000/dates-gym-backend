@@ -3,9 +3,14 @@ package com.simple.rest.service.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class Dates {
 
@@ -348,6 +353,20 @@ public class Dates {
 			e.printStackTrace();
 		}
     	return dateUtil;
+    	
+    }
+    
+    
+    public static String getCurrentDateTimeInCostaRica() {
+    	
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateInString = format.format(c.getTime());
+        
+        LocalDateTime localDateTime = LocalDateTime.parse(dateInString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        ZonedDateTime costaRicaDateTime = localDateTime.atZone(ZoneId.of("America/Costa_Rica"));
+        
+        return format.format(costaRicaDateTime);
     	
     }
 
