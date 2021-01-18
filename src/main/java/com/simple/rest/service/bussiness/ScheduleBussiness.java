@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,10 @@ public class ScheduleBussiness {
 	
 	@Autowired
 	ScheduleData scheduleData;
+	
+	public static boolean IT_IS_CREATING_A_NEW_SCHEDULE = false;
+	
+	public static boolean IT_IS_LOADING_THE_CURRENT_SCHEDULE = false;
 	
 	public static String[] DAYS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes","Sábado", "Domingo"};
 	
@@ -103,16 +108,28 @@ public class ScheduleBussiness {
 		MyResponse mResponse = new MyResponse();
 		
 		try {
+			while(IT_IS_CREATING_A_NEW_SCHEDULE || IT_IS_LOADING_THE_CURRENT_SCHEDULE) {
+				/*waiting process to finish schedule creation*/
+				TimeUnit.SECONDS.sleep(1);
+			}
+			IT_IS_LOADING_THE_CURRENT_SCHEDULE = true;
 			mResponse = scheduleData.getCurrentSchedule();
-			if(mResponse.getData()==null) //If is null, means week's schedule doesn't no exits, so will be created
+			IT_IS_LOADING_THE_CURRENT_SCHEDULE = false;
+			if(mResponse.getData()==null) { //If is null, means week's schedule doesn't no exits, so will be created
+				IT_IS_CREATING_A_NEW_SCHEDULE = true;
 				mResponse = create();
-			else if (createNewSchedule() && Dates.getWeekNumberInYear()!=((Schedule)mResponse.getData()).getWeekNumber()) //If today is Sunday at 5 pm in Costa Rica (11 pm where server is) a new schedule will be created (only if it has not been created yet: second condition)
-				mResponse = create();
+				IT_IS_CREATING_A_NEW_SCHEDULE = false;
+			}
+			else if (createNewSchedule() && Dates.getWeekNumberInYear()!=((Schedule)mResponse.getData()).getWeekNumber()) { //If today is Sunday at 5 pm in Costa Rica (11 pm where server is) a new schedule will be created (only if it has not been created yet: second condition)
+				IT_IS_CREATING_A_NEW_SCHEDULE = true;
+				mResponse = create();		
+				IT_IS_CREATING_A_NEW_SCHEDULE = false;
+			}
 			
 			if(mResponse.isSuccessful()==false) 
 				return mResponse;
 		} 
-		catch (SQLException | ParseException e) {
+		catch (SQLException | ParseException | InterruptedException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
 		}

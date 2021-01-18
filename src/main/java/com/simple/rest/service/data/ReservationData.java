@@ -25,12 +25,16 @@ import com.simple.rest.service.util.Dates;
 @Repository
 public class ReservationData {
 	
-	private static DataSource dataSource;
+	public static DataSource dataSource;
+	
+	public static Connection  conn;
 	
 	private String tableName = "reservation";
 	
 	@Autowired
 	UserData userData;
+	
+	private boolean CONN_IS_NOT_CLOSED = false;
 	
 	@Autowired 
 	BinnacleData binnacleData;
@@ -40,9 +44,20 @@ public class ReservationData {
 		this.dataSource = dataSource;
 	}
 	
+	
+	
 	public MyResponse make(Reservation reservation) throws SQLException {
 		
-		Connection  conn = dataSource.getConnection();
+		boolean aux = true;
+		while(conn!=null && conn.isClosed()==CONN_IS_NOT_CLOSED) {
+			if(aux) {
+				System.out.println("Otra sesión está usando la conexión, esperando a que finalice...");
+				aux = false;
+			}
+		}
+		System.out.println("Procediendo con la reservación...");
+		
+		conn = dataSource.getConnection();
 		Statement stmt = null;
 		
 		MyResponse mResponse = new MyResponse();
@@ -58,12 +73,8 @@ public class ReservationData {
 			return mResponse;
 		}
 		
-		String query = "insert into reservation(\r\n" + 
-				"id_user, date_shift, start_hour_shift) \r\n" + 
-				"values ("
-				+ "'"+user.getId()+"',"
-				+ "'"+Dates.utilDateToString(shiftDate)+"',"
-				+ "'"+shiftStartHour+"');";
+		String query = "insert into reservation(id_user, date_shift, start_hour_shift) values ("
+				+ "'"+user.getId()+"','"+Dates.utilDateToString(shiftDate)+"','"+shiftStartHour+"');";
 
 		try {
 			stmt = conn.createStatement();

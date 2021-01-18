@@ -67,7 +67,7 @@ public class BinnacleData {
 		Statement stmt = null;
 		String query = "insert into binnacle(action, date, time) "
 				+ "values ('"+binnacle.getAction()+"','"+binnacle.getSQLDate()+"','"+binnacle.getTime()+"');";
-		System.out.print(query);
+		System.out.println(query);
 		try {
 			conn = dataSource.getConnection();
 			stmt = conn.createStatement();
