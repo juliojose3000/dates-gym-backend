@@ -12,12 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.simple.rest.service.domain.MyResponse;
-import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
-import com.simple.rest.service.util.Dates;
-import com.sun.tools.sjavac.Log;
 
 @Repository
 public class UserData {
