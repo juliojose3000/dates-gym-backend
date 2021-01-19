@@ -42,6 +42,8 @@ public class ScheduleBussiness {
 	
 	public static String[] DAYS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes","Sábado", "Domingo"};
 	
+	private static String TAG = "Schedule Bussiness";
+	
 	public MyResponse create() throws SQLException, ParseException{
 		
 		String startDate = Dates.getDateOfFirstDayInTheWeek();
@@ -110,6 +112,7 @@ public class ScheduleBussiness {
 		try {
 			while(IT_IS_CREATING_A_NEW_SCHEDULE || IT_IS_LOADING_THE_CURRENT_SCHEDULE) {
 				/*waiting process to finish schedule creation*/
+				System.out.println(TAG + "Esperando que finalice la creación del horario para proceder...");
 				TimeUnit.SECONDS.sleep(1);
 			}
 			IT_IS_LOADING_THE_CURRENT_SCHEDULE = true;

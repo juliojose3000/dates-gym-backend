@@ -32,7 +32,7 @@ public class ReservationBussiness {
 		try {
 			mResponse = reservationData.make(reservation);
 		} 
-		catch (SQLException e) {
+		catch (SQLException | InterruptedException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
 		}

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
@@ -25,7 +26,7 @@ import com.simple.rest.service.util.Dates;
 @Repository
 public class ReservationData {
 	
-	public static DataSource dataSource;
+	public DataSource dataSource;
 	
 	public static Connection  conn;
 	
@@ -35,6 +36,8 @@ public class ReservationData {
 	UserData userData;
 	
 	private boolean CONN_IS_NOT_CLOSED = false;
+	
+	public static boolean IT_IS_MAKING_RESERVATION = false;
 	
 	@Autowired 
 	BinnacleData binnacleData;
@@ -46,16 +49,19 @@ public class ReservationData {
 	
 	
 	
-	public MyResponse make(Reservation reservation) throws SQLException {
-		
+	public MyResponse make(Reservation reservation) throws SQLException, InterruptedException {
+		String username = reservation.getUser().getEmail();
 		boolean aux = true;
-		while(conn!=null && conn.isClosed()==CONN_IS_NOT_CLOSED) {
+		while(IT_IS_MAKING_RESERVATION) {
 			if(aux) {
-				System.out.println("Otra sesión está usando la conexión, esperando a que finalice...");
+				System.out.println(username + " - Otra sesión está usando la conexión, esperando a que finalice...");
 				aux = false;
 			}
+			TimeUnit.SECONDS.sleep(1);
 		}
-		System.out.println("Procediendo con la reservación...");
+		IT_IS_MAKING_RESERVATION = true;
+
+		System.out.println(username+" - Procediendo con la reservación...");
 		
 		conn = dataSource.getConnection();
 		Statement stmt = null;
@@ -66,10 +72,12 @@ public class ReservationData {
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
 		
-
+		//I added this condicional, because store procedures ignores checks clauses and trigger doesn´t work in GCP
 		if(!thereIsAvailableSpace(shiftDate, shiftStartHour)) {
 			mResponse.errorResponse();
 			mResponse.setDescription(Strings.NO_AVAILABLE_SPACE);
+			conn.close();
+			IT_IS_MAKING_RESERVATION = false;
 			return mResponse;
 		}
 		
@@ -78,10 +86,11 @@ public class ReservationData {
 
 		try {
 			stmt = conn.createStatement();
-			System.out.println(query);
+			System.out.println(username + " - " +query);
 			int rs = stmt.executeUpdate(query);
 			
 			if(rs != 0) {
+				System.out.println(username + " - Todo OK");
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.RESERVATION_SUCCESSFUL);
 				mResponse.setDescription(Strings.RESERVATION_SUCCESSFUL);
@@ -95,7 +104,7 @@ public class ReservationData {
 			}
 			
 		} catch (SQLException e) {
-			
+			System.out.println(username + " - Todo Mal");
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
@@ -116,6 +125,8 @@ public class ReservationData {
 		}
 		stmt.close();
 		conn.close();
+		System.out.println(username + " - Saliendo de reservation");
+		IT_IS_MAKING_RESERVATION = false;
 		return mResponse;
 		
 	}
