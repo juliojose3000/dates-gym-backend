@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
@@ -46,7 +47,7 @@ public class ReservationData {
 	
 	
 	
-	public MyResponse make(Reservation reservation) throws SQLException {
+	public MyResponse make(Reservation reservation) throws SQLException, InterruptedException {
 		
 		boolean aux = true;
 		while(conn!=null && conn.isClosed()==CONN_IS_NOT_CLOSED) {
@@ -54,6 +55,8 @@ public class ReservationData {
 				System.out.println("Otra sesión está usando la conexión, esperando a que finalice...");
 				aux = false;
 			}
+			TimeUnit.SECONDS.sleep(1);
+			System.out.println("...");
 		}
 		System.out.println("Procediendo con la reservación...");
 		
