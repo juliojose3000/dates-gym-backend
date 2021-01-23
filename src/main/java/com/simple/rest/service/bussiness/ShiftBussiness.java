@@ -35,14 +35,13 @@ public class ShiftBussiness {
 	
 	public Shift createNullShift(Date date, int i) {
 		
-		Shift shift = new Shift();
+		Shift shift = new Shift(0);
 		
 		shift.setDate(date);
 		shift.setStartHour(STARTS_HOURS[i]);
 		shift.setEndHour(ENDS_HOURS[i]);
 		shift.setMaxSpace(0);
 		shift.setReservedSpace(0);
-		
 		return shift;
 		
 	}
