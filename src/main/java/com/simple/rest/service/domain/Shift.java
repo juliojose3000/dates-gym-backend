@@ -22,6 +22,13 @@ public class Shift {
 		this.reservedSpace = 0;
 		this.availableSpace = getAvailableSpace();
 	}
+	
+	public Shift(int maxSpace) {
+		this.clients = new ArrayList<User>();
+		this.maxSpace = maxSpace;
+		this.reservedSpace = 0;
+		this.availableSpace = getAvailableSpace();
+	}
 
 	public Shift(Date date, String startHour, String endHour) {
 		this.date = date;
