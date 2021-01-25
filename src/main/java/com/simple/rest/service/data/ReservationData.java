@@ -22,6 +22,7 @@ import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.Log;
 
 @Repository
 public class ReservationData {
@@ -54,14 +55,14 @@ public class ReservationData {
 		boolean aux = true;
 		while(IT_IS_MAKING_RESERVATION) {
 			if(aux) {
-				System.out.println(username + " - Otra sesión está usando la conexión, esperando a que finalice...");
+				Log.create(this.getClass().getName(), username + " - Otra sesión está usando la conexión, esperando a que finalice...");
 				aux = false;
 			}
 			TimeUnit.SECONDS.sleep(1);
 		}
 		IT_IS_MAKING_RESERVATION = true;
 
-		System.out.println(username+" - Procediendo con la reservación...");
+		Log.create(this.getClass().getName(), username+" - Procediendo con la reservación...");
 		
 		conn = dataSource.getConnection();
 		Statement stmt = null;
@@ -86,11 +87,11 @@ public class ReservationData {
 
 		try {
 			stmt = conn.createStatement();
-			System.out.println(username + " - " +query);
+			Log.create(this.getClass().getName(), username + " - " +query);
 			int rs = stmt.executeUpdate(query);
 			
 			if(rs != 0) {
-				System.out.println(username + " - Todo OK");
+				Log.create(this.getClass().getName(), username + " - Todo OK");
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.RESERVATION_SUCCESSFUL);
 				mResponse.setDescription(Strings.RESERVATION_SUCCESSFUL);
@@ -104,7 +105,7 @@ public class ReservationData {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(username + " - Todo Mal");
+			Log.create(this.getClass().getName(), username + " - Todo Mal");
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
@@ -125,7 +126,7 @@ public class ReservationData {
 		}
 		stmt.close();
 		conn.close();
-		System.out.println(username + " - Saliendo de reservation");
+		Log.create(this.getClass().getName(), username + " - Saliendo de reservation");
 		IT_IS_MAKING_RESERVATION = false;
 		return mResponse;
 		
@@ -147,7 +148,7 @@ public class ReservationData {
 
 		try {
 			stmt = conn.createStatement();
-			System.out.println(query);
+			Log.create(this.getClass().getName(), query);
 			int rs = stmt.executeUpdate(query);
 			
 			if(rs != 0) {
