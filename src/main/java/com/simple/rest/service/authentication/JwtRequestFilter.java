@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
+import com.simple.rest.service.util.Log;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -56,7 +57,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				mResponse.unexpectedErrorResponse();
 				if(e instanceof IllegalArgumentException) {
 					e.printStackTrace();
-					System.out.println("Unable to get JWT Token");
+					Log.create(this.getClass().getName(), "Unable to get JWT Token");
 				}else if(e instanceof ExpiredJwtException) {
 					mResponse.setCode(Codes.TOKEN_EXPIRED);
 					mResponse.setDescription(Strings.TOKEN_EXPIRED);

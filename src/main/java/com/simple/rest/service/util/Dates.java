@@ -369,5 +369,15 @@ public class Dates {
         return format.format(costaRicaDateTime);
     	
     }
+    
+    public static String getCurrentDateTime() {
+    	
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateInString = format.format(c.getTime());
+       
+        return dateInString;
+    	
+    }
 
 }

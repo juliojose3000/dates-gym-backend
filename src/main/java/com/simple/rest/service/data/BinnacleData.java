@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.simple.rest.service.domain.Binnacle;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.Log;
 
 @Repository
 public class BinnacleData {
@@ -67,7 +68,7 @@ public class BinnacleData {
 		Statement stmt = null;
 		String query = "insert into binnacle(action, date, time) "
 				+ "values ('"+binnacle.getAction()+"','"+binnacle.getSQLDate()+"','"+binnacle.getTime()+"');";
-		System.out.println(query);
+		Log.create(this.getClass().getName(), query);
 		try {
 			conn = dataSource.getConnection();
 			stmt = conn.createStatement();

@@ -34,6 +34,10 @@ public class JwtUserDetailsService implements UserDetailsService {
 		}
 	}
 	
+	public UserDetails loadUserSocialLogin(String userEmail, String password) throws UsernameNotFoundException {
+		return new User(userEmail, bCryptEncodePassword(password), new ArrayList<>());
+	}
+	
 	
 	private String bCryptEncodePassword(String password) {
 		

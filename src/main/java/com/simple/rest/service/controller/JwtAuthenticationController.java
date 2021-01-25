@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.simple.rest.service.authentication.JwtRequest;
 import com.simple.rest.service.authentication.JwtTokenUtil;
+import com.simple.rest.service.authentication.JwtUserDetailsService;
 import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.User;
@@ -36,7 +37,10 @@ public class JwtAuthenticationController {
 	private JwtTokenUtil jwtTokenUtil;
 
 	@Autowired
-	private UserDetailsService jwtInMemoryUserDetailsService;
+	private UserDetailsService inMemoryUserDetailsService;
+	
+	@Autowired
+	private JwtUserDetailsService jwtInMemoryUserDetailsService;
 	
 	@Autowired
 	private UserData userData;
@@ -51,8 +55,46 @@ public class JwtAuthenticationController {
 		try {
 			authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 			
-			final UserDetails userDetails = jwtInMemoryUserDetailsService
+			final UserDetails userDetails = inMemoryUserDetailsService
 					.loadUserByUsername(authenticationRequest.getEmail());
+
+			token = jwtTokenUtil.generateToken(userDetails);
+			User user = userData.findByEmail(authenticationRequest.getEmail());
+			
+			mResponse.setToken(token);
+			mResponse.setSuccessful(true);
+			mResponse.setTitle(Strings.SUCCESSFUL);
+			mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
+			mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
+			mResponse.setData(user);
+			
+			
+		}catch(Exception e) {
+			mResponse.unexpectedErrorResponse();
+			if(e.getCause().getMessage().equals(ErrorMessages.BAD_CREDENTIALS) ||
+					e.getCause().getMessage().equals(ErrorMessages.INVALID_CREDENTIALS)) {
+				mResponse.setDescription(Strings.INVALID_CREDENTIALS);
+				mResponse.setCode(Codes.INVALID_CREDENTIALS);
+			}else {
+				e.printStackTrace();
+			}	
+			
+		}
+		return ResponseEntity.ok(mResponse);
+	}
+	
+	@RequestMapping(value = "/social-authenticate", method = RequestMethod.POST)
+	public ResponseEntity<?> createAuthenticationTokenForSocialLogin(@RequestBody JwtRequest authenticationRequest)
+			throws Exception {
+		
+		String token = "";
+		MyResponse mResponse = new MyResponse();
+		
+		try {
+			//authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+			
+			final UserDetails userDetails = jwtInMemoryUserDetailsService
+					.loadUserSocialLogin(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
 			token = jwtTokenUtil.generateToken(userDetails);
 			User user = userData.findByEmail(authenticationRequest.getEmail());
