@@ -25,6 +25,7 @@ import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.resources.TimeZoneStrings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.Log;
 import com.simple.rest.service.util.Utilities;
 
 @Service
@@ -112,7 +113,7 @@ public class ScheduleBussiness {
 		try {
 			while(IT_IS_CREATING_A_NEW_SCHEDULE || IT_IS_LOADING_THE_CURRENT_SCHEDULE) {
 				/*waiting process to finish schedule creation*/
-				System.out.println(TAG + "Esperando que finalice la creación del horario para proceder...");
+				Log.create(this.getClass().getName(), TAG + "Esperando que finalice la creación del horario para proceder...");
 				TimeUnit.SECONDS.sleep(1);
 			}
 			IT_IS_LOADING_THE_CURRENT_SCHEDULE = true;

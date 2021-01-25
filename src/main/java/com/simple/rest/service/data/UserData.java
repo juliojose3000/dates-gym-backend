@@ -15,6 +15,8 @@ import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
+import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.Log;
 
 @Repository
 public class UserData {
@@ -156,7 +158,7 @@ public class UserData {
 		User user = null;
 		if(LIST_USERS.size()==0) {
 			load();//I load de users from db
-			System.out.println("Lista de usuarios vacía");
+			Log.create(this.getClass().getName(), "Lista de usuarios vacía");
 		}
 		for (User userItem : LIST_USERS) {
 			if (userItem.getId() == id) {
@@ -171,7 +173,7 @@ public class UserData {
 		User user = null;
 		if(LIST_USERS.size()==0) {
 			load();//I load de users from db
-			System.out.println("Lista de usuarios vacía");
+			Log.create(this.getClass().getName(), "Lista de usuarios vacía... Procediendo a cargarla");
 		}
 		for (User userItem : LIST_USERS) {
 			if (userItem.getEmail().equals(email)) {
@@ -180,6 +182,21 @@ public class UserData {
 			}
 		}
 		return user;
+	}
+	
+	public boolean doesUserExists(String email) throws SQLException {
+		boolean doesUserExists = false;
+		if(LIST_USERS.size()==0) {
+			load();//I load de users from db
+			Log.create(this.getClass().getName(), "Lista de usuarios vacía... Procediendo a cargarla");
+		}
+		for (User userItem : LIST_USERS) {
+			if (userItem.getEmail().equals(email)) {
+				doesUserExists = true;
+				break;
+			}
+		}
+		return doesUserExists;
 	}
 	
 }

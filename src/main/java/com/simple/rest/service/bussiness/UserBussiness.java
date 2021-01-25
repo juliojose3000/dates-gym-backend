@@ -28,5 +28,14 @@ public class UserBussiness {
 		return mResponse;
 		
 	}
+	
+	public boolean findUserByEmail(String email) {
+		 try {
+			return userData.doesUserExists(email);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 }

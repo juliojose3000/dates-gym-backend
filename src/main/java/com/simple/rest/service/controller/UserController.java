@@ -19,6 +19,7 @@ import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
+import com.simple.rest.service.util.Log;
 
 @RestController
 @RequestMapping(value="/user")
@@ -57,5 +58,41 @@ public class UserController {
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}
+	
+	
+	@RequestMapping(method = RequestMethod.POST, value="/social-login")
+	@ResponseBody
+	public ResponseEntity<MyResponse> socialLogin(@RequestBody User user) throws SQLException, ParseException {
+		Log.create(this.getClass().getName(), "Utilizando el Login por medio de red social... ");
+		
+		boolean isUserRegistered = userBussiness.findUserByEmail(user.getEmail());
+		
+		ResponseEntity<?> response;
+		
+		MyResponse mResponse = new MyResponse();
+		
+		if(isUserRegistered) {
+			try {
+				Log.create(this.getClass().getName(), "El usuario ya existe, iniciando sesión");
+				response = jwtAuth.createAuthenticationTokenForSocialLogin(new JwtRequest(user.getEmail(), user.getPassword()));
+				MyResponse mResponseLogin = (MyResponse) response.getBody();
+				mResponse.setSuccessful(mResponseLogin.isSuccessful());
+				mResponse.setToken(mResponseLogin.getToken());
+				mResponse.setData(mResponseLogin.getData());
+				mResponse.setTitle(Strings.SUCCESSFUL);
+				mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
+			} catch (Exception e) {
+				e.printStackTrace();
+				mResponse.unexpectedErrorResponse();
+			}
+		}else {
+			Log.create(this.getClass().getName(), "El usuario NO existe, registrándolo");
+			return create(user);
+
+		}
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
 
 }
