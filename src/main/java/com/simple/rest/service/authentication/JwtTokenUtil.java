@@ -19,7 +19,7 @@ public class JwtTokenUtil implements Serializable {
 
 	private static final long serialVersionUID = -2550185165626007488L;
 	
-	static int MINUTES_OF_LIFE = 60;
+	static int MINUTES_OF_LIFE = 120;
 	
 	public static final long JWT_TOKEN_VALIDITY = MINUTES_OF_LIFE * 60000; //The token expiration is 60 minutes
 
