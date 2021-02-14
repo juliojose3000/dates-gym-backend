@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.simple.rest.service.domain.LinkResetPassword;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
@@ -70,11 +71,12 @@ public class UserData {
 	}
 
 	public void load() throws SQLException {
-		
-		if(LIST_USERS.size()!=0) LIST_USERS = new ArrayList<>();
+
+		if (LIST_USERS.size() != 0)
+			LIST_USERS = new ArrayList<>();
 		String query = "SELECT * FROM " + tableName;
 		User user;
-		
+
 		Connection conn = dataSource.getConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
@@ -86,7 +88,7 @@ public class UserData {
 				String phone = rs.getString("phone");
 				String email = rs.getString("email");
 				String password = rs.getString("password");
-				
+
 				user = new User();
 				user.setId(id);
 				user.setName(name);
@@ -100,7 +102,7 @@ public class UserData {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		rs.close();
 		stmt.close();
 		conn.close();
@@ -111,7 +113,7 @@ public class UserData {
 
 		Connection conn = dataSource.getConnection();
 		Statement stmt = conn.createStatement();
-		
+
 		MyResponse mResponse = new MyResponse();
 
 		String name = user.getName();
@@ -119,13 +121,10 @@ public class UserData {
 		String email = user.getEmail();
 		String password = user.getPassword();
 
-		String query = "insert into " + tableName + "(\r\n" + "name, phone, email, password) \r\n" + "values (" 
-		+ "'" + name + "'," 
-		+ "'" + phone + "'," 
-		+ "'" + email + "'," 
-		+ "'" + password + "');";
+		String query = "insert into " + tableName + "(\r\n" + "name, phone, email, password) \r\n" + "values (" + "'"
+				+ name + "'," + "'" + phone + "'," + "'" + email + "'," + "'" + password + "');";
 
-		try {	
+		try {
 			int rs = stmt.executeUpdate(query);
 			if (rs != 0) {
 				mResponse.setSuccessful(true);
@@ -134,21 +133,21 @@ public class UserData {
 				load();
 			}
 		} catch (SQLException e) {
-			
+
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
-			
-			switch(e.getErrorCode()) {
-				case Codes.DUPLICATE_ENTRY_ERROR:
-					mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
-					break;
-				default:
-					e.printStackTrace();
-					mResponse.unexpectedErrorResponse();
-					break;
+
+			switch (e.getErrorCode()) {
+			case Codes.DUPLICATE_ENTRY_ERROR:
+				mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
+				break;
+			default:
+				e.printStackTrace();
+				mResponse.unexpectedErrorResponse();
+				break;
 			}
-			
+
 		}
 		stmt.close();
 		conn.close();
@@ -157,8 +156,8 @@ public class UserData {
 
 	public User findById(int id) throws SQLException {
 		User user = null;
-		if(LIST_USERS.size()==0) {
-			load();//I load de users from db
+		if (LIST_USERS.size() == 0) {
+			load();// I load de users from db
 			Log.create(this.getClass().getName(), "Lista de usuarios vacía");
 		}
 		for (User userItem : LIST_USERS) {
@@ -172,8 +171,8 @@ public class UserData {
 
 	public User findByEmail(String email) throws SQLException {
 		User user = null;
-		if(LIST_USERS.size()==0) {
-			load();//I load de users from db
+		if (LIST_USERS.size() == 0) {
+			load();// I load de users from db
 			Log.create(this.getClass().getName(), "Lista de usuarios vacía... Procediendo a cargarla");
 		}
 		for (User userItem : LIST_USERS) {
@@ -184,11 +183,11 @@ public class UserData {
 		}
 		return user;
 	}
-	
+
 	public boolean doesUserExists(String email) throws SQLException {
 		boolean doesUserExists = false;
-		if(LIST_USERS.size()==0) {
-			load();//I load de users from db
+		if (LIST_USERS.size() == 0) {
+			load();// I load de users from db
 			Log.create(this.getClass().getName(), "Lista de usuarios vacía... Procediendo a cargarla");
 		}
 		for (User userItem : LIST_USERS) {
@@ -199,5 +198,39 @@ public class UserData {
 		}
 		return doesUserExists;
 	}
-	
+
+	public MyResponse generateLinkResetPassword(LinkResetPassword linkResetPassword) throws SQLException {
+
+		MyResponse mResponse = new MyResponse();
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.createStatement();
+
+			String code = linkResetPassword.getCode();
+			String userEmail = linkResetPassword.getUserEmail();
+			String expireTime = linkResetPassword.getExpireTime();
+			String expireDate = linkResetPassword.getExpireDate();
+
+			String query = "insert into link_reset_password (\r\n" + "code, user_email, expire_date, expire_time) \r\n"
+					+ "values (" + "'" + code + "'," + "'" + userEmail + "'," + "'" + expireDate + "'," + "'"
+					+ expireTime + "');";
+
+			int rs = stmt.executeUpdate(query);
+			if (rs != 0) {
+				mResponse.successfulResponse();
+				mResponse.setCode(Codes.LINK_RESET_PASSWORD_CREATED);
+				mResponse.setDescription(Strings.LINK_RESET_PASSWORD_CREATED);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		stmt.close();
+		conn.close();
+		return mResponse;
+
+	}
+
 }

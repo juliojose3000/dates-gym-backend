@@ -379,5 +379,36 @@ public class Dates {
         return dateInString;
     	
     }
+    
+    public static String getCurrentDate() {
+    	
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String dateInString = format.format(c.getTime());
+       
+        return dateInString;
+    	
+    }
+    
+    public static String getCurrentTime() {
+    	
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String dateInString = format.format(c.getTime());
+       
+        return dateInString;
+    	
+    }
+    
+    @SuppressWarnings("deprecation")
+	public static String getCurrentTimeInOneHour() {
+    	
+        Date date = new Date();
+        date.setHours(date.getHours()+1);
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String dateInString = format.format(date.getTime());
+        return dateInString;
+    	
+    }
 
 }

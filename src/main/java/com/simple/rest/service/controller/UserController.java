@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -90,6 +91,26 @@ public class UserController {
 			return create(user);
 
 		}
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/reset-password")
+	@ResponseBody
+	public ResponseEntity<MyResponse> sendLinkResetPassword(@RequestParam String email) throws SQLException, ParseException {
+		
+		MyResponse mResponse = new MyResponse();
+		
+		if(!userBussiness.findUserByEmail(email)) {
+			mResponse.errorResponse();
+			mResponse.setDescription(Strings.EMAIL_DOES_NOT_EXISTS);
+			mResponse.setCode(Codes.EMAIL_DOES_NOT_EXISTS);
+		}else {
+			
+			mResponse = userBussiness.generateLinkResetPassword(email);
+			
+		}
+
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}
