@@ -19,5 +19,8 @@ public class Codes {
 	public static final int INVALID_RESERVATION = 981095;
 	public static final int EMAIL_DOES_NOT_EXISTS = 981105;
 	public static final int LINK_RESET_PASSWORD_CREATED = 981115;
+	public static final int LINK_RESET_HAS_EXPIRED = 981125;
+	public static final int PASSWORD_UPDATE_SUCCESSFUL = 981135;
+	public static final int RESET_LINK_HAS_BEEN_USED = 981145;
 
 }

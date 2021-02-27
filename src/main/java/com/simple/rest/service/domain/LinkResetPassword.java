@@ -2,6 +2,7 @@ package com.simple.rest.service.domain;
 
 public class LinkResetPassword {
 	
+	private int id;
 	private String code;
 	private String userEmail;
 	private String expireTime;
@@ -10,12 +11,23 @@ public class LinkResetPassword {
 	
 	public LinkResetPassword() {}
 	
-	public LinkResetPassword(String code, String userEmail, String expireTime, String expireDate, boolean usedLink) {
+	public LinkResetPassword(String code, String userEmail, String expireTime, String expireDate, boolean usedLink, int id) {
 		this.code = code;
 		this.userEmail = userEmail;
 		this.expireTime = expireTime;
 		this.expireDate = expireDate;
 		this.usedLink = usedLink;
+		this.id = id;
+	}
+	
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getCode() {
@@ -50,12 +62,12 @@ public class LinkResetPassword {
 		this.expireDate = expireDate;
 	}
 
-	public boolean isUsedLink() {
-		return usedLink;
+	public int isUsedLink() {
+		return usedLink==true?1:0;//In mySQL we can not save values like False or True, we only can save 0 (for False values) and Not 0 (for True values)
 	}
 
-	public void setUsedLink(boolean usedLink) {
-		this.usedLink = usedLink;
+	public void setUsedLink(int usedLink) {
+		this.usedLink = usedLink==0?false:true;
 	}
 	
 }

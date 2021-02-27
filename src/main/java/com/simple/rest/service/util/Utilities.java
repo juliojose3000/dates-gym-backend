@@ -1,5 +1,7 @@
 package com.simple.rest.service.util;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -38,6 +40,12 @@ public class Utilities {
 	      .toString();
 
 	    return generatedString;
+	}
+	
+	public static String getHostname() throws UnknownHostException {
+		
+		return InetAddress.getLocalHost().getHostName();
+		
 	}
 	
 
