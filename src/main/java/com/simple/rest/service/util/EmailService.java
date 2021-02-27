@@ -14,7 +14,7 @@ interface EmailService {
 	    mailSender.setHost("smtp.gmail.com");
 	    mailSender.setPort(587);
 	    
-	    mailSender.setUsername("juliojose3000");
+	    mailSender.setUsername("juliojose3000@gmail.com");
 	    mailSender.setPassword("2Iv6Sm!RKJhih7O&5");
 	    
 	    Properties props = mailSender.getJavaMailProperties();
