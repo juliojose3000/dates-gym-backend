@@ -65,5 +65,16 @@ public class ServerController {
 		mResponse.setData("Week Number = "+serverBussiness.getCurrentWeekNumber());
 		return mResponse;
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/get_server_name")
+	@ResponseBody
+	public ResponseEntity<MyResponse> getServerName() throws SQLException, ParseException {
+		
+		MyResponse mResponse = new MyResponse();
+		mResponse.successfulResponse();
+		mResponse.setData(serverBussiness.getServerName());
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
 
 }
