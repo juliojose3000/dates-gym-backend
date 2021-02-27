@@ -27,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
 			emailSender = EmailService.getJavaMailSender();
 		
 		if (Constants.PRODUCTION)//If the app is in production, so use the firebase app url address
-			url = "https://cachi-fitness-center.web.app/";
+			url = "https://cachi-fitness-center.web.app";
 		else
 			url = "http://localhost:4200";//In the other hand, use the local url address
 	}
