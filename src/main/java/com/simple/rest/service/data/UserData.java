@@ -1,6 +1,8 @@
 package com.simple.rest.service.data;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,6 +22,7 @@ import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Constants;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.EncryptionPasswords;
 import com.simple.rest.service.util.Log;
 
 @Repository
@@ -89,14 +92,16 @@ public class UserData {
 				String name = rs.getString("name");
 				String phone = rs.getString("phone");
 				String email = rs.getString("email");
-				String password = rs.getString("password");
+				byte[] salt = rs.getBytes("salt");
+				byte[] passwordWithSalt = rs.getBytes("password_with_salt");
 
 				user = new User();
 				user.setId(id);
 				user.setName(name);
 				user.setPhoneNumber(phone);
 				user.setEmail(email);
-				user.setPassword(password);
+				user.setSalt(salt);
+				user.setPasswordWithSalt(passwordWithSalt);
 
 				LIST_USERS.add(user);
 			}
@@ -111,10 +116,9 @@ public class UserData {
 
 	}
 
-	public MyResponse create(User user) throws SQLException {
+	public MyResponse create(User user) throws SQLException, NoSuchAlgorithmException {
 
 		Connection conn = dataSource.getConnection();
-		Statement stmt = conn.createStatement();
 
 		MyResponse mResponse = new MyResponse();
 
@@ -122,12 +126,19 @@ public class UserData {
 		String phone = user.getPhoneNumber();
 		String email = user.getEmail();
 		String password = user.getPassword();
+		byte[] salt = EncryptionPasswords.generateSalt();
+		byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
 
-		String query = "insert into " + tableName + "(\r\n" + "name, phone, email, password) \r\n" + "values (" + "'"
-				+ name + "'," + "'" + phone + "'," + "'" + email + "'," + "'" + password + "');";
+		String query = "insert into " + tableName + "(name, phone, email, salt, password_with_salt) values (?, ?, ?, ?, ?)";
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setString(1, name);
+		pstmt.setString(2, phone);
+		pstmt.setString(3, email);
+		pstmt.setBytes(4, salt);
+		pstmt.setBytes(5, passwordWithSalt);
 
 		try {
-			int rs = stmt.executeUpdate(query);
+			int rs = pstmt.executeUpdate();
 			if (rs != 0) {
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.USER_CREATED_SUCCESSFUL);
@@ -151,7 +162,7 @@ public class UserData {
 			}
 
 		}
-		stmt.close();
+		pstmt.close();
 		conn.close();
 		return mResponse;
 	}

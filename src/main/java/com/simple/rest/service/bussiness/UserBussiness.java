@@ -1,5 +1,6 @@
 package com.simple.rest.service.bussiness;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserBussiness {
 		MyResponse mResponse = new MyResponse();
 		try {
 			mResponse = userData.create(user);
-		} catch (SQLException e) {
+		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
 		}

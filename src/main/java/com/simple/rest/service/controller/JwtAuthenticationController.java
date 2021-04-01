@@ -25,6 +25,7 @@ import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.ErrorMessages;
 import com.simple.rest.service.resources.Strings;
+import com.simple.rest.service.util.EncryptionPasswords;
 
 
 @Controller
@@ -53,13 +54,14 @@ public class JwtAuthenticationController {
 		MyResponse mResponse = new MyResponse();
 		
 		try {
-			authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+			User user = userData.findByEmail(authenticationRequest.getEmail());
+			String passwordWithSalt = EncryptionPasswords.bytetoString(EncryptionPasswords.getHashWithSalt(authenticationRequest.getPassword(), user.getSalt()));
+			authenticate(authenticationRequest.getEmail(), passwordWithSalt);
 			
 			final UserDetails userDetails = inMemoryUserDetailsService
 					.loadUserByUsername(authenticationRequest.getEmail());
 
 			token = jwtTokenUtil.generateToken(userDetails);
-			User user = userData.findByEmail(authenticationRequest.getEmail());
 			
 			mResponse.setToken(token);
 			mResponse.setSuccessful(true);
