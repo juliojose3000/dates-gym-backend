@@ -1,5 +1,6 @@
 package com.simple.rest.service.bussiness;
 
+import java.net.UnknownHostException;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -60,6 +61,16 @@ public class ServerBussiness {
 	
 	public int getCurrentWeekNumber() {
 		return Dates.getWeekNumberInYear();
+	}
+	
+	public String getServerName() {
+		String hostname = "";
+		try {
+			hostname = Utilities.getHostname();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return hostname;
 	}
 	
 

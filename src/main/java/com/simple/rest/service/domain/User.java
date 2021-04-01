@@ -7,16 +7,21 @@ public class User {
 	private String phoneNumber;
 	private String email;
 	private String password;
+	private byte[] salt;
+	private byte[] passwordWithSalt;
 	
 	public User() {}
 
-	public User(int id, String name, String phoneNumber, String email, String password) {
+	public User(int id, String name, String phoneNumber, String email, String password, byte[] salt,
+			byte[] passwordWithSalt) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
+		this.salt = salt;
+		this.passwordWithSalt = passwordWithSalt;
 	}
 
 	public int getId() {
@@ -59,12 +64,24 @@ public class User {
 		this.password = password;
 	}
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", phoneNumber=" + phoneNumber + ", email=" + email + ", password="
-				+ password + "]";
+	public byte[] getSalt() {
+		return salt;
 	}
 
+	public void setSalt(byte[] salt) {
+		this.salt = salt;
+	}
+
+	public byte[] getPasswordWithSalt() {
+		return passwordWithSalt;
+	}
+
+	public void setPasswordWithSalt(byte[] passwordWithSalt) {
+		this.passwordWithSalt = passwordWithSalt;
+	}
+
+	
+	
 	
 	
 

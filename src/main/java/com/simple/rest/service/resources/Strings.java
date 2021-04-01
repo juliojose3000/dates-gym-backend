@@ -5,6 +5,7 @@ public class Strings {
 	//TITLES
 	public static final String SUCCESSFUL = "Operación exitosa";
 	public static final String ERROR = "Operación fallida";
+	public static final String EMAIL_SUBJECT = "Solicitud para resetear la contraseña";
 	
 	//DESCRIPTIONS/MESSAGES
 	public static final String UNEXPECTED_ERROR = "Ha ocurrido un error inésperado, por favor intente de nuevo";
@@ -21,4 +22,11 @@ public class Strings {
 	public static final String CANCEL_RESERVATION_SUCCESSFUL = "Su cita se ha cancelado con éxito";
 	public static final String DUPLICATE_ENTRY_USER_ERROR = "Ya existe un usuario con el mismo correo electrónico.";
 	public static final String INVALID_RESERVATION = "El espacio que desea reservar o cancelar ya caducó. Por favor seleccione uno que esté disponible.";
+	public static final String EMAIL_DOES_NOT_EXISTS = "El correo ingresado no se encuentra registrado.";
+	public static final String LINK_RESET_PASSWORD_CREATED = "El link para restaurar la contraseña se creó satisfactoriamente.";
+	public static final String LINK_RESET_HAS_EXPIRED = "El link para restaurar la contraseña ha expirado, por favor vuelva a realizar el procedimiento para restaurar la contraseña";
+	public static final String PASSWORD_UPDATE_SUCCESSFUL = "La contraseña se ha actualizado correctamente";
+	public static final String RESET_LINK_HAS_BEEN_USED = "El link para restaurar la contraseña ya ha sido usado, por favor intente de nuevo con otro link";
+	public static final String THE_EMAIL_NOT_CORRESPONDS_WITH_THE_LINK_PASSWORD_RESET = "El correo ingresado no concuerda con el correo al que se le envió el link para restaurar la contraseña.";
+	
 }

@@ -379,5 +379,84 @@ public class Dates {
         return dateInString;
     	
     }
+    
+    public static String getCurrentDate() {
+    	
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String dateInString = format.format(c.getTime());
+       
+        return dateInString;
+    	
+    }
+    
+    public static String getCurrentTime() {
+    	
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String dateInString = format.format(c.getTime());
+       
+        return dateInString;
+    	
+    }
+    
+    @SuppressWarnings("deprecation")
+	public static String getCurrentTimeInOneHour() {
+    	
+        Date date = new Date();
+        date.setHours(date.getHours()+1);
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String dateInString = format.format(date.getTime());
+        return dateInString;
+    	
+    }
+    
+    public static boolean isAfterTo(String dateTime1, String dateTime2) {
+    	
+    	try {
+			Date date1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime1);
+			Date date2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime1);
+			if(date1.after(date2))
+				return true;
+			return false;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	
+    	return false;
+    	
+    }
+    
+    public static boolean isPreviusTo(String dateTime1, String dateTime2) {
+    	
+    	try {
+			Date date1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime1);
+			Date date2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime1);
+			if(date2.after(date1))
+				return true;
+			return false;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	
+    	return false;
+    	
+    }
+    
+    public static boolean currentTimeIsPreviusTo(String dateTimeString) {
+    	
+    	try {
+			Date dateTime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTimeString);
+			Date currentDateTime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(getCurrentDateTime());
+			if(dateTime.after(currentDateTime))
+				return true;
+			return false;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	
+    	return false;
+    	
+    }
 
 }

@@ -23,6 +23,7 @@ import com.simple.rest.service.data.ShiftData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
+import com.simple.rest.service.resources.Constants;
 import com.simple.rest.service.resources.TimeZoneStrings;
 import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.Log;
@@ -124,7 +125,7 @@ public class ScheduleBussiness {
 				mResponse = create();
 				IT_IS_CREATING_A_NEW_SCHEDULE = false;
 			}
-			else if (createNewSchedule() && Dates.getWeekNumberInYear()!=((Schedule)mResponse.getData()).getWeekNumber()) { //If today is Sunday at 5 pm in Costa Rica (11 pm where server is) a new schedule will be created (only if it has not been created yet: second condition)
+			else if (createNewSchedule((Schedule)mResponse.getData())) { //If today is Sunday at 5 pm in Costa Rica (11 pm where server is) a new schedule will be created (only if it has not been created yet: second condition)
 				IT_IS_CREATING_A_NEW_SCHEDULE = true;
 				mResponse = create();		
 				IT_IS_CREATING_A_NEW_SCHEDULE = false;
@@ -161,24 +162,16 @@ public class ScheduleBussiness {
 		mResponse.setData(dayNameAndTime[0]+" "+dayNameAndTime[1]+" create new schedule = "+createNewSchedule);
 		return mResponse;
 	}
+
+	public boolean createNewSchedule(Schedule schedule) {
+		Date currentScheduleEndWeek = schedule.getEndDate();
+		currentScheduleEndWeek.setHours(Constants.HOUR_TO_CREATE_A_NEW_SCHEDULE);
 	
-	public boolean createNewSchedule() {
-		boolean createNewSchedule = false;
-	
-		Calendar c = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("E HH");
-		String[] dayNameAndTime = (format.format(c.getTime())).split(" ");
-		int timeToCreate = 0;
-		if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.COSTA_RICA)){
-			timeToCreate = 17; // 5 pm
-		}else if(Utilities.getTimeZoneServer().equals(TimeZoneStrings.AZURE_SERVER_WEST_US)) {
-			timeToCreate = 23; // 11 pm
-		}
+		Date currentDate = new Date();
 		
-		if(dayNameAndTime[0].equals("Sun") && Integer.parseInt(dayNameAndTime[1])>=timeToCreate) 
-			createNewSchedule = true;
-		
-		return createNewSchedule;
+		if(currentDate.after(currentScheduleEndWeek)) return true;
+
+		return false;
 	}
 	
 }

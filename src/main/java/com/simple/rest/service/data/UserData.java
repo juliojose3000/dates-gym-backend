@@ -1,6 +1,8 @@
 package com.simple.rest.service.data;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,12 +13,16 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.simple.rest.service.domain.LinkResetPassword;
 import com.simple.rest.service.domain.MyResponse;
+import com.simple.rest.service.domain.ResetPassword;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
+import com.simple.rest.service.resources.Constants;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.EncryptionPasswords;
 import com.simple.rest.service.util.Log;
 
 @Repository
@@ -70,11 +76,12 @@ public class UserData {
 	}
 
 	public void load() throws SQLException {
-		
-		if(LIST_USERS.size()!=0) LIST_USERS = new ArrayList<>();
+
+		if (LIST_USERS.size() != 0)
+			LIST_USERS = new ArrayList<>();
 		String query = "SELECT * FROM " + tableName;
 		User user;
-		
+
 		Connection conn = dataSource.getConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
@@ -85,14 +92,16 @@ public class UserData {
 				String name = rs.getString("name");
 				String phone = rs.getString("phone");
 				String email = rs.getString("email");
-				String password = rs.getString("password");
-				
+				byte[] salt = rs.getBytes("salt");
+				byte[] passwordWithSalt = rs.getBytes("password_with_salt");
+
 				user = new User();
 				user.setId(id);
 				user.setName(name);
 				user.setPhoneNumber(phone);
 				user.setEmail(email);
-				user.setPassword(password);
+				user.setSalt(salt);
+				user.setPasswordWithSalt(passwordWithSalt);
 
 				LIST_USERS.add(user);
 			}
@@ -100,33 +109,36 @@ public class UserData {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		rs.close();
 		stmt.close();
 		conn.close();
 
 	}
 
-	public MyResponse create(User user) throws SQLException {
+	public MyResponse create(User user) throws SQLException, NoSuchAlgorithmException {
 
 		Connection conn = dataSource.getConnection();
-		Statement stmt = conn.createStatement();
-		
+
 		MyResponse mResponse = new MyResponse();
 
 		String name = user.getName();
 		String phone = user.getPhoneNumber();
 		String email = user.getEmail();
 		String password = user.getPassword();
+		byte[] salt = EncryptionPasswords.generateSalt();
+		byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
 
-		String query = "insert into " + tableName + "(\r\n" + "name, phone, email, password) \r\n" + "values (" 
-		+ "'" + name + "'," 
-		+ "'" + phone + "'," 
-		+ "'" + email + "'," 
-		+ "'" + password + "');";
+		String query = "insert into " + tableName + "(name, phone, email, salt, password_with_salt) values (?, ?, ?, ?, ?)";
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setString(1, name);
+		pstmt.setString(2, phone);
+		pstmt.setString(3, email);
+		pstmt.setBytes(4, salt);
+		pstmt.setBytes(5, passwordWithSalt);
 
-		try {	
-			int rs = stmt.executeUpdate(query);
+		try {
+			int rs = pstmt.executeUpdate();
 			if (rs != 0) {
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.USER_CREATED_SUCCESSFUL);
@@ -134,31 +146,31 @@ public class UserData {
 				load();
 			}
 		} catch (SQLException e) {
-			
+
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
-			
-			switch(e.getErrorCode()) {
-				case Codes.DUPLICATE_ENTRY_ERROR:
-					mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
-					break;
-				default:
-					e.printStackTrace();
-					mResponse.unexpectedErrorResponse();
-					break;
+
+			switch (e.getErrorCode()) {
+			case Codes.DUPLICATE_ENTRY_ERROR:
+				mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
+				break;
+			default:
+				e.printStackTrace();
+				mResponse.unexpectedErrorResponse();
+				break;
 			}
-			
+
 		}
-		stmt.close();
+		pstmt.close();
 		conn.close();
 		return mResponse;
 	}
 
 	public User findById(int id) throws SQLException {
 		User user = null;
-		if(LIST_USERS.size()==0) {
-			load();//I load de users from db
+		if (LIST_USERS.size() == 0) {
+			load();// I load de users from db
 			Log.create(this.getClass().getName(), "Lista de usuarios vacía");
 		}
 		for (User userItem : LIST_USERS) {
@@ -172,8 +184,8 @@ public class UserData {
 
 	public User findByEmail(String email) throws SQLException {
 		User user = null;
-		if(LIST_USERS.size()==0) {
-			load();//I load de users from db
+		if (LIST_USERS.size() == 0) {
+			load();// I load de users from db
 			Log.create(this.getClass().getName(), "Lista de usuarios vacía... Procediendo a cargarla");
 		}
 		for (User userItem : LIST_USERS) {
@@ -184,11 +196,11 @@ public class UserData {
 		}
 		return user;
 	}
-	
+
 	public boolean doesUserExists(String email) throws SQLException {
 		boolean doesUserExists = false;
-		if(LIST_USERS.size()==0) {
-			load();//I load de users from db
+		if (LIST_USERS.size() == 0) {
+			load();// I load de users from db
 			Log.create(this.getClass().getName(), "Lista de usuarios vacía... Procediendo a cargarla");
 		}
 		for (User userItem : LIST_USERS) {
@@ -199,5 +211,173 @@ public class UserData {
 		}
 		return doesUserExists;
 	}
+
+	public MyResponse generateLinkResetPassword(LinkResetPassword linkResetPassword) throws SQLException {
+
+		MyResponse mResponse = new MyResponse();
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.createStatement();
+
+			String code = linkResetPassword.getCode();
+			String userEmail = linkResetPassword.getUserEmail();
+			String expireTime = linkResetPassword.getExpireTime();
+			String expireDate = linkResetPassword.getExpireDate();
+			int usedLink = linkResetPassword.isUsedLink();
+
+			String query = "insert into link_reset_password (\r\n" + "code, user_email, expire_date, expire_time, used_link) \r\n"
+					+ "values (" + "'" + code + "'," + "'" + userEmail + "'," + "'" + expireDate + "'," + "'"
+					+ expireTime + "'," + "'" + usedLink + "');";
+
+			int rs = stmt.executeUpdate(query);
+			if (rs != 0) {
+				mResponse.successfulResponse();
+				mResponse.setCode(Codes.LINK_RESET_PASSWORD_CREATED);
+				mResponse.setDescription(Strings.LINK_RESET_PASSWORD_CREATED);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		stmt.close();
+		conn.close();
+		return mResponse;
+
+	}
+
+	public LinkResetPassword getResetPasswordLinkByCode(String code) throws SQLException {
+
+		String query = "select * from link_reset_password where code = '" + code + "';";
+		LinkResetPassword linkResetPassword = null;
+
+		Connection conn = dataSource.getConnection();
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+
+		try {
+			if (rs.next()) {
+				int id = rs.getInt("id");
+				String userEmail = rs.getString("user_email");
+				String expireDate = rs.getString("expire_date");
+				String expireTime = rs.getString("expire_time");
+				int usedLink = rs.getInt("used_link");
+
+				linkResetPassword = new LinkResetPassword();
+				linkResetPassword.setId(id);
+				linkResetPassword.setUserEmail(userEmail);
+				linkResetPassword.setCode(code);
+				linkResetPassword.setExpireDate(expireDate);
+				linkResetPassword.setExpireTime(expireTime);
+				linkResetPassword.setUsedLink(usedLink);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		rs.close();
+		stmt.close();
+		conn.close();
+
+		return linkResetPassword;
+
+	}
+
+	public MyResponse resetPassword(ResetPassword resetPassword) throws SQLException {
+
+		MyResponse mResponse = new MyResponse();
+		Connection conn = null;
+		Statement stmt = null;
+
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.createStatement();
+
+			String newPassword = resetPassword.getNewPassword();
+			String userEmail = resetPassword.getUserEmail();
+
+			String query = "update user set password = '" + newPassword + "' where email = '" + userEmail + "';";
+
+			int rs = stmt.executeUpdate(query);
+			if (rs != 0) {
+				mResponse.successfulResponse();
+				mResponse.setCode(Codes.PASSWORD_UPDATE_SUCCESSFUL);
+				mResponse.setDescription(Strings.PASSWORD_UPDATE_SUCCESSFUL);
+				if(!changeResetPasswordLinkState(resetPassword).isSuccessful())
+					mResponse.unexpectedErrorResponse();
+				else
+					load();
+			}
+		} catch (SQLException e) {
+			mResponse.setSuccessful(false);
+			mResponse.setCode(e.getErrorCode());
+			mResponse.setTitle(Strings.ERROR);
+			e.printStackTrace();
+
+		}
+		stmt.close();
+		conn.close();
+		return mResponse;
+
+	}
 	
+	public MyResponse changeResetPasswordLinkState(ResetPassword resetPassword) throws SQLException {
+
+		MyResponse mResponse = new MyResponse();
+		Connection conn = null;
+		Statement stmt = null;
+
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.createStatement();
+
+			String userEmail = resetPassword.getUserEmail();
+			String resetPasswordLinkCode = resetPassword.getResetLinkCode();
+			int usedLink = Constants.TRUE;
+
+			String query = "update link_reset_password set used_link = "+usedLink+" where user_email = '"+userEmail+"' and code = '"+resetPasswordLinkCode+"';";
+
+			int rs = stmt.executeUpdate(query);
+			if (rs != 0) {
+				mResponse.successfulResponse();
+			}
+		} catch (SQLException e) {
+			mResponse.setSuccessful(false);
+			mResponse.setCode(e.getErrorCode());
+			mResponse.setTitle(Strings.ERROR);
+			e.printStackTrace();
+
+		}
+		stmt.close();
+		conn.close();
+		return mResponse;
+
+	}
+
+	public boolean resetLinkHasBeenUsed(String code, String expireDate, String expireTime) throws SQLException {
+		
+		String query = "select used_link from link_reset_password where code = '"+code+"' and expire_date = '"+expireDate+"' and expire_time = '"+expireTime+"';";
+
+		Connection conn = dataSource.getConnection();
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		int usedLink = Constants.FALSE;
+		try {
+			if (rs.next()) 
+				usedLink = rs.getInt("used_link");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		rs.close();
+		stmt.close();
+		conn.close();
+		return usedLink==Constants.TRUE;
+		
+	}
+	
+
 }
