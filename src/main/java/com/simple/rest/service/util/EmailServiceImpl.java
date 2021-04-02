@@ -12,7 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.domain.User;
-import com.simple.rest.service.resources.Constants;
+import com.simple.rest.service.resources.ConfigConstants;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -26,15 +26,15 @@ public class EmailServiceImpl implements EmailService {
 		if (emailSender == null)
 			emailSender = EmailService.getJavaMailSender();
 		
-		if (Constants.PRODUCTION)//If the app is in production, so use the firebase app url address
-			url = "https://cachi-fitness-center.web.app";
+		if (ConfigConstants.PRODUCTION)//If the app is in production, so use the firebase app url address
+			url = ConfigConstants.CFC_URL_PRODUCTION;
 		else
-			url = "http://localhost:4200";//In the other hand, use the local url address
+			url = ConfigConstants.CFC_URL_DEVELOP;//In the other hand, use the local url address
 	}
 
 	public void sendSimpleMessage(String to, String subject, String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom("juliojose3000@gmail.com");
+		message.setFrom(ConfigConstants.CFC_GMAIL);
 		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(text);
@@ -50,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
 			helper.setText(htmlMsg, true);
 			helper.setTo(user.getEmail()); // Destinatario
 			helper.setSubject(subject);
-			helper.setFrom("juliojose3000@gmail.com"); // Emisor
+			helper.setFrom(ConfigConstants.CFC_GMAIL); // Emisor
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}

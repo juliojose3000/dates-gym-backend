@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.simple.rest.service.resources.ConfigConstants;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,11 +20,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtTokenUtil implements Serializable {
 
 	private static final long serialVersionUID = -2550185165626007488L;
+	public static final long JWT_TOKEN_VALIDITY = ConfigConstants.TOKEN_MINUTES_LIFE_TIME * 60000; //The token expiration is 60 minutes
 	
-	static int MINUTES_OF_LIFE = 120;
-	
-	public static final long JWT_TOKEN_VALIDITY = MINUTES_OF_LIFE * 60000; //The token expiration is 60 minutes
-
 	@Value("${jwt.username}")
 	private String username;
 
@@ -54,7 +53,7 @@ public class JwtTokenUtil implements Serializable {
 
 	private Boolean ignoreTokenExpiration(String token) {
 		// here you specify tokens, for that the expiration is ignored
-		return false;
+		return true;
 	}
 
 	public String generateToken(UserDetails userDetails) {
@@ -63,17 +62,26 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	private String doGenerateToken(Map<String, Object> claims, String subject) {
-
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY)).signWith(SignatureAlgorithm.HS256, username).compact();
+		if(!ConfigConstants.IGNORE_TOKEN_EXPIRATION)
+			return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+					.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY)).signWith(SignatureAlgorithm.HS256, username).compact();
+		else
+			return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+					.signWith(SignatureAlgorithm.HS256, username).compact();
 	}
 
 	public Boolean canTokenBeRefreshed(String token) {
-		return (!isTokenExpired(token) || ignoreTokenExpiration(token));
+		if(!ConfigConstants.IGNORE_TOKEN_EXPIRATION)
+			return (!isTokenExpired(token) || ignoreTokenExpiration(token));
+		else
+			return ignoreTokenExpiration(token);
 	}
 
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = getUsernameFromToken(token);
-		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+		if(!ConfigConstants.IGNORE_TOKEN_EXPIRATION)
+			return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+		else
+			return username.equals(userDetails.getUsername());
 	}
 }

@@ -23,7 +23,7 @@ import com.simple.rest.service.data.ShiftData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
-import com.simple.rest.service.resources.Constants;
+import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.resources.TimeZoneStrings;
 import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.Log;
@@ -165,7 +165,7 @@ public class ScheduleBussiness {
 
 	public boolean createNewSchedule(Schedule schedule) {
 		Date currentScheduleEndWeek = schedule.getEndDate();
-		currentScheduleEndWeek.setHours(Constants.HOUR_TO_CREATE_A_NEW_SCHEDULE);
+		currentScheduleEndWeek.setHours(ConfigConstants.HOUR_TO_CREATE_A_NEW_SCHEDULE);
 	
 		Date currentDate = new Date();
 		

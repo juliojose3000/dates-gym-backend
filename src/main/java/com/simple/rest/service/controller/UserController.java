@@ -109,9 +109,7 @@ public class UserController {
 			mResponse.setDescription(Strings.EMAIL_DOES_NOT_EXISTS);
 			mResponse.setCode(Codes.EMAIL_DOES_NOT_EXISTS);
 		}else {
-			
 			mResponse = userBussiness.generateLinkResetPassword(email);
-			
 		}
 
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);

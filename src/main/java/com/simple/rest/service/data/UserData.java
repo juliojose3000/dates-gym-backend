@@ -19,7 +19,7 @@ import com.simple.rest.service.domain.ResetPassword;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
-import com.simple.rest.service.resources.Constants;
+import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.EncryptionPasswords;
@@ -152,13 +152,13 @@ public class UserData {
 			mResponse.setTitle(Strings.ERROR);
 
 			switch (e.getErrorCode()) {
-			case Codes.DUPLICATE_ENTRY_ERROR:
-				mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
-				break;
-			default:
-				e.printStackTrace();
-				mResponse.unexpectedErrorResponse();
-				break;
+				case Codes.DUPLICATE_ENTRY_ERROR:
+					mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
+					break;
+				default:
+					e.printStackTrace();
+					mResponse.unexpectedErrorResponse();
+					break;
 			}
 
 		}
@@ -291,18 +291,21 @@ public class UserData {
 
 		MyResponse mResponse = new MyResponse();
 		Connection conn = null;
-		Statement stmt = null;
-
+		PreparedStatement pstmt = null;
 		try {
 			conn = dataSource.getConnection();
-			stmt = conn.createStatement();
 
 			String newPassword = resetPassword.getNewPassword();
 			String userEmail = resetPassword.getUserEmail();
+			byte[] salt = EncryptionPasswords.generateSalt();
+			byte[] newPasswordWithSalt = EncryptionPasswords.getHashWithSalt(newPassword, salt);
 
-			String query = "update user set password = '" + newPassword + "' where email = '" + userEmail + "';";
-
-			int rs = stmt.executeUpdate(query);
+			String query = "update user set salt = ?, password_with_salt = ? where email = '" + userEmail + "';";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setBytes(1, salt);
+			pstmt.setBytes(2, newPasswordWithSalt);
+			
+			int rs = pstmt.executeUpdate();
 			if (rs != 0) {
 				mResponse.successfulResponse();
 				mResponse.setCode(Codes.PASSWORD_UPDATE_SUCCESSFUL);
@@ -312,14 +315,11 @@ public class UserData {
 				else
 					load();
 			}
-		} catch (SQLException e) {
-			mResponse.setSuccessful(false);
-			mResponse.setCode(e.getErrorCode());
-			mResponse.setTitle(Strings.ERROR);
+		} catch (SQLException | NoSuchAlgorithmException e) {
+			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
-
-		}
-		stmt.close();
+		} 
+		pstmt.close();
 		conn.close();
 		return mResponse;
 
@@ -337,7 +337,7 @@ public class UserData {
 
 			String userEmail = resetPassword.getUserEmail();
 			String resetPasswordLinkCode = resetPassword.getResetLinkCode();
-			int usedLink = Constants.TRUE;
+			int usedLink = ConfigConstants.TRUE;
 
 			String query = "update link_reset_password set used_link = "+usedLink+" where user_email = '"+userEmail+"' and code = '"+resetPasswordLinkCode+"';";
 
@@ -365,7 +365,7 @@ public class UserData {
 		Connection conn = dataSource.getConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
-		int usedLink = Constants.FALSE;
+		int usedLink = ConfigConstants.FALSE;
 		try {
 			if (rs.next()) 
 				usedLink = rs.getInt("used_link");
@@ -375,7 +375,7 @@ public class UserData {
 		rs.close();
 		stmt.close();
 		conn.close();
-		return usedLink==Constants.TRUE;
+		return usedLink==ConfigConstants.TRUE;
 		
 	}
 	

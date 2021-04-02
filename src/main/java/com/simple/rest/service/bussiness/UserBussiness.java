@@ -12,7 +12,7 @@ import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.ResetPassword;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
-import com.simple.rest.service.resources.Constants;
+import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.EmailServiceImpl;
@@ -51,23 +51,24 @@ public class UserBussiness {
 	public MyResponse generateLinkResetPassword(String userEmail) {
 
 		MyResponse mResponse = new MyResponse();
-
-		String cod = Utilities.alphaNumericRandom();
-		String expireDate = Dates.getCurrentDate();
-		String expireTime = Dates.getCurrentTimeInOneHour();
-		int usedLink = Constants.FALSE;
-
-		LinkResetPassword linkResetPassword = new LinkResetPassword();
-		linkResetPassword.setCode(cod);
-		linkResetPassword.setUserEmail(userEmail);
-		linkResetPassword.setExpireDate(expireDate);
-		linkResetPassword.setExpireTime(expireTime);
-		linkResetPassword.setUsedLink(usedLink);
-
+		
 		try {
+			String cod = Utilities.alphaNumericRandom();
+			String expireDate = Dates.getCurrentDate();
+			String expireTime = Dates.getCurrentTimeInOneHour();
+			int usedLink = ConfigConstants.FALSE;
+	
+			LinkResetPassword linkResetPassword = new LinkResetPassword();
+			linkResetPassword.setCode(cod);
+			linkResetPassword.setUserEmail(userEmail);
+			linkResetPassword.setExpireDate(expireDate);
+			linkResetPassword.setExpireTime(expireTime);
+			linkResetPassword.setUsedLink(usedLink);
+	
 			mResponse = userData.generateLinkResetPassword(linkResetPassword);
 			if (mResponse.isSuccessful())
 				sendEmail(cod, userEmail);
+			
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
