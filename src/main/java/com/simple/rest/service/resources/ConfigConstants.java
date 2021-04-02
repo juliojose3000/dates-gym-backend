@@ -2,7 +2,7 @@ package com.simple.rest.service.resources;
 
 public class ConfigConstants {
 	
-	public static final boolean PRODUCTION = true; //TODO put in true to production
+	public static final boolean PRODUCTION = false; //TODO put in true to production
 	public static final int HOUR_TO_CREATE_A_NEW_SCHEDULE = 17; //5 PM
 	public static final String JSEGURAC_PC = "jsegurac-pc";
 	public static final int TRUE = 1;
