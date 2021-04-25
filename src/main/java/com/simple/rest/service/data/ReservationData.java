@@ -69,7 +69,7 @@ public class ReservationData {
 		
 		MyResponse mResponse = new MyResponse();
 		
-		User user = userData.findByEmail(reservation.getUser().getEmail());
+		User user = userData.findById(reservation.getUser().getId());
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
 		
@@ -139,7 +139,7 @@ public class ReservationData {
 		
 		MyResponse mResponse = new MyResponse();
 	
-		User user = userData.findByEmail(reservation.getUser().getEmail());
+		User user = userData.findById(reservation.getUser().getId());
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
 

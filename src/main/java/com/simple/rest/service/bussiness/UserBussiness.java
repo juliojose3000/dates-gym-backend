@@ -121,4 +121,15 @@ public class UserBussiness {
 		}
 	}
 
+	public MyResponse updateUserProfile(User user) {
+		MyResponse mResponse = new MyResponse();
+		try {
+			mResponse = userData.updateUserProfile(user);
+		} catch (SQLException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		return mResponse;
+	}
+
 }

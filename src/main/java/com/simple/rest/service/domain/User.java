@@ -12,8 +12,7 @@ public class User {
 	
 	public User() {}
 
-	public User(int id, String name, String phoneNumber, String email, String password, byte[] salt,
-			byte[] passwordWithSalt) {
+	public User(int id, String name, String phoneNumber, String email, String password, byte[] salt, byte[] passwordWithSalt) {
 		super();
 		this.id = id;
 		this.name = name;

@@ -68,8 +68,10 @@ public class JwtAuthenticationController {
 			mResponse.setTitle(Strings.SUCCESSFUL);
 			mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
 			mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
-			mResponse.setData(user);
 			
+			user.setSalt(null);
+			user.setPasswordWithSalt(null);
+			mResponse.setData(user);
 			
 		}catch(Exception e) {
 			mResponse.unexpectedErrorResponse();

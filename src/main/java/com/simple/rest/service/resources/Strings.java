@@ -28,5 +28,6 @@ public class Strings {
 	public static final String PASSWORD_UPDATE_SUCCESSFUL = "La contraseña se ha actualizado correctamente";
 	public static final String RESET_LINK_HAS_BEEN_USED = "El link para restaurar la contraseña ya ha sido usado, por favor intente de nuevo con otro link";
 	public static final String THE_EMAIL_NOT_CORRESPONDS_WITH_THE_LINK_PASSWORD_RESET = "El correo ingresado no concuerda con el correo al que se le envió el link para restaurar la contraseña.";
+	public static final String USER_PROFILE_UPDATED_SUCCESSFUL = "Sus datos se han actualizado correctamente";
 	
 }

@@ -20,11 +20,11 @@ public class EncryptionPasswords {
         return s;
     }
 
-    public static byte[] getHashWithSalt(String input, byte[] salt) throws NoSuchAlgorithmException {
+    public static byte[] getHashWithSalt(String password, byte[] salt) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-512");
         digest.reset();
         digest.update(salt);
-        byte[] hashedBytes = digest.digest(stringToByte(input));
+        byte[] hashedBytes = digest.digest(stringToByte(password));
         return hashedBytes;
     }
 

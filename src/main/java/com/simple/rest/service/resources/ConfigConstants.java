@@ -12,7 +12,7 @@ public class ConfigConstants {
 	public static final String CFC_GMAIL = "juliojose3000@gmail.com";
 	
 	public static final boolean IGNORE_TOKEN_EXPIRATION = true;//This variable indicates if the token (user session) has a life time
-	public static final int TOKEN_MINUTES_LIFE_TIME = 60;//This variable indicates, if the previus variable is true, the life time of a user session.
+	public static final int TOKEN_MINUTES_LIFE_TIME = 60;//This variable indicates, if the previus variable is false, the life time of a user session.
 
 	
 }

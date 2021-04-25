@@ -378,6 +378,44 @@ public class UserData {
 		return usedLink==ConfigConstants.TRUE;
 		
 	}
+
+	public MyResponse updateUserProfile(User user) throws SQLException, NoSuchAlgorithmException {
+		Connection conn = dataSource.getConnection();
+
+		MyResponse mResponse = new MyResponse();
+
+		String name = user.getName();
+		String phone = user.getPhoneNumber();
+		String email = user.getEmail();
+		String password = user.getPassword();
+		byte[] salt = EncryptionPasswords.generateSalt();
+		byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
+
+		String query = "update " + tableName + " set name = ?, phone = ?, email = ?, salt = ?, password_with_salt = ? where id ="+user.getId();
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setString(1, name);
+		pstmt.setString(2, phone);
+		pstmt.setString(3, email);
+		pstmt.setBytes(4, salt);
+		pstmt.setBytes(5, passwordWithSalt);
+
+		try {
+			int rs = pstmt.executeUpdate();
+			if (rs != 0) {
+				mResponse.successfulResponse();
+				mResponse.setDescription(Strings.USER_PROFILE_UPDATED_SUCCESSFUL);
+				user.setPassword(""); //It's not secure return the password
+				mResponse.setData(user);
+				load();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		pstmt.close();
+		conn.close();
+		return mResponse;
+	}
 	
 
 }

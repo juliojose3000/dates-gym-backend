@@ -145,5 +145,15 @@ public class UserController {
 		
 	}
 	
+	@RequestMapping(method = RequestMethod.POST, value="/update_user_profile")
+	@ResponseBody
+	public ResponseEntity<MyResponse> updateUserProfile(@RequestBody User user) throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.updateUserProfile(user);
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
 
 }
