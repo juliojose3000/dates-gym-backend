@@ -190,7 +190,7 @@ public class UserData {
 		}
 		for (User userItem : LIST_USERS) {
 			if (userItem.getEmail().equals(email)) {
-				user = userItem;
+				user = new User(userItem);
 				break;
 			}
 		}

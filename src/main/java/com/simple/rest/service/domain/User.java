@@ -22,6 +22,17 @@ public class User {
 		this.salt = salt;
 		this.passwordWithSalt = passwordWithSalt;
 	}
+	
+	public User(User user) {
+		super();
+		this.id = user.getId();
+		this.name = user.getName();
+		this.phoneNumber = user.getPhoneNumber();
+		this.email = user.getEmail();
+		this.password = user.getPassword();
+		this.salt = user.getSalt();
+		this.passwordWithSalt = user.getPasswordWithSalt();
+	}
 
 	public int getId() {
 		return id;
