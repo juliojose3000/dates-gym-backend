@@ -55,28 +55,38 @@ public class JwtAuthenticationController {
 		
 		try {
 			User user = userData.findByEmail(authenticationRequest.getEmail());
-			String passwordWithSalt = EncryptionPasswords.bytetoString(EncryptionPasswords.getHashWithSalt(authenticationRequest.getPassword(), user.getSalt()));
-			authenticate(authenticationRequest.getEmail(), passwordWithSalt);
 			
-			final UserDetails userDetails = inMemoryUserDetailsService
-					.loadUserByUsername(authenticationRequest.getEmail());
+			if(user != null) {
+			
+				String passwordWithSalt = EncryptionPasswords.bytetoString(EncryptionPasswords.getHashWithSalt(authenticationRequest.getPassword(), user.getSalt()));
+				authenticate(authenticationRequest.getEmail(), passwordWithSalt);
+				
+				final UserDetails userDetails = inMemoryUserDetailsService
+						.loadUserByUsername(authenticationRequest.getEmail());
 
-			token = jwtTokenUtil.generateToken(userDetails);
-			
-			mResponse.setToken(token);
-			mResponse.setSuccessful(true);
-			mResponse.setTitle(Strings.SUCCESSFUL);
-			mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
-			mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
-			
-			user.setSalt(null);
-			user.setPasswordWithSalt(null);
-			mResponse.setData(user);
+				token = jwtTokenUtil.generateToken(userDetails);
+				
+				mResponse.setToken(token);
+				mResponse.setSuccessful(true);
+				mResponse.setTitle(Strings.SUCCESSFUL);
+				mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
+				mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
+				
+				user.setSalt(null);
+				user.setPasswordWithSalt(null);
+				mResponse.setData(user);
+				
+			} else {
+				mResponse.unexpectedErrorResponse();
+				mResponse.setDescription(Strings.EMAIL_DOES_NOT_EXISTS);
+				mResponse.setCode(Codes.EMAIL_DOES_NOT_EXISTS);
+			}
 			
 		}catch(Exception e) {
 			mResponse.unexpectedErrorResponse();
-			if(e.getCause().getMessage().equals(ErrorMessages.BAD_CREDENTIALS) ||
-					e.getCause().getMessage().equals(ErrorMessages.INVALID_CREDENTIALS)) {
+
+			if(e.getCause() != null && (e.getCause().getMessage().equals(ErrorMessages.BAD_CREDENTIALS) ||
+					e.getCause().getMessage().equals(ErrorMessages.INVALID_CREDENTIALS))) {
 				mResponse.setDescription(Strings.INVALID_CREDENTIALS);
 				mResponse.setCode(Codes.INVALID_CREDENTIALS);
 			}else {

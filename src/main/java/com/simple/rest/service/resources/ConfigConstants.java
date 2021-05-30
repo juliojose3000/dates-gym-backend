@@ -8,7 +8,7 @@ public class ConfigConstants {
 	public static final int TRUE = 1;
 	public static final int FALSE = 0;
 	public static final String CFC_URL_PRODUCTION = "https://cachi-fitness-center.web.app";
-	public static final String CFC_URL_DEVELOP = "http://192.168.88.110:4200";
+	public static final String CFC_URL_DEVELOP = "http://192.168.88.10:4200";
 	public static final String CFC_GMAIL = "juliojose3000@gmail.com";
 	
 	public static final boolean IGNORE_TOKEN_EXPIRATION = true;//This variable indicates if the token (user session) has a life time

@@ -388,17 +388,28 @@ public class UserData {
 		String phone = user.getPhoneNumber();
 		String email = user.getEmail();
 		String password = user.getPassword();
-		byte[] salt = EncryptionPasswords.generateSalt();
-		byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
 
-		String query = "update " + tableName + " set name = ?, phone = ?, email = ?, salt = ?, password_with_salt = ? where id ="+user.getId();
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		pstmt.setString(1, name);
-		pstmt.setString(2, phone);
-		pstmt.setString(3, email);
-		pstmt.setBytes(4, salt);
-		pstmt.setBytes(5, passwordWithSalt);
-
+		String query;
+		PreparedStatement pstmt = null;
+		if(password!=null) {//This means the user update its password
+			byte[] salt = EncryptionPasswords.generateSalt();
+			byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
+			query = "update " + tableName + " set name = ?, phone = ?, email = ?, salt = ?, password_with_salt = ? where id ="+user.getId();
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, name);
+			pstmt.setString(2, phone);
+			pstmt.setString(3, email);
+			pstmt.setBytes(4, salt);
+			pstmt.setBytes(5, passwordWithSalt);
+		}
+		else {
+			query = "update " + tableName + " set name = ?, phone = ?, email = ? where id ="+user.getId();
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, name);
+			pstmt.setString(2, phone);
+			pstmt.setString(3, email);
+		}
+			
 		try {
 			int rs = pstmt.executeUpdate();
 			if (rs != 0) {
