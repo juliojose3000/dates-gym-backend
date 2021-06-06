@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.w3c.dom.ls.LSOutput;
 
 import com.simple.rest.service.domain.LinkResetPassword;
 import com.simple.rest.service.domain.MyResponse;
@@ -379,7 +380,7 @@ public class UserData {
 		
 	}
 
-	public MyResponse updateUserProfile(User user) throws SQLException, NoSuchAlgorithmException {
+	public MyResponse updateUserProfile(User user, String newPassword) throws SQLException, NoSuchAlgorithmException {
 		Connection conn = dataSource.getConnection();
 
 		MyResponse mResponse = new MyResponse();
@@ -387,29 +388,33 @@ public class UserData {
 		String name = user.getName();
 		String phone = user.getPhoneNumber();
 		String email = user.getEmail();
-		String password = user.getPassword();
+		String currentPassword = user.getPassword();
+		byte[] currentSalt = findByEmail(email).getSalt();
+		byte[] currentPasswordWithSalt = EncryptionPasswords.getHashWithSalt(currentPassword, currentSalt);
 
 		String query;
 		PreparedStatement pstmt = null;
-		if(password!=null) {//This means the user update its password
-			byte[] salt = EncryptionPasswords.generateSalt();
-			byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
-			query = "update " + tableName + " set name = ?, phone = ?, email = ?, salt = ?, password_with_salt = ? where id ="+user.getId();
+		if(!newPassword.equals("null")) {//This means the user update its password
+			byte[] newSalt = EncryptionPasswords.generateSalt();
+			byte[] newPasswordWithSalt = EncryptionPasswords.getHashWithSalt(newPassword, newSalt);
+			query = "update " + tableName + " set name = ?, phone = ?, email = ?, salt = ?, password_with_salt = ? where id ="+user.getId() + " AND password_with_salt = ?";
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, name);
 			pstmt.setString(2, phone);
 			pstmt.setString(3, email);
-			pstmt.setBytes(4, salt);
-			pstmt.setBytes(5, passwordWithSalt);
+			pstmt.setBytes(4, newSalt);
+			pstmt.setBytes(5, newPasswordWithSalt);
+			pstmt.setBytes(6, currentPasswordWithSalt);
 		}
 		else {
-			query = "update " + tableName + " set name = ?, phone = ?, email = ? where id ="+user.getId();
+			query = "update " + tableName + " set name = ?, phone = ?, email = ? where id ="+user.getId() + " AND password_with_salt = ?";
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, name);
 			pstmt.setString(2, phone);
 			pstmt.setString(3, email);
+			pstmt.setBytes(4, currentPasswordWithSalt);
 		}
-			
+		
 		try {
 			int rs = pstmt.executeUpdate();
 			if (rs != 0) {
@@ -418,6 +423,9 @@ public class UserData {
 				user.setPassword(""); //It's not secure return the password
 				mResponse.setData(user);
 				load();
+			}else {
+				mResponse.errorResponse();
+				mResponse.setDescription(Strings.WRONG_PASSWORD);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

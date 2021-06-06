@@ -121,10 +121,10 @@ public class UserBussiness {
 		}
 	}
 
-	public MyResponse updateUserProfile(User user) {
+	public MyResponse updateUserProfile(User user, String newPassword) {
 		MyResponse mResponse = new MyResponse();
 		try {
-			mResponse = userData.updateUserProfile(user);
+			mResponse = userData.updateUserProfile(user, newPassword);
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();

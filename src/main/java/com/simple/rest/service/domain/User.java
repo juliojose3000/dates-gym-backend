@@ -1,5 +1,10 @@
 package com.simple.rest.service.domain;
 
+import java.util.LinkedHashMap;
+
+import com.simple.rest.service.data.UserData;
+import com.simple.rest.service.util.Utilities;
+
 public class User {
 	
 	private int id;
@@ -32,6 +37,15 @@ public class User {
 		this.password = user.getPassword();
 		this.salt = user.getSalt();
 		this.passwordWithSalt = user.getPasswordWithSalt();
+	}
+	
+	public User(LinkedHashMap<String, String> userMap) {
+		super();
+		this.id = Integer.parseInt(userMap.get("id"));
+		this.name = userMap.get("name");
+		this.phoneNumber = userMap.get("phoneNumber");
+		this.email = userMap.get("email");
+		this.password = userMap.get("password");
 	}
 
 	public int getId() {
