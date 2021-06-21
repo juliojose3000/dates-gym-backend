@@ -15,7 +15,9 @@ import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.EmailHtmlBodies;
 import com.simple.rest.service.util.EmailServiceImpl;
+import com.simple.rest.service.util.Log;
 import com.simple.rest.service.util.Utilities;
 
 @Service
@@ -26,11 +28,23 @@ public class UserBussiness {
 	
 	@Autowired
 	EmailServiceImpl emailServiceImpl;
+	
+	@Autowired
+	EmailHtmlBodies emailHtmlBodies;
 
 	public MyResponse create(User user) {
 		MyResponse mResponse = new MyResponse();
 		try {
 			mResponse = userData.create(user);
+			if(mResponse.isSuccessful()){
+				boolean isSuccessful = sendValidUserAccountEmailBody(user);
+				if(isSuccessful) {
+					Log.create("UserBussiness", "Nuevo usuario registrado. Se envió correo para proceder con la activación de la cuenta.");
+				}else {
+					//TODO make something when email doesn't send
+				}
+				
+			}
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
@@ -67,7 +81,7 @@ public class UserBussiness {
 	
 			mResponse = userData.generateLinkResetPassword(linkResetPassword);
 			if (mResponse.isSuccessful())
-				sendEmail(cod, userEmail);
+				sendResetPasswordLinkEmailBody(cod, userEmail);
 			
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
@@ -76,15 +90,28 @@ public class UserBussiness {
 		return mResponse;
 	}
 
-	private void sendEmail(String codeReset, String userEmail) {
+	private void sendResetPasswordLinkEmailBody(String codeReset, String userEmail) {
 
 		try {
 			User user = userData.findByEmail(userEmail);
-			emailServiceImpl.sendHTMLEmailMessage(user, Strings.EMAIL_SUBJECT, codeReset);
+			String htmlEmailBody = emailHtmlBodies.generateResetPasswordLinkEmailBody(user.getName(), codeReset);
+			emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_RESET_PASSWORD_LINK, htmlEmailBody);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
+	}
+	
+	private boolean sendValidUserAccountEmailBody(User user) {
+
+		String htmlEmailBody = emailHtmlBodies.generateValidUserAccountEmailBody(user);
+		boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_VALID_USER_ACCOUNT, htmlEmailBody);
+		if(isSuccessful) {
+			return true;
+		}else {
+			return false;
+		}
+			
 	}
 	
 	public LinkResetPassword getResetLinkByCode(String code) {
@@ -126,6 +153,17 @@ public class UserBussiness {
 		try {
 			mResponse = userData.updateUserProfile(user, newPassword);
 		} catch (SQLException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		return mResponse;
+	}
+
+	public MyResponse enableUserAccount(String userEmail) {
+		MyResponse mResponse = new MyResponse();
+		try {
+			mResponse = userData.enableUserAccount(userEmail);
+		} catch (SQLException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();
 		}

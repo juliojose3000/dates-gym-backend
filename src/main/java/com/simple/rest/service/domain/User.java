@@ -14,10 +14,11 @@ public class User {
 	private String password;
 	private byte[] salt;
 	private byte[] passwordWithSalt;
+	private boolean isEnabled; //This attribute indicates if the user is currently enable so can make uses of the page
 	
 	public User() {}
 
-	public User(int id, String name, String phoneNumber, String email, String password, byte[] salt, byte[] passwordWithSalt) {
+	public User(int id, String name, String phoneNumber, String email, String password, byte[] salt, byte[] passwordWithSalt, boolean isEnabled) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -26,6 +27,7 @@ public class User {
 		this.password = password;
 		this.salt = salt;
 		this.passwordWithSalt = passwordWithSalt;
+		this.isEnabled = isEnabled;
 	}
 	
 	public User(User user) {
@@ -37,6 +39,7 @@ public class User {
 		this.password = user.getPassword();
 		this.salt = user.getSalt();
 		this.passwordWithSalt = user.getPasswordWithSalt();
+		this.isEnabled = user.isEnabled();
 	}
 	
 	public User(LinkedHashMap<String, String> userMap) {
@@ -104,10 +107,13 @@ public class User {
 		this.passwordWithSalt = passwordWithSalt;
 	}
 
-	
-	
-	
-	
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 
 
 }

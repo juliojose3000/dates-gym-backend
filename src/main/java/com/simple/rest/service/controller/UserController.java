@@ -160,5 +160,15 @@ public class UserController {
 		
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value="/enable_user_account")
+	@ResponseBody
+	public ResponseEntity<MyResponse> enableUserAccount(@RequestParam String userEmail) throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.enableUserAccount(userEmail);
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
 
 }
