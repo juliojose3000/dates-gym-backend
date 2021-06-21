@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.data.ReservationData;
+import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.resources.Strings;
@@ -19,24 +20,32 @@ public class ReservationBussiness {
 	@Autowired
 	ReservationData reservationData;
 	
+	@Autowired
+	UserData userData;
+	
 	public MyResponse make(Reservation reservation) {
 		
 		MyResponse mResponse = new MyResponse();
 		
-		if(!isAValisReservation(reservation)) {
+		if(!userData.userIsEnabled(reservation.getUser().getEmail())) {
+			mResponse.errorResponse();
+			mResponse.setDescription(Strings.USER_ACCOUNT_IS_NOT_ENABLED);
+			return mResponse;
+		}else if(!isAValisReservation(reservation)) {
 			mResponse.errorResponse();
 			mResponse.setDescription(Strings.INVALID_RESERVATION);
 			return mResponse;
+		}else {
+			try {
+				mResponse = reservationData.make(reservation);
+			} 
+			catch (SQLException | InterruptedException e) {
+				e.printStackTrace();
+				mResponse.unexpectedErrorResponse();
+			}
+			return mResponse;
 		}
 		
-		try {
-			mResponse = reservationData.make(reservation);
-		} 
-		catch (SQLException | InterruptedException e) {
-			e.printStackTrace();
-			mResponse.unexpectedErrorResponse();
-		}
-		return mResponse;
 	}
 	
 	public MyResponse cancel(Reservation reservation) {

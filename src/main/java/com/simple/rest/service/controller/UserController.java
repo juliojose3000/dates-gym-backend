@@ -2,6 +2,7 @@ package com.simple.rest.service.controller;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.LinkedHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -147,9 +148,23 @@ public class UserController {
 	
 	@RequestMapping(method = RequestMethod.POST, value="/update_user_profile")
 	@ResponseBody
-	public ResponseEntity<MyResponse> updateUserProfile(@RequestBody User user) throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> updateUserProfile(@RequestBody LinkedHashMap<String, Object> map) throws SQLException, ParseException {
 		
-		MyResponse mResponse = userBussiness.updateUserProfile(user);
+		User user = new User((LinkedHashMap<String, String>)map.get("user"));
+		
+		String newPassword = String.valueOf(map.get("password"));
+		
+		MyResponse mResponse = userBussiness.updateUserProfile(user, newPassword);
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/enable_user_account")
+	@ResponseBody
+	public ResponseEntity<MyResponse> enableUserAccount(@RequestParam String userEmail) throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.enableUserAccount(userEmail);
 		
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
