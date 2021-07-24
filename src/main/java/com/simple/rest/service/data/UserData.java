@@ -506,6 +506,36 @@ public class UserData {
 		}
 		return user;
 	}
+
+	public MyResponse registerUserPhone(User user) throws SQLException {
+		Connection conn = dataSource.getConnection();
+
+		MyResponse mResponse = new MyResponse();
+
+		String query = "update " + tableName + " set phone = ? where email ="+user.getEmail() + ";";
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setString(1, user.getPhoneNumber());
+
+		try {
+			int rs = pstmt.executeUpdate();
+			if (rs != 0) {
+				mResponse.successfulResponse();
+				mResponse.setCode(Codes.USER_CREATED_SUCCESSFUL);
+				mResponse.setDescription(Strings.USER_CREATED_SUCCESSFUL);
+				mResponse.setData(user);
+				loadUsers();
+			}else {
+				mResponse.errorResponse();
+				mResponse.setDescription(Strings.WRONG_PASSWORD);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		pstmt.close();
+		conn.close();
+		return mResponse;
+	}
 	
 
 }

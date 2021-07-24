@@ -37,7 +37,9 @@ public class UserBussiness {
 		try {
 			mResponse = userData.create(user);
 			if(mResponse.isSuccessful()){
-				boolean isSuccessful = sendValidUserAccountEmailBody(user);
+				boolean isSuccessful = true;
+				if(ConfigConstants.SEND_EMAIL)
+					isSuccessful = sendValidUserAccountEmailBody(user);
 				if(isSuccessful) {
 					Log.create("UserBussiness", "Nuevo usuario registrado. Se envió correo para proceder con la activación de la cuenta.");
 				}else {
@@ -61,13 +63,22 @@ public class UserBussiness {
 			return false;
 		}
 	}
+	
+	public User getUserByEmail(String email) {
+		try {
+			return userData.findByEmail(email);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public MyResponse generateLinkResetPassword(String userEmail) {
 
 		MyResponse mResponse = new MyResponse();
 		
 		try {
-			String cod = Utilities.alphaNumericRandom();
+			String cod = Utilities.alphaNumericRandom(10);
 			String expireDate = Dates.getCurrentDate();
 			String expireTime = Dates.getCurrentTimeInOneHour();
 			int usedLink = ConfigConstants.FALSE;
@@ -169,5 +180,35 @@ public class UserBussiness {
 		}
 		return mResponse;
 	}
+
+	public MyResponse registerUserPhone(User user) {
+		MyResponse mResponse = new MyResponse();
+		try {
+			mResponse = userData.registerUserPhone(user);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		return mResponse;
+	}
+	
+	public MyResponse userExists(String email) {
+		MyResponse mResponse = new MyResponse();
+		try {
+			mResponse.successfulResponse();
+			if(userData.findByEmail(email) == null) {
+				mResponse.setSuccessful(false);
+				mResponse.setCode(Codes.USER_EMAIL_DOES_NOT_EXISTS);
+				mResponse.setDescription(Strings.USER_EMAIL_DOES_NOT_EXISTS);
+			}else {
+				mResponse.setSuccessful(true);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			mResponse.unexpectedErrorResponse();
+		}
+		return mResponse;
+	}
+
 
 }

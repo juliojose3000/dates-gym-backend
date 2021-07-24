@@ -11,6 +11,7 @@ public class Codes {
 	public static final int DUPLICATE_ENTRY_ERROR = 1062;
 	public static final int NO_AVAILABLE_SPACE = 4025;
 	public static final int USER_CREATED_SUCCESSFUL = 981045;
+	public static final int SOCIAL_USER_CREATED_SUCCESSFUL = 981047;
 	public static final int INVALID_CREDENTIALS = 1447835183;
 	public static final int LOGIN_SUCCESSFUL = 981055;
 	public static final int SIGNUP_SUCCESSFUL = 981065;
@@ -22,5 +23,6 @@ public class Codes {
 	public static final int LINK_RESET_HAS_EXPIRED = 981125;
 	public static final int PASSWORD_UPDATE_SUCCESSFUL = 981135;
 	public static final int RESET_LINK_HAS_BEEN_USED = 981145;
+	public static final int USER_EMAIL_DOES_NOT_EXISTS = 981150;
 
 }

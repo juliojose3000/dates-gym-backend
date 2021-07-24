@@ -27,10 +27,10 @@ public class Utilities {
 		return timeFormat.format(c.getTime());
 	}
 	
-	public static String alphaNumericRandom() {
+	public static String alphaNumericRandom(int randomLength) {
 	    int leftLimit = 48; // numeral '0'
 	    int rightLimit = 122; // letter 'z'
-	    int targetStringLength = 10;
+	    int targetStringLength = randomLength;
 	    Random random = new Random();
 
 	    String generatedString = random.ints(leftLimit, rightLimit + 1)

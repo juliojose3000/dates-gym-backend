@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simple.rest.service.authentication.JwtRequest;
 import com.simple.rest.service.bussiness.UserBussiness;
+import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.domain.LinkResetPassword;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.ResetPassword;
@@ -24,7 +25,9 @@ import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.EncryptionPasswords;
 import com.simple.rest.service.util.Log;
+import com.simple.rest.service.util.Utilities;
 
 @RestController
 @RequestMapping(value="/user")
@@ -78,8 +81,10 @@ public class UserController {
 		
 		if(isUserRegistered) {
 			try {
+				user = userBussiness.getUserByEmail(user.getEmail());
+				
 				Log.create(this.getClass().getName(), "El usuario ya existe, iniciando sesión");
-				response = jwtAuth.createAuthenticationTokenForSocialLogin(new JwtRequest(user.getEmail(), user.getPassword()));
+				response = jwtAuth.createAuthenticationTokenForSocialLogin(new JwtRequest(user.getEmail(), EncryptionPasswords.bytetoString(user.getPasswordWithSalt())));
 				MyResponse mResponseLogin = (MyResponse) response.getBody();
 				mResponse.setSuccessful(mResponseLogin.isSuccessful());
 				mResponse.setToken(mResponseLogin.getToken());
@@ -92,8 +97,10 @@ public class UserController {
 			}
 		}else {
 			Log.create(this.getClass().getName(), "El usuario NO existe, registrándolo");
-			return create(user);
-
+			user.setPassword(Utilities.alphaNumericRandom(8));
+			ResponseEntity<MyResponse> mResponseEntity = create(user);
+			mResponseEntity.getBody().setCode(Codes.SOCIAL_USER_CREATED_SUCCESSFUL);
+			return mResponseEntity;
 		}
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
@@ -167,6 +174,41 @@ public class UserController {
 		MyResponse mResponse = userBussiness.enableUserAccount(userEmail);
 		
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value="/register_user_phone")
+	@ResponseBody
+	public ResponseEntity<MyResponse> registerUserPhone(@RequestBody User user) throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.registerUserPhone(user);
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/user_exists")
+	@ResponseBody
+	public ResponseEntity<MyResponse> existsUser(@RequestParam String email) throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.userExists(email);
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/deletion")
+	@ResponseBody
+	public ResponseEntity<String> deletionUserFacebookInformation(@RequestParam String id) throws SQLException, ParseException {
+		
+		String response = "{\r\n"
+				+ "   \"algorithm\": \"HMAC-SHA256\",\r\n"
+				+ "   \"expires\": 1291840400,\r\n"
+				+ "   \"issued_at\": 1291836800,\r\n"
+				+ "   \"user_id\": \"218471\"\r\n"
+				+ "}";
+		
+		return new ResponseEntity<String>(response, HttpStatus.OK);
 		
 	}
 	
