@@ -34,5 +34,6 @@ public class Strings {
 	public static final String USER_ACCOUNT_ENABLED_SUCCESSFUL = "La cuenta de usuario se ha habilitado correctamente.";
 	public static final String USER_ACCOUNT_IS_NOT_ENABLED = "Su cuenta actualmente no se encuentra habilitada. Comuníquese con el administrador para más detalles.";
 	public static final String USER_ACCOUNT_IS_ALREADY_ENABLED = "La cuenta de usuario ya se encuentra habilitada.";
+	public static final String USER_EMAIL_DOES_NOT_EXISTS = "La email no se encuestra registrado";
 	
 }

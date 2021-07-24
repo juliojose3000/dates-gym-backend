@@ -105,7 +105,7 @@ public class JwtAuthenticationController {
 		MyResponse mResponse = new MyResponse();
 		
 		try {
-			//authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+			authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 			
 			final UserDetails userDetails = jwtInMemoryUserDetailsService
 					.loadUserSocialLogin(authenticationRequest.getEmail(), authenticationRequest.getPassword());
@@ -118,13 +118,17 @@ public class JwtAuthenticationController {
 			mResponse.setTitle(Strings.SUCCESSFUL);
 			mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
 			mResponse.setCode(Codes.LOGIN_SUCCESSFUL);
+			
+			user.setSalt(null);
+			user.setPasswordWithSalt(null);
 			mResponse.setData(user);
+			
 			
 			
 		}catch(Exception e) {
 			mResponse.unexpectedErrorResponse();
-			if(e.getCause().getMessage().equals(ErrorMessages.BAD_CREDENTIALS) ||
-					e.getCause().getMessage().equals(ErrorMessages.INVALID_CREDENTIALS)) {
+			if(e.getCause() != null && (e.getCause().getMessage().equals(ErrorMessages.BAD_CREDENTIALS) ||
+					e.getCause().getMessage().equals(ErrorMessages.INVALID_CREDENTIALS))) {
 				mResponse.setDescription(Strings.INVALID_CREDENTIALS);
 				mResponse.setCode(Codes.INVALID_CREDENTIALS);
 			}else {
@@ -147,6 +151,5 @@ public class JwtAuthenticationController {
 			throw new Exception("INVALID_CREDENTIALS", e);
 		}
 	}
-
 	
 }

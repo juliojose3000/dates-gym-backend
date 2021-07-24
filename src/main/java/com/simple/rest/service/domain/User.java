@@ -15,10 +15,13 @@ public class User {
 	private byte[] salt;
 	private byte[] passwordWithSalt;
 	private boolean isEnabled; //This attribute indicates if the user is currently enable so can make uses of the page
+	private boolean isSocial; //This means that the user registered with google or facebook method
 	
 	public User() {}
 
-	public User(int id, String name, String phoneNumber, String email, String password, byte[] salt, byte[] passwordWithSalt, boolean isEnabled) {
+	public User(int id, String name, String phoneNumber, String email, 
+			String password, byte[] salt, byte[] passwordWithSalt, 
+			boolean isEnabled, boolean isSocial) {
 		super();
 		this.id = id;
 		this.name = name;
