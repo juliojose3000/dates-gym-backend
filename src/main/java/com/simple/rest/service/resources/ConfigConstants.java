@@ -15,7 +15,7 @@ public class ConfigConstants {
 	
 	public static final boolean IGNORE_TOKEN_EXPIRATION = true;//This variable indicates if the token (user session) has a life time
 	public static final int TOKEN_MINUTES_LIFE_TIME = 60;//This variable indicates, if the previus variable is false, the life time of a user session.
-	public static final boolean SEND_EMAIL = false;
+	public static final boolean SEND_EMAIL = true; //TODO put in true to production
 
 	
 }
