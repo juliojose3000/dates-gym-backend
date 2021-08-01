@@ -24,5 +24,6 @@ public class Codes {
 	public static final int PASSWORD_UPDATE_SUCCESSFUL = 981135;
 	public static final int RESET_LINK_HAS_BEEN_USED = 981145;
 	public static final int USER_EMAIL_DOES_NOT_EXISTS = 981150;
+	public static final int AN_ERROR_HAS_OCCURRED_LOGIN_AGAIN = 981155;
 
 }

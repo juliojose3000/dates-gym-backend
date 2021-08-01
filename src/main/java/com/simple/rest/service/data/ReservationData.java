@@ -70,6 +70,15 @@ public class ReservationData {
 		MyResponse mResponse = new MyResponse();
 		
 		User user = userData.findById(reservation.getUser().getId());
+		
+		if(user == null) {
+			IT_IS_MAKING_RESERVATION = false;
+			mResponse.unexpectedErrorResponse();
+			mResponse.setCode(Codes.AN_ERROR_HAS_OCCURRED_LOGIN_AGAIN);
+			mResponse.setDescription(Strings.AN_ERROR_HAS_OCCURRED_LOGIN_AGAIN);
+			return mResponse;
+		}
+		
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
 		
@@ -81,12 +90,11 @@ public class ReservationData {
 			IT_IS_MAKING_RESERVATION = false;
 			return mResponse;
 		}
-		
-		String query = "insert into reservation(id_user, date_shift, start_hour_shift) values ("
-				+ "'"+user.getId()+"','"+Dates.utilDateToString(shiftDate)+"','"+shiftStartHour+"');";
 
 		try {
 			stmt = conn.createStatement();
+			String query = "insert into reservation(id_user, date_shift, start_hour_shift) values ("
+					+ "'"+user.getId()+"','"+Dates.utilDateToString(shiftDate)+"','"+shiftStartHour+"');";
 			Log.create(this.getClass().getName(), username + " - " +query);
 			int rs = stmt.executeUpdate(query);
 			

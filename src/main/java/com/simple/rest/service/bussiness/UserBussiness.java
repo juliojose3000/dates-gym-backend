@@ -115,8 +115,8 @@ public class UserBussiness {
 	
 	private boolean sendValidUserAccountEmailBody(User user) {
 
-		String htmlEmailBody = emailHtmlBodies.generateValidUserAccountEmailBody(user);
-		boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_VALID_USER_ACCOUNT, htmlEmailBody);
+		String htmlEmailBody = emailHtmlBodies.generateValidateUserAccountEmailBody(user);
+		boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT, htmlEmailBody);
 		if(isSuccessful) {
 			return true;
 		}else {
@@ -124,6 +124,7 @@ public class UserBussiness {
 		}
 			
 	}
+
 	
 	public LinkResetPassword getResetLinkByCode(String code) {
 		
@@ -174,6 +175,12 @@ public class UserBussiness {
 		MyResponse mResponse = new MyResponse();
 		try {
 			mResponse = userData.enableUserAccount(userEmail);
+			if(mResponse.isSuccessful()) {
+				String htmlEmailBody = emailHtmlBodies.generateYourAccountHasBeenEnabledEmailBody(userData.findByEmail(userEmail).getName());
+				boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(userEmail, Strings.EMAIL_SUBJECT_YOUR_ACCOUNT_HAS_BEEN_ENABLED, htmlEmailBody);
+				if(!isSuccessful)
+					mResponse.unexpectedErrorResponse();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			mResponse.unexpectedErrorResponse();

@@ -4,9 +4,10 @@ public class Strings {
 	
 	//TITLES
 	public static final String SUCCESSFUL = "Operación exitosa";
-	public static final String ERROR = "Operación fallida";
+	public static final String ERROR = "Ha ocurrido un error";
 	public static final String EMAIL_SUBJECT_RESET_PASSWORD_LINK = "Solicitud para resetear la contraseña";
-	public static final String EMAIL_SUBJECT_VALID_USER_ACCOUNT = "Validar nueva cuenta de usuario";
+	public static final String EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT = "Validar nueva cuenta de usuario";
+	public static final String EMAIL_SUBJECT_YOUR_ACCOUNT_HAS_BEEN_ENABLED = "Su cuenta ha sido habilitada";
 	
 	//DESCRIPTIONS/MESSAGES
 	public static final String UNEXPECTED_ERROR = "Ha ocurrido un error inésperado, por favor intente de nuevo.";
@@ -34,6 +35,7 @@ public class Strings {
 	public static final String USER_ACCOUNT_ENABLED_SUCCESSFUL = "La cuenta de usuario se ha habilitado correctamente.";
 	public static final String USER_ACCOUNT_IS_NOT_ENABLED = "Su cuenta actualmente no se encuentra habilitada. Comuníquese con el administrador para más detalles.";
 	public static final String USER_ACCOUNT_IS_ALREADY_ENABLED = "La cuenta de usuario ya se encuentra habilitada.";
-	public static final String USER_EMAIL_DOES_NOT_EXISTS = "La email no se encuestra registrado";
+	public static final String USER_EMAIL_DOES_NOT_EXISTS = "La email no se encuestra registrado.";
+	public static final String AN_ERROR_HAS_OCCURRED_LOGIN_AGAIN = "Ha ocurrido un error, vuelve a iniciar sesión.";
 	
 }
