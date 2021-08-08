@@ -26,6 +26,7 @@ import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.ErrorMessages;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.EncryptionPasswords;
+import com.simple.rest.service.util.Log;
 
 
 @Controller
@@ -45,6 +46,8 @@ public class JwtAuthenticationController {
 	
 	@Autowired
 	private UserData userData;
+	
+	private static final String TAG = "JwtAuthenticationController";
 
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
@@ -76,6 +79,8 @@ public class JwtAuthenticationController {
 				user.setPasswordWithSalt(null);
 				mResponse.setData(user);
 				
+				Log.create(TAG, "Loggin successful for "+ user.getName() + ", "+ user.getEmail());
+				
 			} else {
 				mResponse.unexpectedErrorResponse();
 				mResponse.setDescription(Strings.EMAIL_DOES_NOT_EXISTS);
@@ -91,6 +96,7 @@ public class JwtAuthenticationController {
 				mResponse.setCode(Codes.INVALID_CREDENTIALS);
 			}else {
 				e.printStackTrace();
+				Log.create(TAG, e.getMessage());
 			}	
 			
 		}
@@ -133,6 +139,7 @@ public class JwtAuthenticationController {
 				mResponse.setCode(Codes.INVALID_CREDENTIALS);
 			}else {
 				e.printStackTrace();
+				Log.create(TAG, e.getMessage());
 			}	
 			
 		}

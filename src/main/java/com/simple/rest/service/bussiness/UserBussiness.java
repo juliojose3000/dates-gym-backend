@@ -31,6 +31,8 @@ public class UserBussiness {
 	
 	@Autowired
 	EmailHtmlBodies emailHtmlBodies;
+	
+	private static final String TAG = "UserBussiness";
 
 	public MyResponse create(User user) {
 		MyResponse mResponse = new MyResponse();
@@ -49,6 +51,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -60,6 +63,7 @@ public class UserBussiness {
 			return userData.doesUserExists(email);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			return false;
 		}
 	}
@@ -69,6 +73,7 @@ public class UserBussiness {
 			return userData.findByEmail(email);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			return null;
 		}
 	}
@@ -97,6 +102,7 @@ public class UserBussiness {
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		return mResponse;
 	}
@@ -109,14 +115,15 @@ public class UserBussiness {
 			emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_RESET_PASSWORD_LINK, htmlEmailBody);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 
 	}
 	
 	private boolean sendValidUserAccountEmailBody(User user) {
 
-		String htmlEmailBody = emailHtmlBodies.generateValidUserAccountEmailBody(user);
-		boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_VALID_USER_ACCOUNT, htmlEmailBody);
+		String htmlEmailBody = emailHtmlBodies.generateValidateUserAccountEmailBody(user);
+		boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT, htmlEmailBody);
 		if(isSuccessful) {
 			return true;
 		}else {
@@ -124,6 +131,7 @@ public class UserBussiness {
 		}
 			
 	}
+
 	
 	public LinkResetPassword getResetLinkByCode(String code) {
 		
@@ -133,6 +141,7 @@ public class UserBussiness {
 			linkResetPassword = userData.getResetPasswordLinkByCode(code);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		
 		return linkResetPassword;
@@ -145,6 +154,7 @@ public class UserBussiness {
 			mResponse = userData.resetPassword(resetPassword);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -155,6 +165,7 @@ public class UserBussiness {
 			return userData.resetLinkHasBeenUsed(code, expireDate, expireTime);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			return false;
 		}
 	}
@@ -165,6 +176,7 @@ public class UserBussiness {
 			mResponse = userData.updateUserProfile(user, newPassword);
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -174,8 +186,15 @@ public class UserBussiness {
 		MyResponse mResponse = new MyResponse();
 		try {
 			mResponse = userData.enableUserAccount(userEmail);
+			if(mResponse.isSuccessful()) {
+				String htmlEmailBody = emailHtmlBodies.generateYourAccountHasBeenEnabledEmailBody(userData.findByEmail(userEmail).getName());
+				boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(userEmail, Strings.EMAIL_SUBJECT_YOUR_ACCOUNT_HAS_BEEN_ENABLED, htmlEmailBody);
+				if(!isSuccessful)
+					mResponse.unexpectedErrorResponse();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -187,6 +206,7 @@ public class UserBussiness {
 			mResponse = userData.registerUserPhone(user);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -205,6 +225,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;

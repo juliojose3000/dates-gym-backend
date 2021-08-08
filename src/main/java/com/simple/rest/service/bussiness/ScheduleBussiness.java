@@ -136,6 +136,7 @@ public class ScheduleBussiness {
 		} 
 		catch (SQLException | ParseException | InterruptedException e) {
 			e.printStackTrace();
+			Log.create(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		

@@ -1,7 +1,5 @@
 package com.simple.rest.service.util;
 
-import java.net.UnknownHostException;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -11,11 +9,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.ConfigConstants;
 
 @Service
 public class EmailServiceImpl implements EmailService {
+	
+	public static final String TAG = "EmailServiceImpl";
 
 	@Autowired
 	private JavaMailSender emailSender;
@@ -27,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
 
 	public void sendSimpleMessage(String to, String subject, String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(ConfigConstants.CFC_GMAIL);
+		message.setFrom(ConfigConstants.SERVER_EMAIL);
 		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(text);
@@ -43,11 +42,12 @@ public class EmailServiceImpl implements EmailService {
 			helper.setText(htmlEmailBody, isHtml);
 			helper.setTo(userEmail); // Destinatario
 			helper.setSubject(subject);
-			helper.setFrom(ConfigConstants.CFC_GMAIL); // Emisor
+			helper.setFrom(ConfigConstants.SERVER_EMAIL); // Emisor
 			emailSender.send(mimeMessage);
 			return true;
 		} catch (MessagingException e) {
 			e.printStackTrace();
+			Log.create(TAG, e.getMessage());
 			return false;
 		}
 		

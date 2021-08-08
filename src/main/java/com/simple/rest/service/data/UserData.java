@@ -34,6 +34,8 @@ public class UserData {
 	private String tableName = "user";
 
 	public static ArrayList<User> LIST_USERS = new ArrayList<>();
+	
+	private static final String TAG = "UserData";
 
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -67,6 +69,7 @@ public class UserData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 
 		rs.close();
@@ -83,11 +86,15 @@ public class UserData {
 		String query = "SELECT * FROM " + tableName;
 		User user;
 
-		Connection conn = dataSource.getConnection();
-		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
 
 		try {
+			conn = dataSource.getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			
 			while (rs.next()) {
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
@@ -111,6 +118,7 @@ public class UserData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 
 		rs.close();
@@ -149,6 +157,7 @@ public class UserData {
 				mResponse.setCode(Codes.USER_CREATED_SUCCESSFUL);
 				mResponse.setDescription(Strings.USER_CREATED_SUCCESSFUL);
 				loadUsers();
+				Log.create(TAG, "New user created. Name = "+name+", email = "+email);
 			}
 		} catch (SQLException e) {
 
@@ -162,6 +171,7 @@ public class UserData {
 					break;
 				default:
 					e.printStackTrace();
+					Log.create(TAG, e.getMessage());
 					mResponse.unexpectedErrorResponse();
 					break;
 			}
@@ -242,9 +252,11 @@ public class UserData {
 				mResponse.successfulResponse();
 				mResponse.setCode(Codes.LINK_RESET_PASSWORD_CREATED);
 				mResponse.setDescription(Strings.LINK_RESET_PASSWORD_CREATED);
+				Log.create(TAG, "Link to reset password created for "+ userEmail);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		stmt.close();
@@ -282,6 +294,7 @@ public class UserData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			return null;
 		}
 
@@ -295,6 +308,8 @@ public class UserData {
 
 	public MyResponse resetPassword(ResetPassword resetPassword) throws SQLException {
 
+		Log.create(TAG, "Reset password for "+resetPassword.getUserEmail());
+		
 		MyResponse mResponse = new MyResponse();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -316,14 +331,20 @@ public class UserData {
 				mResponse.successfulResponse();
 				mResponse.setCode(Codes.PASSWORD_UPDATE_SUCCESSFUL);
 				mResponse.setDescription(Strings.PASSWORD_UPDATE_SUCCESSFUL);
-				if(!changeResetPasswordLinkState(resetPassword).isSuccessful())
+				if(!changeResetPasswordLinkState(resetPassword).isSuccessful()) {
 					mResponse.unexpectedErrorResponse();
-				else
+					Log.create(TAG, "An error has occurred updating password for "+userEmail);
+				}
+				else {
 					loadUsers();
+					Log.create(TAG, "Password updated successfully for "+userEmail);	
+				}
+
 			}
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		} 
 		pstmt.close();
 		conn.close();
@@ -356,6 +377,7 @@ public class UserData {
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 
 		}
 		stmt.close();
@@ -377,6 +399,7 @@ public class UserData {
 				usedLink = rs.getInt("used_link");
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		rs.close();
 		stmt.close();
@@ -386,6 +409,7 @@ public class UserData {
 	}
 
 	public MyResponse updateUserProfile(User user, String newPassword) throws SQLException, NoSuchAlgorithmException {
+		Log.create(TAG, "Update profile by "+user.getName() + "["+user.getEmail()+"]");
 		Connection conn = dataSource.getConnection();
 
 		MyResponse mResponse = new MyResponse();
@@ -423,17 +447,20 @@ public class UserData {
 		try {
 			int rs = pstmt.executeUpdate();
 			if (rs != 0) {
+				Log.create(TAG, "Profile has been updated successfully");
 				mResponse.successfulResponse();
 				mResponse.setDescription(Strings.USER_PROFILE_UPDATED_SUCCESSFUL);
 				user.setPassword(""); //It's not secure return the password
 				mResponse.setData(user);
 				loadUsers();
 			}else {
+				Log.create(TAG, "User password is wrong");
 				mResponse.errorResponse();
 				mResponse.setDescription(Strings.WRONG_PASSWORD);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		pstmt.close();
@@ -467,12 +494,14 @@ public class UserData {
 				User user = findByEmail(userEmail);
 				user.setEnabled(true);
 				enableUserInList(user);
+				Log.create(TAG, "User account has been enabled for "+user.getName() + "["+user.getEmail()+"]");
 			}
 		} catch (SQLException e) {
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 
 		}
 		stmt.close();
@@ -488,6 +517,7 @@ public class UserData {
 			userIsEnabled = user.isEnabled();
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		return userIsEnabled;
 	}
@@ -530,6 +560,7 @@ public class UserData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		pstmt.close();

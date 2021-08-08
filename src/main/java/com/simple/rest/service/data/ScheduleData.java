@@ -20,6 +20,7 @@ import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.Log;
 
 @Repository
 public class ScheduleData {
@@ -27,6 +28,8 @@ public class ScheduleData {
 	private String tableName = "schedule";
 	
 	private static DataSource dataSource;
+	
+	private static final String TAG = "ScheduleData";
 	
 	@Autowired
 	ShiftData shiftData;
@@ -51,6 +54,7 @@ public class ScheduleData {
 				lastCode = rs.getInt("id");	
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		rs.close();
 		stmt.close();
@@ -102,10 +106,12 @@ public class ScheduleData {
 				mResponse.setDescription(Strings.SUCCESSFUL);
 				mResponse.setData(schedule);
 				mResponse.setSuccessful(true);
+				Log.create(TAG, "Schedule was created successful = "+schedule.getStartDate() + " - "+schedule.getEndDate());
 			}
 				
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		stmt.close();
@@ -151,6 +157,7 @@ public class ScheduleData {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		rs.close();
@@ -198,6 +205,7 @@ public class ScheduleData {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		rs.close();

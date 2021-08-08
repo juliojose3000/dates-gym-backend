@@ -14,12 +14,15 @@ import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.util.EncryptionPasswords;
+import com.simple.rest.service.util.Log;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	UserData userData;
+	
+	private static final String TAG = "JwtUserDetailsService";
 
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
@@ -29,6 +32,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 			user = userData.findByEmail(userEmail);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 
 		if (user.getEmail().equals(userEmail)) {

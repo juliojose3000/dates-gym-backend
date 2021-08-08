@@ -1,6 +1,9 @@
 package com.simple.rest.service.domain;
 
 import java.util.Date;
+
+import com.simple.rest.service.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ public class Shift {
 	private int availableSpace;
 	private ArrayList<User> clients;
 	private String cssClass = "cell";
+	
+	private static final String TAG = "ShiftModel";
 	
 	public Shift() {
 		this.clients = new ArrayList<User>();
@@ -50,6 +55,7 @@ public class Shift {
 			date1 = new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}  
 		this.date = date1;
 	}

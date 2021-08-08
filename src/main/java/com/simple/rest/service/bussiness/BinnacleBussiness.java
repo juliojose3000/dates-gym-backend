@@ -7,12 +7,15 @@ import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.data.BinnacleData;
 import com.simple.rest.service.domain.MyResponse;
+import com.simple.rest.service.util.Log;
 
 @Service
 public class BinnacleBussiness {
 	
 	@Autowired
 	BinnacleData binnacleData;
+	
+	private static final String TAG = "BinnacleBussiness";
 	
 	public MyResponse get() {
 		
@@ -22,6 +25,7 @@ public class BinnacleBussiness {
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		return mResponse;
 		

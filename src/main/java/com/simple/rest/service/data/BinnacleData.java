@@ -21,6 +21,8 @@ public class BinnacleData {
 	
 	private static DataSource dataSource;
 	
+	private static final String TAG = "BinnacleData";
+	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
@@ -54,6 +56,7 @@ public class BinnacleData {
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		rs.close();
 		stmt.close();
@@ -78,6 +81,7 @@ public class BinnacleData {
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		
 		stmt.close();
