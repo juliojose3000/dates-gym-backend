@@ -19,6 +19,7 @@ import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.Log;
 
 
 @Repository
@@ -30,6 +31,8 @@ public class ShiftData {
 	private static DataSource dataSource;
 	
 	private String tableName = "shift";
+	
+	private static final String TAG = "ShiftData";
 	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -69,6 +72,7 @@ public class ShiftData {
 			if(rs != 0) {wasSuccessfulProcess = true;}		
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		stmt.close();
 		conn.close();
@@ -126,6 +130,7 @@ public class ShiftData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		rs.close();
 		stmt.close();

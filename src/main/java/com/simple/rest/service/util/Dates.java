@@ -17,6 +17,8 @@ public class Dates {
     private int year, month, dayOfMonth;
 
     private Calendar calendar;
+    
+    private static final String TAG = "Dates";
 
     public Dates(){
 
@@ -129,6 +131,7 @@ public class Dates {
             dat = sdf.parse(dateX);
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.create(TAG, e.getMessage());
         }
 
         Calendar calendar = Calendar. getInstance();
@@ -164,6 +167,7 @@ public class Dates {
             dat = sdf.parse(dateX);
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.create(TAG, e.getMessage());
         }
 
         Calendar calendar = Calendar. getInstance();
@@ -255,6 +259,7 @@ public class Dates {
             date = new SimpleDateFormat("yyyy-MM-dd").parse(inputDate);
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.create(TAG, e.getMessage());
         }
 
         String day = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date);
@@ -351,6 +356,7 @@ public class Dates {
     		dateUtil =  new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
     	return dateUtil;
     	
@@ -421,6 +427,7 @@ public class Dates {
 			return false;
 		} catch (ParseException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
     	
     	return false;
@@ -437,6 +444,7 @@ public class Dates {
 			return false;
 		} catch (ParseException e) {
 			e.printStackTrace();
+            Log.create(TAG, e.getMessage());
 		}
     	
     	return false;
@@ -453,6 +461,7 @@ public class Dates {
 			return false;
 		} catch (ParseException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
     	
     	return false;

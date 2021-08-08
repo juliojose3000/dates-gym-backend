@@ -13,6 +13,8 @@ import com.simple.rest.service.resources.ConfigConstants;
 
 @Service
 public class EmailServiceImpl implements EmailService {
+	
+	public static final String TAG = "EmailServiceImpl";
 
 	@Autowired
 	private JavaMailSender emailSender;
@@ -45,6 +47,7 @@ public class EmailServiceImpl implements EmailService {
 			return true;
 		} catch (MessagingException e) {
 			e.printStackTrace();
+			Log.create(TAG, e.getMessage());
 			return false;
 		}
 		

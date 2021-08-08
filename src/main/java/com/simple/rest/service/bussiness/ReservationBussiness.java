@@ -13,6 +13,7 @@ import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.resources.TimeZoneStrings;
+import com.simple.rest.service.util.Log;
 
 @Service
 public class ReservationBussiness {
@@ -22,6 +23,8 @@ public class ReservationBussiness {
 	
 	@Autowired
 	UserData userData;
+	
+	private static final String TAG = "ReservationBussiness";
 	
 	public MyResponse make(Reservation reservation) {
 		
@@ -41,6 +44,7 @@ public class ReservationBussiness {
 			} 
 			catch (SQLException | InterruptedException e) {
 				e.printStackTrace();
+				Log.create(TAG, e.getMessage());
 				mResponse.unexpectedErrorResponse();
 			}
 			return mResponse;
@@ -63,6 +67,7 @@ public class ReservationBussiness {
 		} 
 		catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;

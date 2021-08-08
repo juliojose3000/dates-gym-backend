@@ -19,8 +19,8 @@ public class ConfigConstants {
 	 * public static final boolean SEND_EMAIL = false;
 	 */
 
-	public static final String DEVELOP_CONFIG_FILE_URL = "https://loaiza.000webhostapp.com/Cachi-Fitness-Center-Web-Page/config/develop/config.txt";
-	public static final String PRODUCTION_CONFIG_FILE_URL = "https://loaiza.000webhostapp.com/Cachi-Fitness-Center-Web-Page/config/production/config.txt";
+	public static final String DEVELOP_CONFIG_FILE_URL = "https://loaiza.000webhostapp.com/Cachi-Fitness-Center-Web-Page/develop/config/config.txt";
+	public static final String PRODUCTION_CONFIG_FILE_URL = "https://loaiza.000webhostapp.com/Cachi-Fitness-Center-Web-Page/production/config/config.txt";
 	public static final boolean IS_PRODUCTION = false; // TODO put in true to production
 	public static final int TRUE = 1;
 	public static final int FALSE = 0;
@@ -29,6 +29,7 @@ public class ConfigConstants {
 	public static String FRONTEND_URL;
 	public static String BACKEND_URL;
 	public static String SERVER_EMAIL;
+	public static String SERVER_EMAIL_PASSWORD;
 	public static boolean IGNORE_TOKEN_EXPIRATION;// This variable indicates if the token (user session) has a life time
 	public static int TOKEN_MINUTES_LIFE_TIME;// This variable indicates, if the previus variable is false, the life time of a user session.
 	public static boolean SEND_EMAIL;
@@ -46,6 +47,9 @@ public class ConfigConstants {
 			break;
 		case "SERVER_EMAIL":
 			SERVER_EMAIL = value;
+			break;
+		case "SERVER_EMAIL_PASSWORD":
+			SERVER_EMAIL_PASSWORD = value;
 			break;
 		case "IGNORE_TOKEN_EXPIRATION":
 			IGNORE_TOKEN_EXPIRATION = Boolean.parseBoolean(value);

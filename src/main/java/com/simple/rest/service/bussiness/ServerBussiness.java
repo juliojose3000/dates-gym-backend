@@ -1,6 +1,7 @@
 package com.simple.rest.service.bussiness;
 
 import java.net.UnknownHostException;
+
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -11,9 +12,12 @@ import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.resources.TimeZoneStrings;
 import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.Utilities;
+import com.simple.rest.service.util.Log;
 
 @Service
 public class ServerBussiness {
+	
+	private static final String TAG = "ServerBussiness";
 	
 	public String getServerTimeZone() {
 		return Utilities.getTimeZoneServer();
@@ -69,6 +73,7 @@ public class ServerBussiness {
 			hostname = Utilities.getHostname();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		return hostname;
 	}

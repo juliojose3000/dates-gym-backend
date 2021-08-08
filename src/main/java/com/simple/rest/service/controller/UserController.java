@@ -40,6 +40,8 @@ public class UserController {
 	@Autowired
 	JwtAuthenticationController jwtAuth;
 	
+	private static final String TAG = "UserController";
+	
 	@RequestMapping(method = RequestMethod.POST, value="/create")
 	@ResponseBody
 	public ResponseEntity<MyResponse> create(@RequestBody User user) throws SQLException, ParseException {
@@ -57,6 +59,7 @@ public class UserController {
 				mResponse.setDescription(Strings.SIGNUP_SUCCESSFUL);
 			} catch (Exception e) {
 				e.printStackTrace();
+				Log.create(TAG, e.getMessage());
 				mResponse.unexpectedErrorResponse();
 				mResponse.setDescription(Strings.USER_CREATED_BUT_LOGIN_FAILED);
 				mResponse.setCode(Codes.USER_CREATED_BUT_LOGIN_FAILED);
@@ -71,7 +74,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST, value="/social-login")
 	@ResponseBody
 	public ResponseEntity<MyResponse> socialLogin(@RequestBody User user) throws SQLException, ParseException {
-		Log.create(this.getClass().getName(), "Utilizando el Login por medio de red social... ");
+		Log.create(TAG, "Utilizando el Login por medio de red social... Usuario = "+user.getName()+"["+user.getEmail()+"]");
 		
 		boolean isUserRegistered = userBussiness.findUserByEmail(user.getEmail());
 		
@@ -83,7 +86,7 @@ public class UserController {
 			try {
 				user = userBussiness.getUserByEmail(user.getEmail());
 				
-				Log.create(this.getClass().getName(), "El usuario ya existe, iniciando sesión");
+				Log.create(TAG, "El usuario ya existe, iniciando sesión");
 				response = jwtAuth.createAuthenticationTokenForSocialLogin(new JwtRequest(user.getEmail(), EncryptionPasswords.bytetoString(user.getPasswordWithSalt())));
 				MyResponse mResponseLogin = (MyResponse) response.getBody();
 				mResponse.setSuccessful(mResponseLogin.isSuccessful());
@@ -93,10 +96,11 @@ public class UserController {
 				mResponse.setDescription(Strings.LOGIN_SUCCESSFUL);
 			} catch (Exception e) {
 				e.printStackTrace();
+				Log.create(TAG, e.getMessage());
 				mResponse.unexpectedErrorResponse();
 			}
 		}else {
-			Log.create(this.getClass().getName(), "El usuario NO existe, registrándolo");
+			Log.create(TAG, "El usuario NO existe, registrándolo");
 			user.setPassword(Utilities.alphaNumericRandom(8));
 			ResponseEntity<MyResponse> mResponseEntity = create(user);
 			mResponseEntity.getBody().setCode(Codes.SOCIAL_USER_CREATED_SUCCESSFUL);
@@ -109,6 +113,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, value="/send-link-reset-password")
 	@ResponseBody
 	public ResponseEntity<MyResponse> sendLinkResetPassword(@RequestParam String email) throws SQLException, ParseException {
+		Log.create(TAG, "Sending email with link to reset password for "+email);
 		
 		MyResponse mResponse = new MyResponse();
 		
@@ -116,6 +121,7 @@ public class UserController {
 			mResponse.errorResponse();
 			mResponse.setDescription(Strings.EMAIL_DOES_NOT_EXISTS);
 			mResponse.setCode(Codes.EMAIL_DOES_NOT_EXISTS);
+			Log.create(TAG, Strings.EMAIL_DOES_NOT_EXISTS);
 		}else {
 			mResponse = userBussiness.generateLinkResetPassword(email);
 		}

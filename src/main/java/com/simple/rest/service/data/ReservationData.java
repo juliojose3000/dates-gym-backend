@@ -40,8 +40,7 @@ public class ReservationData {
 	
 	public static boolean IT_IS_MAKING_RESERVATION = false;
 	
-	@Autowired 
-	BinnacleData binnacleData;
+	public static final String TAG = "ReservationData";
 	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -55,14 +54,14 @@ public class ReservationData {
 		boolean aux = true;
 		while(IT_IS_MAKING_RESERVATION) {
 			if(aux) {
-				Log.create(this.getClass().getName(), username + " - Otra sesión está usando la conexión, esperando a que finalice...");
+				Log.create(TAG, username + " - Otra sesión está usando la conexión, esperando a que finalice...");
 				aux = false;
 			}
 			TimeUnit.SECONDS.sleep(1);
 		}
 		IT_IS_MAKING_RESERVATION = true;
 
-		Log.create(this.getClass().getName(), username+" - Procediendo con la reservación...");
+		Log.create(TAG, username+" - Procediendo con la reservación...");
 		
 		conn = dataSource.getConnection();
 		Statement stmt = null;
@@ -76,14 +75,18 @@ public class ReservationData {
 			mResponse.unexpectedErrorResponse();
 			mResponse.setCode(Codes.AN_ERROR_HAS_OCCURRED_LOGIN_AGAIN);
 			mResponse.setDescription(Strings.AN_ERROR_HAS_OCCURRED_LOGIN_AGAIN);
+			Log.create(TAG, username+" - usuario no encontrado, cancelando reservación");
 			return mResponse;
 		}
 		
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
 		
+		Log.create(TAG, "Making reservation by "+user.getName()+ "["+ user.getEmail() +"]" + " on "+Dates.utilDateToString(shiftDate) + " at "+shiftStartHour);
+		
 		//I added this condicional, because store procedures ignores checks clauses and trigger doesn´t work in GCP
 		if(!thereIsAvailableSpace(shiftDate, shiftStartHour)) {
+			Log.create(TAG, Strings.NO_AVAILABLE_SPACE);
 			mResponse.errorResponse();
 			mResponse.setDescription(Strings.NO_AVAILABLE_SPACE);
 			conn.close();
@@ -95,11 +98,11 @@ public class ReservationData {
 			stmt = conn.createStatement();
 			String query = "insert into reservation(id_user, date_shift, start_hour_shift) values ("
 					+ "'"+user.getId()+"','"+Dates.utilDateToString(shiftDate)+"','"+shiftStartHour+"');";
-			Log.create(this.getClass().getName(), username + " - " +query);
+			
 			int rs = stmt.executeUpdate(query);
 			
 			if(rs != 0) {
-				Log.create(this.getClass().getName(), username + " - Todo OK");
+				Log.create(TAG, "Reservation made successfully");
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.RESERVATION_SUCCESSFUL);
 				mResponse.setDescription(Strings.RESERVATION_SUCCESSFUL);
@@ -109,11 +112,10 @@ public class ReservationData {
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
 				
-				binnacleData.addRecord(new Binnacle("Make reservation by "+user.getId()+" on "+Dates.utilDateToString(shiftDate) + " at "+shiftStartHour));
 			}
 			
 		} catch (SQLException e) {
-			Log.create(this.getClass().getName(), username + " - Todo Mal");
+			Log.error(TAG, " - An error has occurred with "+username+"'s reservation");
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
@@ -127,6 +129,7 @@ public class ReservationData {
 					break;
 				default:
 					e.printStackTrace();
+					Log.error(TAG, e.getMessage());
 					mResponse.unexpectedErrorResponse();
 					break;
 			}
@@ -134,7 +137,6 @@ public class ReservationData {
 		}
 		stmt.close();
 		conn.close();
-		Log.create(this.getClass().getName(), username + " - Saliendo de reservation");
 		IT_IS_MAKING_RESERVATION = false;
 		return mResponse;
 		
@@ -156,10 +158,12 @@ public class ReservationData {
 
 		try {
 			stmt = conn.createStatement();
-			Log.create(this.getClass().getName(), query);
+
 			int rs = stmt.executeUpdate(query);
+			Log.create(TAG, "Cancel reservation by "+user.getName()+ "["+ user.getEmail() +"]" + " on "+Dates.utilDateToString(shiftDate) + " at "+shiftStartHour);
 			
 			if(rs != 0) {
+				Log.create(TAG, "Reservation canceled successfully");
 				mResponse.setSuccessful(true);
 				mResponse.setCode(Codes.CANCEL_RESERVATION_SUCCESSFUL);
 				mResponse.setDescription(Strings.CANCEL_RESERVATION_SUCCESSFUL);
@@ -169,10 +173,12 @@ public class ReservationData {
 				CallableStatement statement = conn.prepareCall(callSP);  
 				statement.execute(); 
 				
-				binnacleData.addRecord(new Binnacle("Cancel reservation by "+user.getId()+" on "+Dates.utilDateToString(shiftDate) + " at "+shiftStartHour));
+
 			}
 		} catch (SQLException e) {
+			Log.error(TAG, " - An error has occurred with "+user.getName()+"'s reservation");
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		stmt.close();
@@ -199,6 +205,7 @@ public class ReservationData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		rs.close();
 		stmt.close();
@@ -225,6 +232,7 @@ public class ReservationData {
 				
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		rs.close();
 		stmt.close();

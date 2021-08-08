@@ -90,6 +90,7 @@ public class MavenWrapperDownloader {
         } catch (Throwable e) {
             System.out.println("- Error downloading");
             e.printStackTrace();
+            Log.create(TAG, e.getMessage());
             System.exit(1);
         }
     }

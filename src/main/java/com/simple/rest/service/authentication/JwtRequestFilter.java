@@ -34,6 +34,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
+	private static final String TAG = "JwtRequestFilter";
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
@@ -57,6 +59,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				mResponse.unexpectedErrorResponse();
 				if(e instanceof IllegalArgumentException) {
 					e.printStackTrace();
+					Log.create(TAG, e.getMessage());
 					Log.create(this.getClass().getName(), "Unable to get JWT Token");
 				}else if(e instanceof ExpiredJwtException) {
 					mResponse.setCode(Codes.TOKEN_EXPIRED);

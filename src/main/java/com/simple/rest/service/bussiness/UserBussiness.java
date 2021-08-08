@@ -31,6 +31,8 @@ public class UserBussiness {
 	
 	@Autowired
 	EmailHtmlBodies emailHtmlBodies;
+	
+	private static final String TAG = "UserBussiness";
 
 	public MyResponse create(User user) {
 		MyResponse mResponse = new MyResponse();
@@ -49,6 +51,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -60,6 +63,7 @@ public class UserBussiness {
 			return userData.doesUserExists(email);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			return false;
 		}
 	}
@@ -69,6 +73,7 @@ public class UserBussiness {
 			return userData.findByEmail(email);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			return null;
 		}
 	}
@@ -97,6 +102,7 @@ public class UserBussiness {
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		return mResponse;
 	}
@@ -109,6 +115,7 @@ public class UserBussiness {
 			emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_RESET_PASSWORD_LINK, htmlEmailBody);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 
 	}
@@ -134,6 +141,7 @@ public class UserBussiness {
 			linkResetPassword = userData.getResetPasswordLinkByCode(code);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 		}
 		
 		return linkResetPassword;
@@ -146,6 +154,7 @@ public class UserBussiness {
 			mResponse = userData.resetPassword(resetPassword);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -156,6 +165,7 @@ public class UserBussiness {
 			return userData.resetLinkHasBeenUsed(code, expireDate, expireTime);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			return false;
 		}
 	}
@@ -166,6 +176,7 @@ public class UserBussiness {
 			mResponse = userData.updateUserProfile(user, newPassword);
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -183,6 +194,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -194,6 +206,7 @@ public class UserBussiness {
 			mResponse = userData.registerUserPhone(user);
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -212,6 +225,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+            Log.error(TAG, e.getMessage());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
