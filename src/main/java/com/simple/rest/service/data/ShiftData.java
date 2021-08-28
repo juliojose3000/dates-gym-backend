@@ -1,21 +1,17 @@
 package com.simple.rest.service.data;
 
-import java.util.Date;
-
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.simple.rest.service.bussiness.ScheduleBussiness;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.simple.rest.service.bussiness.ShiftBussiness;
-import com.simple.rest.service.domain.Schedule;
 import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.util.Dates;
@@ -72,10 +68,11 @@ public class ShiftData {
 			if(rs != 0) {wasSuccessfulProcess = true;}		
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
 		return wasSuccessfulProcess;
 		
 	}//method
@@ -130,11 +127,13 @@ public class ShiftData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
+
 		return listShifts;
 		
 	}

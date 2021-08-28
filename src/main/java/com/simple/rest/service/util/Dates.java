@@ -356,7 +356,7 @@ public class Dates {
     		dateUtil =  new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
     	return dateUtil;
     	
@@ -427,7 +427,7 @@ public class Dates {
 			return false;
 		} catch (ParseException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
     	
     	return false;
@@ -461,7 +461,7 @@ public class Dates {
 			return false;
 		} catch (ParseException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
     	
     	return false;

@@ -24,8 +24,14 @@ public class Log {
 		write(description);
 	}
 	
-	public static void error(String tag, String message) {
-		String description = Dates.getCurrentDateTime()+": ERROR in "+tag+" ---> "+message;
+	public static String createWithoutWrite(String tag, String message) {
+		String description = Dates.getCurrentDateTime()+": "+tag+" ---> "+message+"\\n";
+		System.out.println(description);
+		return description;
+	}
+	
+	public static void error(String tag, String message, int line) {
+		String description = Dates.getCurrentDateTime()+": ERROR in "+tag+"[line = "+line+"] ---> "+message;
 		System.out.println(description);
 		write(description);
 	}

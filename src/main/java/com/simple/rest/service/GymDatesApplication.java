@@ -22,20 +22,20 @@ public class GymDatesApplication {
 
 	public static void main(String[] args) {
 		try {
-			Log.create(TAG, "Loading config constants...");
+			String configConstantsValues = Log.createWithoutWrite(TAG, "Loading config constants...");
 			URL url = new URL(ConfigConstants.IS_PRODUCTION?ConfigConstants.PRODUCTION_CONFIG_FILE_URL:ConfigConstants.DEVELOP_CONFIG_FILE_URL);
 			Scanner scanner = new Scanner(url.openStream());
 			
-			Log.create(TAG, "IS_PRODUCTION="+ConfigConstants.IS_PRODUCTION);
-			
+			configConstantsValues += Log.createWithoutWrite(TAG, "IS_PRODUCTION="+ConfigConstants.IS_PRODUCTION);	
 			// read from your scanner
 			while (scanner.hasNextLine()) {
 				String configConstant = scanner.nextLine();
 				String[] keyValue = configConstant.split("=");
-				Log.create(TAG, keyValue[0]+"="+ keyValue[1]);
+				configConstantsValues += Log.createWithoutWrite(TAG, keyValue[0]+"="+ keyValue[1]);
 				ConfigConstants.setValues(keyValue[0], keyValue[1]);
 			}
 			scanner.close();
+			Log.write(configConstantsValues);
 
 			SpringApplication.run(GymDatesApplication.class, args);
 		} catch (IOException ex) {

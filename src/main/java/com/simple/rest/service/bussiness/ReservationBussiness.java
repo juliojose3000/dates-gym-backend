@@ -67,7 +67,7 @@ public class ReservationBussiness {
 		} 
 		catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;

@@ -33,6 +33,7 @@ public class ConfigConstants {
 	public static boolean IGNORE_TOKEN_EXPIRATION;// This variable indicates if the token (user session) has a life time
 	public static int TOKEN_MINUTES_LIFE_TIME;// This variable indicates, if the previus variable is false, the life time of a user session.
 	public static boolean SEND_EMAIL;
+	public static int NUMBER_OF_CUSTOMERS_PER_SHIFT;
 
 	public static void setValues(String key, String value) {
 		switch (key) {
@@ -59,6 +60,9 @@ public class ConfigConstants {
 			break;
 		case "SEND_EMAIL":
 			SEND_EMAIL = Boolean.parseBoolean(value);
+			break;
+		case "NUMBER_OF_CUSTOMERS_PER_SHIFT":
+			NUMBER_OF_CUSTOMERS_PER_SHIFT = Integer.parseInt(value);
 			break;
 
 		}

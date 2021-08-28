@@ -51,7 +51,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -63,7 +63,7 @@ public class UserBussiness {
 			return userData.doesUserExists(email);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			return false;
 		}
 	}
@@ -73,7 +73,7 @@ public class UserBussiness {
 			return userData.findByEmail(email);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			return null;
 		}
 	}
@@ -102,7 +102,7 @@ public class UserBussiness {
 		} catch (SQLException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
 		return mResponse;
 	}
@@ -115,7 +115,7 @@ public class UserBussiness {
 			emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_RESET_PASSWORD_LINK, htmlEmailBody);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
 
 	}
@@ -141,7 +141,7 @@ public class UserBussiness {
 			linkResetPassword = userData.getResetPasswordLinkByCode(code);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
 		
 		return linkResetPassword;
@@ -154,7 +154,7 @@ public class UserBussiness {
 			mResponse = userData.resetPassword(resetPassword);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -165,7 +165,7 @@ public class UserBussiness {
 			return userData.resetLinkHasBeenUsed(code, expireDate, expireTime);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			return false;
 		}
 	}
@@ -176,7 +176,7 @@ public class UserBussiness {
 			mResponse = userData.updateUserProfile(user, newPassword);
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -194,7 +194,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -206,7 +206,7 @@ public class UserBussiness {
 			mResponse = userData.registerUserPhone(user);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;
@@ -225,7 +225,7 @@ public class UserBussiness {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;

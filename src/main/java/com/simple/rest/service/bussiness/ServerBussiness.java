@@ -73,7 +73,7 @@ public class ServerBussiness {
 			hostname = Utilities.getHostname();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
 		return hostname;
 	}

@@ -69,12 +69,13 @@ public class UserData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
 
-		rs.close();
-		stmt.close();
-		conn.close();
 		return listUsers;
 
 	}
@@ -118,12 +119,12 @@ public class UserData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-
-		rs.close();
-		stmt.close();
-		conn.close();
 
 	}
 
@@ -168,6 +169,7 @@ public class UserData {
 			switch (e.getErrorCode()) {
 				case Codes.DUPLICATE_ENTRY_ERROR:
 					mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
+					Log.error(TAG, Strings.DUPLICATE_ENTRY_USER_ERROR, e.getStackTrace()[0].getLineNumber());
 					break;
 				default:
 					e.printStackTrace();
@@ -176,9 +178,11 @@ public class UserData {
 					break;
 			}
 
+		} finally {
+			pstmt.close();
+			conn.close();
 		}
-		pstmt.close();
-		conn.close();
+
 		return mResponse;
 	}
 
@@ -256,11 +260,13 @@ public class UserData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 
 	}
@@ -294,13 +300,13 @@ public class UserData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			return null;
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-
-		rs.close();
-		stmt.close();
-		conn.close();
 
 		return linkResetPassword;
 
@@ -344,10 +350,12 @@ public class UserData {
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
-		} 
-		pstmt.close();
-		conn.close();
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			pstmt.close();
+			conn.close();
+		}
+
 		return mResponse;
 
 	}
@@ -377,11 +385,13 @@ public class UserData {
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 
 	}
@@ -399,11 +409,13 @@ public class UserData {
 				usedLink = rs.getInt("used_link");
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
+
 		return usedLink==ConfigConstants.TRUE;
 		
 	}
@@ -460,11 +472,13 @@ public class UserData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			pstmt.close();
+			conn.close();
 		}
-		pstmt.close();
-		conn.close();
+
 		return mResponse;
 	}
 
@@ -501,11 +515,13 @@ public class UserData {
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 		
 	}
@@ -517,7 +533,7 @@ public class UserData {
 			userIsEnabled = user.isEnabled();
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
 		return userIsEnabled;
 	}
@@ -560,11 +576,13 @@ public class UserData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			pstmt.close();
+			conn.close();
 		}
-		pstmt.close();
-		conn.close();
+		
 		return mResponse;
 	}
 	

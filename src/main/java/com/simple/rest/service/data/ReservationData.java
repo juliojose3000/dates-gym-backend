@@ -14,10 +14,8 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.simple.rest.service.domain.Binnacle;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
-import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.Strings;
@@ -35,8 +33,6 @@ public class ReservationData {
 	
 	@Autowired
 	UserData userData;
-	
-	private boolean CONN_IS_NOT_CLOSED = false;
 	
 	public static boolean IT_IS_MAKING_RESERVATION = false;
 	
@@ -115,7 +111,6 @@ public class ReservationData {
 			}
 			
 		} catch (SQLException e) {
-			Log.error(TAG, " - An error has occurred with "+username+"'s reservation");
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
@@ -123,21 +118,29 @@ public class ReservationData {
 			switch(e.getErrorCode()) {
 				case Codes.DUPLICATE_ENTRY_ERROR:
 					mResponse.setDescription(Strings.DUPLICATE_ENTRY_RESERVATION_ERROR);
+					Log.error(TAG, Strings.DUPLICATE_ENTRY_RESERVATION_ERROR, e.getStackTrace()[0].getLineNumber());
 					break;
 				case Codes.NO_AVAILABLE_SPACE:
 					mResponse.setDescription(Strings.NO_AVAILABLE_SPACE);
+					Log.error(TAG, Strings.NO_AVAILABLE_SPACE, e.getStackTrace()[0].getLineNumber());
 					break;
 				default:
 					e.printStackTrace();
-					Log.error(TAG, e.getMessage());
+					Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 					mResponse.unexpectedErrorResponse();
 					break;
 			}
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+			mResponse.unexpectedErrorResponse();
+		} finally {
+			IT_IS_MAKING_RESERVATION = false;
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
-		IT_IS_MAKING_RESERVATION = false;
+
 		return mResponse;
 		
 	}
@@ -175,14 +178,16 @@ public class ReservationData {
 				
 
 			}
-		} catch (SQLException e) {
-			Log.error(TAG, " - An error has occurred with "+user.getName()+"'s reservation");
+		} catch (Exception e) {
+			Log.create(TAG, " - An error has occurred with "+user.getName()+"'s reservation");
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 		
 	}
@@ -205,11 +210,13 @@ public class ReservationData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
+
 		return listUsers;
 		
 	}
@@ -232,11 +239,12 @@ public class ReservationData {
 				
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
 		return availableSpace==0?false:true;
 		
 	}
