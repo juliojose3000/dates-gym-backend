@@ -2,6 +2,7 @@ package com.simple.rest.service.bussiness;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -186,7 +187,7 @@ public class UserBussiness {
 		MyResponse mResponse = new MyResponse();
 		try {
 			mResponse = userData.enableUserAccount(userEmail);
-			if(mResponse.isSuccessful()) {
+			if(mResponse.isSuccessful() && ConfigConstants.SEND_EMAIL) {
 				String htmlEmailBody = emailHtmlBodies.generateYourAccountHasBeenEnabledEmailBody(userData.findByEmail(userEmail).getName());
 				boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(userEmail, Strings.EMAIL_SUBJECT_YOUR_ACCOUNT_HAS_BEEN_ENABLED, htmlEmailBody);
 				if(!isSuccessful)
@@ -226,6 +227,20 @@ public class UserBussiness {
 		} catch (SQLException e) {
 			e.printStackTrace();
             Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+			mResponse.unexpectedErrorResponse();
+		}
+		return mResponse;
+	}
+	
+	public MyResponse getAll() {
+		MyResponse mResponse = new MyResponse();
+		try {
+			ArrayList<User> listUsers = userData.getAll();
+			mResponse.successfulResponse();
+			mResponse.setData(listUsers);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
 		}
 		return mResponse;

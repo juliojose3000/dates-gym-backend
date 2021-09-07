@@ -218,5 +218,16 @@ public class UserController {
 		
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value="/get_all")
+	@ResponseBody
+	public ResponseEntity<MyResponse> getAll() throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.getAll();
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	
 
 }

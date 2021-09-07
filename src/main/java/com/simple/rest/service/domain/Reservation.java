@@ -4,24 +4,16 @@ import java.util.Date;
 
 public class Reservation {
 	
-	User user;
 	Date shiftDate;
 	String shiftStartHour;
 	
 	public Reservation() {}
 	
-	public Reservation(User user, Date shiftDate, String shiftStartHour) {
-		this.user = user;
+	public Reservation(Date shiftDate, String shiftStartHour) {
 		this.shiftDate = shiftDate;
 		this.shiftStartHour = shiftStartHour;
 	}
 	
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
 	public Date getShiftDate() {
 		return shiftDate;
 	}

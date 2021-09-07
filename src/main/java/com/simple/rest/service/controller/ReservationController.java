@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,9 +29,9 @@ public class ReservationController {
 	
 	@RequestMapping(method = RequestMethod.POST, value="/make")
 	@ResponseBody
-	public ResponseEntity<MyResponse> make(@RequestBody Reservation reservation) throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> make(@RequestBody Reservation reservation, @RequestParam int userId) throws SQLException, ParseException {
 		
-		MyResponse mResponse = reservationBussiness.make(reservation);
+		MyResponse mResponse = reservationBussiness.make(reservation, userId);
 
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
@@ -38,9 +39,9 @@ public class ReservationController {
 	
 	@RequestMapping(method = RequestMethod.POST, value="/cancel")
 	@ResponseBody
-	public ResponseEntity<MyResponse> cancel(@RequestBody Reservation reservation) throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> cancel(@RequestBody Reservation reservation, @RequestParam int userId) throws SQLException, ParseException {
 		
-		MyResponse mResponse = reservationBussiness.cancel(reservation);
+		MyResponse mResponse = reservationBussiness.cancel(reservation, userId);
 
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		

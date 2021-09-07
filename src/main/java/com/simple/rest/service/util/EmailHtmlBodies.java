@@ -45,7 +45,7 @@ public class EmailHtmlBodies {
 				+ "        </p>\r\n"
 				+ "\r\n"
 				+ "        <div style=\"display: flex;\">\r\n"
-				+ "            <a href='"+ConfigConstants.FRONTEND_URL+"/enable_user_account/"+user.getEmail()+"/"+user.getName()+"/"+user.getPhoneNumber()+"'\r\n"
+				+ "            <a href='"+ConfigConstants.FRONTEND_URL+"/admin/enable_user_account/"+user.getEmail()+"/"+user.getName()+"/"+user.getPhoneNumber()+"'\r\n"
 				+ "                style=\"text-decoration: none; border-radius: 20px; border: 1px solid#5cd921 ; background-color:  #5cd921 ; color: #FFFFFF; font-size: 12px; font-weight: bold; padding: 12px 30px;letter-spacing: 1px; text-transform: uppercase; transition: transform 80ms ease-in; display: block; margin: 0 auto; margin-top: 35px; cursor: pointer; width: 100px;\">Habilitar</a>\r\n"
 				+ "\r\n"
 				+ "        </div>\r\n"

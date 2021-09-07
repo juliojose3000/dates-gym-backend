@@ -26,11 +26,11 @@ public class ReservationBussiness {
 	
 	private static final String TAG = "ReservationBussiness";
 	
-	public MyResponse make(Reservation reservation) {
+	public MyResponse make(Reservation reservation, int userId) throws SQLException {
 		
 		MyResponse mResponse = new MyResponse();
 		
-		if(!userData.userIsEnabled(reservation.getUser().getEmail())) {
+		if(!userData.userIsEnabled(userData.findById(userId).getEmail())) {
 			mResponse.errorResponse();
 			mResponse.setDescription(Strings.USER_ACCOUNT_IS_NOT_ENABLED);
 			return mResponse;
@@ -40,7 +40,7 @@ public class ReservationBussiness {
 			return mResponse;
 		}else {
 			try {
-				mResponse = reservationData.make(reservation);
+				mResponse = reservationData.make(reservation, userId);
 			} 
 			catch (SQLException | InterruptedException e) {
 				e.printStackTrace();
@@ -52,7 +52,7 @@ public class ReservationBussiness {
 		
 	}
 	
-	public MyResponse cancel(Reservation reservation) {
+	public MyResponse cancel(Reservation reservation, int userId) {
 		
 		MyResponse mResponse = new MyResponse();
 		
@@ -63,7 +63,7 @@ public class ReservationBussiness {
 		}
 		
 		try {
-			mResponse = reservationData.cancel(reservation);
+			mResponse = reservationData.cancel(reservation, userId);
 		} 
 		catch (SQLException e) {
 			e.printStackTrace();

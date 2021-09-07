@@ -12,19 +12,18 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.w3c.dom.ls.LSOutput;
 
 import com.simple.rest.service.domain.LinkResetPassword;
 import com.simple.rest.service.domain.MyResponse;
+import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.domain.ResetPassword;
-import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.resources.Strings;
-import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.EncryptionPasswords;
 import com.simple.rest.service.util.Log;
+import com.simple.rest.service.util.Utilities;
 
 @Repository
 public class UserData {
@@ -36,6 +35,9 @@ public class UserData {
 	public static ArrayList<User> LIST_USERS = new ArrayList<>();
 	
 	private static final String TAG = "UserData";
+	
+	@Autowired
+	private ReservationData reservationData;
 
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -53,16 +55,23 @@ public class UserData {
 		ResultSet rs = stmt.executeQuery(query);
 		try {
 			while (rs.next()) {
+
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
 				String phone = rs.getString("phone");
 				String email = rs.getString("email");
+				boolean isEnabled = rs.getBoolean("is_enabled");
+				int role = rs.getInt("role");
+				ArrayList<Reservation> reservations = reservationData.getCustomerReservations(id);
 
 				user = new User();
 				user.setId(id);
 				user.setName(name);
-				user.setPhoneNumber(phone);
+				user.setPhoneNumber(Utilities.applyMaskToPhoneNumber(phone));
 				user.setEmail(email);
+				user.setEnabled(isEnabled);
+				user.setRole(role);
+				user.setReservations(reservations);
 
 				listUsers.add(user);
 			}
@@ -104,15 +113,19 @@ public class UserData {
 				byte[] salt = rs.getBytes("salt");
 				byte[] passwordWithSalt = rs.getBytes("password_with_salt");
 				boolean isEnabled = rs.getBoolean("is_enabled");
+				int role = rs.getInt("role");
+				ArrayList<Reservation> reservations = reservationData.getCustomerReservations(id);
 
 				user = new User();
 				user.setId(id);
 				user.setName(name);
-				user.setPhoneNumber(phone);
+				user.setPhoneNumber(Utilities.applyMaskToPhoneNumber(phone));
 				user.setEmail(email);
 				user.setSalt(salt);
 				user.setPasswordWithSalt(passwordWithSalt);
 				user.setEnabled(isEnabled);
+				user.setRole(role);
+				user.setReservations(reservations);
 
 				LIST_USERS.add(user);
 			}
@@ -141,8 +154,10 @@ public class UserData {
 		byte[] salt = EncryptionPasswords.generateSalt();
 		byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
 		boolean isEnabled = false; //Initially, the user has its account disabled
+		int role = user.getRole();
+		
 
-		String query = "insert into " + tableName + "(name, phone, email, salt, password_with_salt, is_enabled) values (?, ?, ?, ?, ?, ?)";
+		String query = "insert into " + tableName + "(name, phone, email, salt, password_with_salt, is_enabled, role) values (?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement pstmt = conn.prepareStatement(query);
 		pstmt.setString(1, name);
 		pstmt.setString(2, phone);
@@ -150,6 +165,7 @@ public class UserData {
 		pstmt.setBytes(4, salt);
 		pstmt.setBytes(5, passwordWithSalt);
 		pstmt.setBoolean(6, isEnabled);
+		pstmt.setInt(7, role);
 
 		try {
 			int rs = pstmt.executeUpdate();
@@ -173,7 +189,7 @@ public class UserData {
 					break;
 				default:
 					e.printStackTrace();
-					Log.create(TAG, e.getMessage());
+					Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 					mResponse.unexpectedErrorResponse();
 					break;
 			}
