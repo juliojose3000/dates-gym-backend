@@ -183,10 +183,10 @@ public class UserBussiness {
 		return mResponse;
 	}
 
-	public MyResponse enableUserAccount(String userEmail) {
+	public MyResponse enableUserAccount(String userEmail, boolean enable) {
 		MyResponse mResponse = new MyResponse();
 		try {
-			mResponse = userData.enableUserAccount(userEmail);
+			mResponse = userData.enableUserAccount(userEmail, enable);
 			if(mResponse.isSuccessful() && ConfigConstants.SEND_EMAIL) {
 				String htmlEmailBody = emailHtmlBodies.generateYourAccountHasBeenEnabledEmailBody(userData.findByEmail(userEmail).getName());
 				boolean isSuccessful = emailServiceImpl.sendHTMLEmailMessage(userEmail, Strings.EMAIL_SUBJECT_YOUR_ACCOUNT_HAS_BEEN_ENABLED, htmlEmailBody);

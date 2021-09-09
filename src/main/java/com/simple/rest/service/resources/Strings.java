@@ -33,8 +33,10 @@ public class Strings {
 	public static final String USER_PROFILE_UPDATED_SUCCESSFUL = "Sus datos se han actualizado correctamente.";
 	public static final String WRONG_PASSWORD = "La contraseña es incorrecta.";
 	public static final String USER_ACCOUNT_ENABLED_SUCCESSFUL = "La cuenta de usuario se ha habilitado correctamente.";
+	public static final String USER_ACCOUNT_DISABLED_SUCCESSFUL = "La cuenta de usuario se ha deshabilitado correctamente.";
 	public static final String USER_ACCOUNT_IS_NOT_ENABLED = "Su cuenta actualmente no se encuentra habilitada. Comuníquese con el administrador para más detalles.";
 	public static final String USER_ACCOUNT_IS_ALREADY_ENABLED = "La cuenta de usuario ya se encuentra habilitada.";
+	public static final String USER_ACCOUNT_IS_ALREADY_DISABLED = "La cuenta de usuario ya se encuentra deshabilitada.";
 	public static final String USER_EMAIL_DOES_NOT_EXISTS = "La email no se encuestra registrado.";
 	public static final String AN_ERROR_HAS_OCCURRED_LOGIN_AGAIN = "Ha ocurrido un error, vuelve a iniciar sesión.";
 	

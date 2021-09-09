@@ -46,7 +46,7 @@ public class UserData {
 
 	public ArrayList<User> getAll() throws SQLException {
 
-		String query = "SELECT * FROM " + tableName;
+		String query = "SELECT * FROM " + tableName + " ORDER BY name;";
 		User user;
 		ArrayList<User> listUsers = new ArrayList<>();
 
@@ -498,13 +498,13 @@ public class UserData {
 		return mResponse;
 	}
 
-	public MyResponse enableUserAccount(String userEmail) throws SQLException {
+	public MyResponse enableUserAccount(String userEmail, boolean enable) throws SQLException {
 		
 		MyResponse mResponse = new MyResponse();
 		
-		if(findByEmail(userEmail).isEnabled()) {
+		if(findByEmail(userEmail).isEnabled() == enable) {
 			mResponse.errorResponse();
-			mResponse.setDescription(Strings.USER_ACCOUNT_IS_ALREADY_ENABLED);
+			mResponse.setDescription(enable?Strings.USER_ACCOUNT_IS_ALREADY_ENABLED: Strings.USER_ACCOUNT_IS_ALREADY_DISABLED);
 			return mResponse;
 		}
 		
@@ -515,14 +515,14 @@ public class UserData {
 			conn = dataSource.getConnection();
 			stmt = conn.createStatement();
 
-			String query = "update user set is_enabled = true where email = '"+userEmail+"';";
+			String query = "update user set is_enabled = "+enable+" where email = '"+userEmail+"';";
 
 			int rs = stmt.executeUpdate(query);
 			if (rs != 0) {
 				mResponse.successfulResponse();
-				mResponse.setDescription(Strings.USER_ACCOUNT_ENABLED_SUCCESSFUL);	
+				mResponse.setDescription(enable?Strings.USER_ACCOUNT_ENABLED_SUCCESSFUL:Strings.USER_ACCOUNT_DISABLED_SUCCESSFUL);	
 				User user = findByEmail(userEmail);
-				user.setEnabled(true);
+				user.setEnabled(enable);
 				enableUserInList(user);
 				Log.create(TAG, "User account has been enabled for "+user.getName() + "["+user.getEmail()+"]");
 			}
@@ -541,7 +541,7 @@ public class UserData {
 		return mResponse;
 		
 	}
-
+	
 	public boolean userIsEnabled(String email) {
 		boolean userIsEnabled = false;
 		try {
