@@ -12,19 +12,18 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.w3c.dom.ls.LSOutput;
 
 import com.simple.rest.service.domain.LinkResetPassword;
 import com.simple.rest.service.domain.MyResponse;
+import com.simple.rest.service.domain.Reservation;
 import com.simple.rest.service.domain.ResetPassword;
-import com.simple.rest.service.domain.Shift;
 import com.simple.rest.service.domain.User;
 import com.simple.rest.service.resources.Codes;
 import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.resources.Strings;
-import com.simple.rest.service.util.Dates;
 import com.simple.rest.service.util.EncryptionPasswords;
 import com.simple.rest.service.util.Log;
+import com.simple.rest.service.util.Utilities;
 
 @Repository
 public class UserData {
@@ -36,6 +35,9 @@ public class UserData {
 	public static ArrayList<User> LIST_USERS = new ArrayList<>();
 	
 	private static final String TAG = "UserData";
+	
+	@Autowired
+	private ReservationData reservationData;
 
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -44,7 +46,7 @@ public class UserData {
 
 	public ArrayList<User> getAll() throws SQLException {
 
-		String query = "SELECT * FROM " + tableName;
+		String query = "SELECT * FROM " + tableName + " ORDER BY name;";
 		User user;
 		ArrayList<User> listUsers = new ArrayList<>();
 
@@ -53,28 +55,36 @@ public class UserData {
 		ResultSet rs = stmt.executeQuery(query);
 		try {
 			while (rs.next()) {
+
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
 				String phone = rs.getString("phone");
 				String email = rs.getString("email");
+				boolean isEnabled = rs.getBoolean("is_enabled");
+				int role = rs.getInt("role");
+				ArrayList<Reservation> reservations = reservationData.getCustomerReservations(id);
 
 				user = new User();
 				user.setId(id);
 				user.setName(name);
-				user.setPhoneNumber(phone);
+				user.setPhoneNumber(Utilities.applyMaskToPhoneNumber(phone));
 				user.setEmail(email);
+				user.setEnabled(isEnabled);
+				user.setRole(role);
+				user.setReservations(reservations);
 
 				listUsers.add(user);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
 
-		rs.close();
-		stmt.close();
-		conn.close();
 		return listUsers;
 
 	}
@@ -103,27 +113,31 @@ public class UserData {
 				byte[] salt = rs.getBytes("salt");
 				byte[] passwordWithSalt = rs.getBytes("password_with_salt");
 				boolean isEnabled = rs.getBoolean("is_enabled");
+				int role = rs.getInt("role");
+				ArrayList<Reservation> reservations = reservationData.getCustomerReservations(id);
 
 				user = new User();
 				user.setId(id);
 				user.setName(name);
-				user.setPhoneNumber(phone);
+				user.setPhoneNumber(Utilities.applyMaskToPhoneNumber(phone));
 				user.setEmail(email);
 				user.setSalt(salt);
 				user.setPasswordWithSalt(passwordWithSalt);
 				user.setEnabled(isEnabled);
+				user.setRole(role);
+				user.setReservations(reservations);
 
 				LIST_USERS.add(user);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-
-		rs.close();
-		stmt.close();
-		conn.close();
 
 	}
 
@@ -140,8 +154,10 @@ public class UserData {
 		byte[] salt = EncryptionPasswords.generateSalt();
 		byte[] passwordWithSalt = EncryptionPasswords.getHashWithSalt(password, salt);
 		boolean isEnabled = false; //Initially, the user has its account disabled
+		int role = user.getRole();
+		
 
-		String query = "insert into " + tableName + "(name, phone, email, salt, password_with_salt, is_enabled) values (?, ?, ?, ?, ?, ?)";
+		String query = "insert into " + tableName + "(name, phone, email, salt, password_with_salt, is_enabled, role) values (?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement pstmt = conn.prepareStatement(query);
 		pstmt.setString(1, name);
 		pstmt.setString(2, phone);
@@ -149,6 +165,7 @@ public class UserData {
 		pstmt.setBytes(4, salt);
 		pstmt.setBytes(5, passwordWithSalt);
 		pstmt.setBoolean(6, isEnabled);
+		pstmt.setInt(7, role);
 
 		try {
 			int rs = pstmt.executeUpdate();
@@ -168,17 +185,20 @@ public class UserData {
 			switch (e.getErrorCode()) {
 				case Codes.DUPLICATE_ENTRY_ERROR:
 					mResponse.setDescription(Strings.DUPLICATE_ENTRY_USER_ERROR);
+					Log.error(TAG, Strings.DUPLICATE_ENTRY_USER_ERROR, e.getStackTrace()[0].getLineNumber());
 					break;
 				default:
 					e.printStackTrace();
-					Log.create(TAG, e.getMessage());
+					Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 					mResponse.unexpectedErrorResponse();
 					break;
 			}
 
+		} finally {
+			pstmt.close();
+			conn.close();
 		}
-		pstmt.close();
-		conn.close();
+
 		return mResponse;
 	}
 
@@ -256,11 +276,13 @@ public class UserData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 
 	}
@@ -294,13 +316,13 @@ public class UserData {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			return null;
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-
-		rs.close();
-		stmt.close();
-		conn.close();
 
 		return linkResetPassword;
 
@@ -344,10 +366,12 @@ public class UserData {
 		} catch (SQLException | NoSuchAlgorithmException e) {
 			mResponse.unexpectedErrorResponse();
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
-		} 
-		pstmt.close();
-		conn.close();
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			pstmt.close();
+			conn.close();
+		}
+
 		return mResponse;
 
 	}
@@ -377,11 +401,13 @@ public class UserData {
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 
 	}
@@ -399,11 +425,13 @@ public class UserData {
 				usedLink = rs.getInt("used_link");
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
+
 		return usedLink==ConfigConstants.TRUE;
 		
 	}
@@ -460,21 +488,23 @@ public class UserData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			pstmt.close();
+			conn.close();
 		}
-		pstmt.close();
-		conn.close();
+
 		return mResponse;
 	}
 
-	public MyResponse enableUserAccount(String userEmail) throws SQLException {
+	public MyResponse enableUserAccount(String userEmail, boolean enable) throws SQLException {
 		
 		MyResponse mResponse = new MyResponse();
 		
-		if(findByEmail(userEmail).isEnabled()) {
+		if(findByEmail(userEmail).isEnabled() == enable) {
 			mResponse.errorResponse();
-			mResponse.setDescription(Strings.USER_ACCOUNT_IS_ALREADY_ENABLED);
+			mResponse.setDescription(enable?Strings.USER_ACCOUNT_IS_ALREADY_ENABLED: Strings.USER_ACCOUNT_IS_ALREADY_DISABLED);
 			return mResponse;
 		}
 		
@@ -485,31 +515,33 @@ public class UserData {
 			conn = dataSource.getConnection();
 			stmt = conn.createStatement();
 
-			String query = "update user set is_enabled = true where email = '"+userEmail+"';";
+			String query = "update user set is_enabled = "+enable+" where email = '"+userEmail+"';";
 
 			int rs = stmt.executeUpdate(query);
 			if (rs != 0) {
 				mResponse.successfulResponse();
-				mResponse.setDescription(Strings.USER_ACCOUNT_ENABLED_SUCCESSFUL);	
+				mResponse.setDescription(enable?Strings.USER_ACCOUNT_ENABLED_SUCCESSFUL:Strings.USER_ACCOUNT_DISABLED_SUCCESSFUL);	
 				User user = findByEmail(userEmail);
-				user.setEnabled(true);
+				user.setEnabled(enable);
 				enableUserInList(user);
-				Log.create(TAG, "User account has been enabled for "+user.getName() + "["+user.getEmail()+"]");
+				Log.create(TAG, "User account has been "+(enable?"enable":"disable")+" for "+user.getName() + "["+user.getEmail()+"]");
 			}
 		} catch (SQLException e) {
 			mResponse.setSuccessful(false);
 			mResponse.setCode(e.getErrorCode());
 			mResponse.setTitle(Strings.ERROR);
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 		
 	}
-
+	
 	public boolean userIsEnabled(String email) {
 		boolean userIsEnabled = false;
 		try {
@@ -517,7 +549,7 @@ public class UserData {
 			userIsEnabled = user.isEnabled();
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
 		return userIsEnabled;
 	}
@@ -560,11 +592,13 @@ public class UserData {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			pstmt.close();
+			conn.close();
 		}
-		pstmt.close();
-		conn.close();
+		
 		return mResponse;
 	}
 	

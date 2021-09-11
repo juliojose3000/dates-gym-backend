@@ -1,7 +1,9 @@
 package com.simple.rest.service.domain;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.util.Utilities;
 
@@ -15,13 +17,16 @@ public class User {
 	private byte[] salt;
 	private byte[] passwordWithSalt;
 	private boolean isEnabled; //This attribute indicates if the user is currently enable so can make uses of the page
-	private boolean isSocial; //This means that the user registered with google or facebook method
+	private int role;
+	private ArrayList<Reservation> reservations;
 	
-	public User() {}
+	public User() {
+		reservations = new ArrayList<>();
+	}
 
 	public User(int id, String name, String phoneNumber, String email, 
 			String password, byte[] salt, byte[] passwordWithSalt, 
-			boolean isEnabled, boolean isSocial) {
+			boolean isEnabled, boolean isSocial, int role, ArrayList<Reservation> reservations) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -31,6 +36,8 @@ public class User {
 		this.salt = salt;
 		this.passwordWithSalt = passwordWithSalt;
 		this.isEnabled = isEnabled;
+		this.role = role;
+		this.reservations = reservations;
 	}
 	
 	public User(User user) {
@@ -43,6 +50,8 @@ public class User {
 		this.salt = user.getSalt();
 		this.passwordWithSalt = user.getPasswordWithSalt();
 		this.isEnabled = user.isEnabled();
+		this.role = user.getRole();
+		this.reservations = user.getReservations();
 	}
 	
 	public User(LinkedHashMap<String, String> userMap) {
@@ -52,6 +61,8 @@ public class User {
 		this.phoneNumber = userMap.get("phoneNumber");
 		this.email = userMap.get("email");
 		this.password = userMap.get("password");
+		this.isEnabled = Boolean.parseBoolean(String.valueOf(userMap.get("isEnabled")));
+		this.role = Integer.parseInt(String.valueOf(userMap.get("role")));
 	}
 
 	public int getId() {
@@ -110,6 +121,7 @@ public class User {
 		this.passwordWithSalt = passwordWithSalt;
 	}
 
+	@JsonProperty("isEnabled")
 	public boolean isEnabled() {
 		return isEnabled;
 	}
@@ -117,6 +129,27 @@ public class User {
 	public void setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
+
+	@JsonProperty("role")
+	public int getRole() {
+		return role;
+	}
+
+	public void setRole(int role) {
+		this.role = role;
+	}
+
+	public ArrayList<Reservation> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(ArrayList<Reservation> reservations) {
+		this.reservations = reservations;
+	}
+	
+	
+	
+	
 
 
 }

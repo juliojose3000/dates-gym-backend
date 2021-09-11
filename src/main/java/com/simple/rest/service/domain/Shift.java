@@ -2,6 +2,7 @@ package com.simple.rest.service.domain;
 
 import java.util.Date;
 
+import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.util.Log;
 
 import java.text.ParseException;
@@ -23,7 +24,7 @@ public class Shift {
 	
 	public Shift() {
 		this.clients = new ArrayList<User>();
-		this.maxSpace = 7;
+		this.maxSpace = ConfigConstants.NUMBER_OF_CUSTOMERS_PER_SHIFT;
 		this.reservedSpace = 0;
 		this.availableSpace = getAvailableSpace();
 	}
@@ -55,7 +56,7 @@ public class Shift {
 			date1 = new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}  
 		this.date = date1;
 	}

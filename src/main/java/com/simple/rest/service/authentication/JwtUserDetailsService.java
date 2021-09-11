@@ -32,7 +32,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 			user = userData.findByEmail(userEmail);
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 		}
 
 		if (user.getEmail().equals(userEmail)) {

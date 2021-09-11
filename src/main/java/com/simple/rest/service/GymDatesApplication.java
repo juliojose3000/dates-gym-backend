@@ -2,6 +2,7 @@ package com.simple.rest.service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.TimeZone;
 
@@ -22,22 +23,31 @@ public class GymDatesApplication {
 
 	public static void main(String[] args) {
 		try {
-			Log.create(TAG, "Loading config constants...");
+			String configConstantsValues = Log.createWithoutWrite(TAG, "Loading config constants...");
 			URL url = new URL(ConfigConstants.IS_PRODUCTION?ConfigConstants.PRODUCTION_CONFIG_FILE_URL:ConfigConstants.DEVELOP_CONFIG_FILE_URL);
 			Scanner scanner = new Scanner(url.openStream());
 			
-			Log.create(TAG, "IS_PRODUCTION="+ConfigConstants.IS_PRODUCTION);
-			
+			configConstantsValues += Log.createWithoutWrite(TAG, "IS_PRODUCTION="+ConfigConstants.IS_PRODUCTION);	
 			// read from your scanner
 			while (scanner.hasNextLine()) {
 				String configConstant = scanner.nextLine();
 				String[] keyValue = configConstant.split("=");
-				Log.create(TAG, keyValue[0]+"="+ keyValue[1]);
+				configConstantsValues += Log.createWithoutWrite(TAG, keyValue[0]+"="+ keyValue[1]);
 				ConfigConstants.setValues(keyValue[0], keyValue[1]);
 			}
 			scanner.close();
+			if(ConfigConstants.PRINT_CONFIG_CONSTANTS_VALUES)
+				Log.write(configConstantsValues);
 
-			SpringApplication.run(GymDatesApplication.class, args);
+			
+	        SpringApplication application = new SpringApplication(GymDatesApplication.class);
+
+	        Properties properties = new Properties();
+	        properties.put("spring.datasource.url", ConfigConstants.getDataBaseConnectionString());
+	        application.setDefaultProperties(properties);
+
+	        application.run(args);
+			
 		} catch (IOException ex) {
 			// there was some connection problem, or the file did not exist on the server,
 			// or your URL was not in the right format.

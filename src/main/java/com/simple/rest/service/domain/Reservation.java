@@ -4,24 +4,18 @@ import java.util.Date;
 
 public class Reservation {
 	
-	User user;
 	Date shiftDate;
 	String shiftStartHour;
+	String shiftEndHour;
 	
 	public Reservation() {}
 	
-	public Reservation(User user, Date shiftDate, String shiftStartHour) {
-		this.user = user;
+	public Reservation(Date shiftDate, String shiftStartHour, String shiftEndHour) {
 		this.shiftDate = shiftDate;
 		this.shiftStartHour = shiftStartHour;
+		this.shiftEndHour = shiftEndHour;
 	}
 	
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
 	public Date getShiftDate() {
 		return shiftDate;
 	}
@@ -34,6 +28,16 @@ public class Reservation {
 	public void setShiftStartHour(String shiftStartHour) {
 		this.shiftStartHour = shiftStartHour;
 	}
+
+	public String getShiftEndHour() {
+		return shiftEndHour;
+	}
+
+	public void setShiftEndHour(String shiftEndHour) {
+		this.shiftEndHour = shiftEndHour;
+	}
+	
+	
 	
 	
 

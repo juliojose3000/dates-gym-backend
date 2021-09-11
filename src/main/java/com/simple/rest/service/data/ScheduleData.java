@@ -54,11 +54,13 @@ public class ScheduleData {
 				lastCode = rs.getInt("id");	
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
+
 		return lastCode;
 		
 	}
@@ -111,11 +113,13 @@ public class ScheduleData {
 				
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			stmt.close();
+			conn.close();
 		}
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 		
 	}//method
@@ -157,12 +161,14 @@ public class ScheduleData {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 		
 	}
@@ -205,12 +211,14 @@ public class ScheduleData {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			mResponse.unexpectedErrorResponse();
+		} finally {
+			rs.close();
+			stmt.close();
+			conn.close();
 		}
-		rs.close();
-		stmt.close();
-		conn.close();
+
 		return mResponse;
 		
 	}

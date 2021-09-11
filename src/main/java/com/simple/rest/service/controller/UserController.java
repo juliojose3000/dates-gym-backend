@@ -175,9 +175,9 @@ public class UserController {
 	
 	@RequestMapping(method = RequestMethod.GET, value="/enable_user_account")
 	@ResponseBody
-	public ResponseEntity<MyResponse> enableUserAccount(@RequestParam String userEmail) throws SQLException, ParseException {
+	public ResponseEntity<MyResponse> enableUserAccount(@RequestParam String userEmail, @RequestParam boolean enable) throws SQLException, ParseException {
 		
-		MyResponse mResponse = userBussiness.enableUserAccount(userEmail);
+		MyResponse mResponse = userBussiness.enableUserAccount(userEmail, enable);
 		
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
@@ -217,6 +217,17 @@ public class UserController {
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/get_all")
+	@ResponseBody
+	public ResponseEntity<MyResponse> getAll() throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.getAll();
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
 	
 
 }
