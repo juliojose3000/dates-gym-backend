@@ -524,7 +524,7 @@ public class UserData {
 				User user = findByEmail(userEmail);
 				user.setEnabled(enable);
 				enableUserInList(user);
-				Log.create(TAG, "User account has been enabled for "+user.getName() + "["+user.getEmail()+"]");
+				Log.create(TAG, "User account has been "+(enable?"enable":"disable")+" for "+user.getName() + "["+user.getEmail()+"]");
 			}
 		} catch (SQLException e) {
 			mResponse.setSuccessful(false);

@@ -78,6 +78,7 @@ public class ReservationData {
 
 		Date shiftDate = reservation.getShiftDate();
 		String shiftStartHour = reservation.getShiftStartHour();
+		String shiftEndHour = reservation.getShiftEndHour();
 
 		Log.create(TAG, "Making reservation by " + user.getName() + "[" + user.getEmail() + "]" + " on "
 				+ Dates.utilDateToString(shiftDate) + " at " + shiftStartHour);
@@ -95,8 +96,8 @@ public class ReservationData {
 
 		try {
 			stmt = conn.createStatement();
-			String query = "insert into reservation(id_user, date_shift, start_hour_shift) values (" + "'"
-					+ user.getId() + "','" + Dates.utilDateToString(shiftDate) + "','" + shiftStartHour + "');";
+			String query = "insert into reservation(id_user, date_shift, start_hour_shift, end_hour_shift) values (" + "'"
+					+ user.getId() + "','" + Dates.utilDateToString(shiftDate) + "','" + shiftStartHour + "','" + shiftEndHour + "');";
 
 			int rs = stmt.executeUpdate(query);
 
@@ -257,7 +258,8 @@ public class ReservationData {
 
 	public ArrayList<Reservation> getCustomerReservations(int userId) throws SQLException {
 
-		String query = "select * from reservation where id_user = " + userId + ";";
+		//String query = "select * from reservation where id_user = " + userId + ";";
+		String query = "select * from reservation r, schedule s where r.id_user = "+userId+" and s.id=(SELECT max(s.id) FROM schedule) and r.date_shift >= s.start_date;";
 		ArrayList<Reservation> listReservations = new ArrayList<>();
 
 		Connection conn = dataSource.getConnection();
@@ -270,10 +272,12 @@ public class ReservationData {
 			int id = rs.getInt("id_user");
 			String dateShift = rs.getString("date_shift");
 			String startHourShift = rs.getString("start_hour_shift");
+			String endHourShift = rs.getString("end_hour_shift");
 
 			Reservation reservation = new Reservation();
 			reservation.setShiftDate(Dates.stringToUtilDate(dateShift));
 			reservation.setShiftStartHour(startHourShift);
+			reservation.setShiftEndHour(endHourShift);
 
 			listReservations.add(reservation);
 		}

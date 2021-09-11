@@ -47,7 +47,7 @@ public class EmailServiceImpl implements EmailService {
 			return true;
 		} catch (MessagingException e) {
 			e.printStackTrace();
-			Log.create(TAG, e.getMessage());
+			Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
 			return false;
 		}
 		

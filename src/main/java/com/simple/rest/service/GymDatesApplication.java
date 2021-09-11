@@ -2,6 +2,7 @@ package com.simple.rest.service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.TimeZone;
 
@@ -35,9 +36,18 @@ public class GymDatesApplication {
 				ConfigConstants.setValues(keyValue[0], keyValue[1]);
 			}
 			scanner.close();
-			Log.write(configConstantsValues);
+			if(ConfigConstants.PRINT_CONFIG_CONSTANTS_VALUES)
+				Log.write(configConstantsValues);
 
-			SpringApplication.run(GymDatesApplication.class, args);
+			
+	        SpringApplication application = new SpringApplication(GymDatesApplication.class);
+
+	        Properties properties = new Properties();
+	        properties.put("spring.datasource.url", ConfigConstants.getDataBaseConnectionString());
+	        application.setDefaultProperties(properties);
+
+	        application.run(args);
+			
 		} catch (IOException ex) {
 			// there was some connection problem, or the file did not exist on the server,
 			// or your URL was not in the right format.

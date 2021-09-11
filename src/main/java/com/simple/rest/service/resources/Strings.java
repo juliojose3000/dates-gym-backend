@@ -6,7 +6,7 @@ public class Strings {
 	public static final String SUCCESSFUL = "Operación exitosa";
 	public static final String ERROR = "Ha ocurrido un error";
 	public static final String EMAIL_SUBJECT_RESET_PASSWORD_LINK = "Solicitud para resetear la contraseña";
-	public static final String EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT = "Validar nueva cuenta de usuario";
+	public static final String EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT = "Validar cuenta nueva de usuario";
 	public static final String EMAIL_SUBJECT_YOUR_ACCOUNT_HAS_BEEN_ENABLED = "Su cuenta ha sido habilitada";
 	
 	//DESCRIPTIONS/MESSAGES
@@ -32,7 +32,7 @@ public class Strings {
 	public static final String THE_EMAIL_NOT_CORRESPONDS_WITH_THE_LINK_PASSWORD_RESET = "El correo ingresado no concuerda con el correo al que se le envió el link para restaurar la contraseña.";
 	public static final String USER_PROFILE_UPDATED_SUCCESSFUL = "Sus datos se han actualizado correctamente.";
 	public static final String WRONG_PASSWORD = "La contraseña es incorrecta.";
-	public static final String USER_ACCOUNT_ENABLED_SUCCESSFUL = "La cuenta de usuario se ha habilitado correctamente.";
+	public static final String USER_ACCOUNT_ENABLED_SUCCESSFUL = "La cuenta de usuario se ha habilitado correctamente. Se le enviará un correo al usuario informándole.";
 	public static final String USER_ACCOUNT_DISABLED_SUCCESSFUL = "La cuenta de usuario se ha deshabilitado correctamente.";
 	public static final String USER_ACCOUNT_IS_NOT_ENABLED = "Su cuenta actualmente no se encuentra habilitada. Comuníquese con el administrador para más detalles.";
 	public static final String USER_ACCOUNT_IS_ALREADY_ENABLED = "La cuenta de usuario ya se encuentra habilitada.";

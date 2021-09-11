@@ -34,6 +34,8 @@ public class ConfigConstants {
 	public static int TOKEN_MINUTES_LIFE_TIME;// This variable indicates, if the previus variable is false, the life time of a user session.
 	public static boolean SEND_EMAIL;
 	public static int NUMBER_OF_CUSTOMERS_PER_SHIFT;
+	public static boolean PRINT_CONFIG_CONSTANTS_VALUES;
+	public static boolean USE_TESTING_DATABASE;
 
 	public static void setValues(String key, String value) {
 		switch (key) {
@@ -64,8 +66,18 @@ public class ConfigConstants {
 		case "NUMBER_OF_CUSTOMERS_PER_SHIFT":
 			NUMBER_OF_CUSTOMERS_PER_SHIFT = Integer.parseInt(value);
 			break;
-
+		case "PRINT_CONFIG_CONSTANTS_VALUES":
+			PRINT_CONFIG_CONSTANTS_VALUES = Boolean.parseBoolean(value);
+			break;
+		case "USE_TESTING_DATABASE":
+			USE_TESTING_DATABASE = Boolean.parseBoolean(value);
+			break;
 		}
+	}
+	
+	public static String getDataBaseConnectionString() {
+		String databaseName = USE_TESTING_DATABASE?"gymcachi_testing":"gymcachi";
+		return "jdbc:mysql://34.123.121.183:3306/"+databaseName+"?useSSL=true&requireSSL=false&serverTimezone=UTC";
 	}
 
 }

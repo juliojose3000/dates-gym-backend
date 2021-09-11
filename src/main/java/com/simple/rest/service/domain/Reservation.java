@@ -6,12 +6,14 @@ public class Reservation {
 	
 	Date shiftDate;
 	String shiftStartHour;
+	String shiftEndHour;
 	
 	public Reservation() {}
 	
-	public Reservation(Date shiftDate, String shiftStartHour) {
+	public Reservation(Date shiftDate, String shiftStartHour, String shiftEndHour) {
 		this.shiftDate = shiftDate;
 		this.shiftStartHour = shiftStartHour;
+		this.shiftEndHour = shiftEndHour;
 	}
 	
 	public Date getShiftDate() {
@@ -26,6 +28,16 @@ public class Reservation {
 	public void setShiftStartHour(String shiftStartHour) {
 		this.shiftStartHour = shiftStartHour;
 	}
+
+	public String getShiftEndHour() {
+		return shiftEndHour;
+	}
+
+	public void setShiftEndHour(String shiftEndHour) {
+		this.shiftEndHour = shiftEndHour;
+	}
+	
+	
 	
 	
 
