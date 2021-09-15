@@ -2,6 +2,7 @@ package com.simple.rest.service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.TimeZone;
@@ -13,6 +14,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import com.simple.rest.service.data.ScheduleData;
+import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.resources.ConfigConstants;
 import com.simple.rest.service.resources.TimeZoneStrings;
 import com.simple.rest.service.util.Log;
@@ -99,6 +102,11 @@ public class GymDatesApplication {
     	        application.setDefaultProperties(properties);
 
     	        mainThreadClassLoader = Thread.currentThread().getContextClassLoader();
+    	        
+    	        //Cleaning static data
+    	        ScheduleData.currentSchedule = null;
+    	        UserData.LIST_USERS = new ArrayList<>();
+    	        
     	        context = application.run(args.getSourceArgs());
     			
     		} catch (IOException ex) {
