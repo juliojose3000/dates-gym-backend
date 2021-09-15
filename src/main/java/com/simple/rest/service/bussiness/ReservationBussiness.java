@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.data.ReservationData;
+import com.simple.rest.service.data.ScheduleData;
 import com.simple.rest.service.data.UserData;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
@@ -23,6 +24,9 @@ public class ReservationBussiness {
 	
 	@Autowired
 	UserData userData;
+	
+	@Autowired
+	ScheduleData scheduleData;
 	
 	private static final String TAG = "ReservationBussiness";
 	
@@ -41,6 +45,9 @@ public class ReservationBussiness {
 		}else {
 			try {
 				mResponse = reservationData.make(reservation, userId);
+				if(mResponse.isSuccessful()) {
+					scheduleData.updateScheduleNewReservation(reservation, userId);
+				}
 			} 
 			catch (SQLException | InterruptedException e) {
 				e.printStackTrace();
@@ -64,6 +71,9 @@ public class ReservationBussiness {
 		
 		try {
 			mResponse = reservationData.cancel(reservation, userId);
+			if(mResponse.isSuccessful()) {
+				scheduleData.updateScheduleCancelReservation(reservation, userId);
+			}
 		} 
 		catch (SQLException e) {
 			e.printStackTrace();

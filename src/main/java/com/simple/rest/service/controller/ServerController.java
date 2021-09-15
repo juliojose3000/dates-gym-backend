@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simple.rest.service.GymDatesApplication;
 import com.simple.rest.service.bussiness.ServerBussiness;
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
@@ -73,6 +75,29 @@ public class ServerController {
 		MyResponse mResponse = new MyResponse();
 		mResponse.successfulResponse();
 		mResponse.setData(serverBussiness.getServerName());
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/send_test_email")
+	@ResponseBody
+	public ResponseEntity<MyResponse> sendTestEmail(@RequestParam String email) throws SQLException, ParseException {
+		
+		MyResponse mResponse = new MyResponse();
+		mResponse.successfulResponse();
+		serverBussiness.sendTestEmail(email);
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/restart")
+	@ResponseBody
+	public ResponseEntity<MyResponse> restartServer() throws SQLException, ParseException {
+		
+		MyResponse mResponse = new MyResponse();
+		mResponse.successfulResponse();
+		mResponse.setDescription("Reiniciando servidor, espera unos segundos...");
+		GymDatesApplication.restart();
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}

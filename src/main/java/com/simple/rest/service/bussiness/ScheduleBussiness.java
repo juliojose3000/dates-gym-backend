@@ -100,6 +100,7 @@ public class ScheduleBussiness {
 		schedule.setShifts(listShifts);
 		
 		MyResponse mResponse = scheduleData.create(schedule);
+		ScheduleData.currentSchedule = schedule;
 		
 		return mResponse;
 		
@@ -173,6 +174,12 @@ public class ScheduleBussiness {
 		if(currentDate.after(currentScheduleEndWeek)) return true;
 
 		return false;
+	}
+
+
+
+	public MyResponse deleteLastSchedule() {
+		return scheduleData.deleteLastSchedule();
 	}
 	
 }

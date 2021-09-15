@@ -251,10 +251,17 @@ public class UserBussiness {
 
 	public MyResponse getAll() {
 		MyResponse mResponse = new MyResponse();
+		//ArrayList<User> listUsers = userData.getAll();
+		mResponse.successfulResponse();
+		mResponse.setData(UserData.LIST_USERS);
+		return mResponse;
+	}
+
+	public MyResponse refreshUsers() {
+		MyResponse mResponse = new MyResponse();
 		try {
-			ArrayList<User> listUsers = userData.getAll();
+			userData.loadUsers();
 			mResponse.successfulResponse();
-			mResponse.setData(listUsers);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			Log.error(TAG, e.getMessage(), e.getStackTrace()[0].getLineNumber());
