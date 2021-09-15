@@ -77,6 +77,25 @@ public class EmailHtmlBodies {
 				+ "\r\n"
 				+ "</div>";
 	}
+	
+	
+	public static String generateTestEmailBody() {
+		return "<div style=\"width: 100%;height: 100%;\">\r\n"
+				+ "\r\n"
+				+ "    <div\r\n"
+				+ "        style=\"width: 40%;overflow: hidden; background-color: rgb(27, 24, 24); left: 0; right: 0; margin: auto; text-align: center; display: inline-block; min-width: 300px; padding: 30px;position: absolute; border-radius: 20px;\">\r\n"
+				+ "\r\n"
+				+ "        <img src=\"https://loaiza.000webhostapp.com/Cachi-Fitness-Center-Web-Page/Images/body-icon.png\"\r\n"
+				+ "            alt=\"Cachí Fitness Center Logo\" width=\"100\" height=\"100\">\r\n"
+				+ "        <h1 style=\"color: white;\">Cachi Fitness Center</h1>\r\n"
+				+ "\r\n"
+				+ "        <p style=\"color: white;\">Este correo es de prueba. Saludos a todos.\r\n"
+				+ "        </p>\r\n"
+				+ "\r\n"
+				+ "    </div>\r\n"
+				+ "\r\n"
+				+ "</div>";
+	}
 
 	
 	

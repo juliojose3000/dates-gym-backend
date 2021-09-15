@@ -54,5 +54,12 @@ public class ScheduleController {
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 	}
 	
+	@RequestMapping(method = RequestMethod.DELETE, value="/delete_last_schedule")
+	@ResponseBody
+	public ResponseEntity<MyResponse> deleteLastSchedule() throws SQLException, ParseException {
+		MyResponse mResponse = scheduleBussiness.deleteLastSchedule();
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+	}
+	
 
 }

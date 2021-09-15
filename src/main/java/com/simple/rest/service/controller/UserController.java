@@ -228,6 +228,16 @@ public class UserController {
 		
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value="/refresh_users")
+	@ResponseBody
+	public ResponseEntity<MyResponse> loadUsers() throws SQLException, ParseException {
+		
+		MyResponse mResponse = userBussiness.refreshUsers();
+		
+		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
+		
+	}
+	
 	
 
 }

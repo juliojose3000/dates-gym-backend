@@ -5,12 +5,16 @@ import java.net.UnknownHostException;
 import java.time.ZoneId;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simple.rest.service.domain.MyResponse;
 import com.simple.rest.service.domain.Reservation;
+import com.simple.rest.service.resources.Strings;
 import com.simple.rest.service.resources.TimeZoneStrings;
 import com.simple.rest.service.util.Dates;
+import com.simple.rest.service.util.EmailHtmlBodies;
+import com.simple.rest.service.util.EmailServiceImpl;
 import com.simple.rest.service.util.Utilities;
 import com.simple.rest.service.util.Log;
 
@@ -18,6 +22,9 @@ import com.simple.rest.service.util.Log;
 public class ServerBussiness {
 	
 	private static final String TAG = "ServerBussiness";
+	
+	@Autowired
+	EmailServiceImpl emailServiceImpl;
 	
 	public String getServerTimeZone() {
 		return Utilities.getTimeZoneServer();
@@ -77,6 +84,18 @@ public class ServerBussiness {
 		}
 		return hostname;
 	}
+	
+	public void sendTestEmail(String email) {
+		
+		new Thread(new Runnable() {
+			public void run() {
+				emailServiceImpl.sendHTMLEmailMessage(email, Strings.EMAIL_SUBJECT_TEST,
+						EmailHtmlBodies.generateTestEmailBody());
+			}
+		}).start();
+		
+	}
+	
 	
 
 }

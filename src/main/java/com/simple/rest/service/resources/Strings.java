@@ -8,6 +8,7 @@ public class Strings {
 	public static final String EMAIL_SUBJECT_RESET_PASSWORD_LINK = "Solicitud para resetear la contraseña";
 	public static final String EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT = "Validar cuenta nueva de usuario";
 	public static final String EMAIL_SUBJECT_YOUR_ACCOUNT_HAS_BEEN_ENABLED = "Su cuenta ha sido habilitada";
+	public static final String EMAIL_SUBJECT_TEST = "Correo de prueba";
 	
 	//DESCRIPTIONS/MESSAGES
 	public static final String UNEXPECTED_ERROR = "Ha ocurrido un error inésperado, por favor intente de nuevo.";
