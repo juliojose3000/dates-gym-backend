@@ -101,5 +101,20 @@ public class ServerController {
 		return new ResponseEntity<MyResponse>(mResponse, HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/deletion")
+	@ResponseBody
+	public ResponseEntity<String> deletionUserFacebookInformation() throws SQLException, ParseException {
+		
+		String response = "{\r\n"
+				+ "   \"algorithm\": \"HMAC-SHA256\",\r\n"
+				+ "   \"expires\": 1291840400,\r\n"
+				+ "   \"issued_at\": 1291836800,\r\n"
+				+ "   \"user_id\": \"218471\"\r\n"
+				+ "}";
+			
+		return new ResponseEntity<String>(response, HttpStatus.OK);
+		
+	}
 
 }
