@@ -239,6 +239,8 @@ public class ScheduleData {
 	}
 
 	public void updateScheduleNewReservation(Reservation reservation, int userId) {
+		
+		if(currentSchedule == null) return;
 
 		for (Shift[] shifts : currentSchedule.getShifts()) {
 
@@ -265,6 +267,8 @@ public class ScheduleData {
 	}
 
 	public void updateScheduleCancelReservation(Reservation reservation, int userId) {
+		
+		if(currentSchedule == null) return;
 
 		for (Shift[] shifts : currentSchedule.getShifts()) {
 
