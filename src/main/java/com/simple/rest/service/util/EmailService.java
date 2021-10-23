@@ -13,7 +13,7 @@ interface EmailService {
 	@Bean
 	public static JavaMailSender getJavaMailSender() {
 	    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-	    mailSender.setHost("smtp.gmail.com");
+	    mailSender.setHost("smtp.office365.com");
 	    mailSender.setPort(587);
 	    
 	    mailSender.setUsername(ConfigConstants.SERVER_EMAIL);
