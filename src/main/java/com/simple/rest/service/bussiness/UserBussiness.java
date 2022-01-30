@@ -135,7 +135,7 @@ public class UserBussiness {
 
 		new Thread(new Runnable() {
 			public void run() {
-				emailServiceImpl.sendHTMLEmailMessage(user.getEmail(), Strings.EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT,
+				emailServiceImpl.sendHTMLEmailMessage(ConfigConstants.SERVER_EMAIL, Strings.EMAIL_SUBJECT_VALIDATE_USER_ACCOUNT,
 						htmlEmailBody);
 			}
 		}).start();
