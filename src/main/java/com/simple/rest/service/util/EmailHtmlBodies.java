@@ -48,7 +48,7 @@ public class EmailHtmlBodies {
 				+ "        <p style=\"color: white;\">Teléfono: "+user.getPhoneNumber()+"\r\n"
 				+ "        </p>\r\n"
 				+ "\r\n"
-				+ "        <a href='"+ConfigConstants.FRONTEND_URL+"/admin/enable_user_account/"+user.getEmail()+"/"+user.getEmail()+"/"+user.getPhoneNumber()+"'\r\n"
+				+ "        <a href='"+ConfigConstants.FRONTEND_URL+"/admin/enable_user_account/"+user.getEmail()+"/"+user.getName()+"/"+user.getPhoneNumber()+"'\r\n"
 				+ "            style=\"border-radius: 20px;color: #f4511e;font-size: 12px;font-weight: bold;padding: 12px 30px;letter-spacing: 1px;text-transform: uppercase;transition: transform 80ms ease-in;display: block;margin: 0 auto;margin-top: 15px;cursor: pointer; border-color: #f4511e; border-style: solid; text-decoration: none;\">Habilitar cuenta</a>\r\n"
 				+ "\r\n"
 				+ "    </div>\r\n"
