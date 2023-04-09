@@ -19,9 +19,9 @@ public class ConfigConstants {
 	 * public static final boolean SEND_EMAIL = false;
 	 */
 
-	public static final String DEVELOP_CONFIG_FILE_URL = "https://loaiza.000webhostapp.com/Cachi-Fitness-Center-Web-Page/develop/config/config.txt";
-	public static final String PRODUCTION_CONFIG_FILE_URL = "https://loaiza.000webhostapp.com/Cachi-Fitness-Center-Web-Page/production/config/config.txt";
-	public static final boolean IS_PRODUCTION = true; // TODO put in true to production
+	public static final String DEVELOP_CONFIG_FILE_URL = "https://loaizagreen.000webhostapp.com/Cachi-Fitness-Center-Web-Page/develop/config/config.txt";
+	public static final String PRODUCTION_CONFIG_FILE_URL = "https://loaizagreen.000webhostapp.com/Cachi-Fitness-Center-Web-Page/production/config/config.txt";
+	public static final boolean IS_PRODUCTION = false; // TODO put in true to production
 	public static final int TRUE = 1;
 	public static final int FALSE = 0;
 	
@@ -35,7 +35,9 @@ public class ConfigConstants {
 	public static boolean SEND_EMAIL;
 	public static int NUMBER_OF_CUSTOMERS_PER_SHIFT;
 	public static boolean PRINT_CONFIG_CONSTANTS_VALUES;
-	public static boolean USE_TESTING_DATABASE;
+	public static String DATABASE_NAME;
+	public static String DB_USERNAME;
+	public static String DB_PASSWORD;
 
 	public static void setValues(String key, String value) {
 		switch (key) {
@@ -69,15 +71,20 @@ public class ConfigConstants {
 		case "PRINT_CONFIG_CONSTANTS_VALUES":
 			PRINT_CONFIG_CONSTANTS_VALUES = Boolean.parseBoolean(value);
 			break;
-		case "USE_TESTING_DATABASE":
-			USE_TESTING_DATABASE = Boolean.parseBoolean(value);
+		case "DATABASE_NAME":
+			DATABASE_NAME = value;
+			break;
+		case "DB_USERNAME":
+			DB_USERNAME = value;
+			break;
+		case "DB_PASSWORD":
+			DB_PASSWORD = value;
 			break;
 		}
 	}
 	
 	public static String getDataBaseConnectionString() {
-		String databaseName = USE_TESTING_DATABASE?"gymcachi_testing":"gymcachi";
-		return "jdbc:mysql://34.123.121.183:3306/"+databaseName+"?useSSL=true&requireSSL=false&serverTimezone=UTC";
+		return "jdbc:mysql://sql5.freemysqlhosting.net:3306/"+DATABASE_NAME;
 	}
 
 }

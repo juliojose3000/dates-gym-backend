@@ -50,7 +50,9 @@ public class GymDatesApplication {
 	        SpringApplication application = new SpringApplication(GymDatesApplication.class);
 
 	        Properties properties = new Properties();
-	        properties.put("spring.datasource.url", ConfigConstants.getDataBaseConnectionString());
+	        properties.put( "spring.datasource.url", ConfigConstants.getDataBaseConnectionString() );
+	        properties.put( "spring.datasource.username", ConfigConstants.DB_USERNAME );
+	        properties.put( "spring.datasource.password", ConfigConstants.DB_PASSWORD );
 	        application.setDefaultProperties(properties);
 
 	        mainThreadClassLoader = Thread.currentThread().getContextClassLoader();
